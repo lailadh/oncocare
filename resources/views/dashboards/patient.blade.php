@@ -1,11 +1,45 @@
-<h1>Dashboard Patient</h1>
+<x-app-layout>
 
-<p>Bienvenue {{ auth()->user()->prenom }}</p>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Dashboard Patient
+        </h2>
+    </x-slot>
 
-<form method="POST" action="{{ route('logout') }}">
-    @csrf
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-    <button type="submit">
-        Logout
-    </button>
-</form>
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+
+                <div class="p-6 text-gray-900">
+
+                    <h1 class="text-2xl font-bold mb-4">
+                        Bonjour {{ auth()->user()->prenom }}
+                    </h1>
+
+                    <p class="text-gray-600 mb-6">
+                        Bienvenue dans votre espace personnel.
+                    </p>
+
+                    <div class="flex gap-4">
+
+                        <a href="{{ route('patient.suivis.index') }}"
+                           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                            Mes suivis médicaux
+                        </a>
+
+                        <a href="{{ route('patient.rendezvous.index') }}"
+                           class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                            Mes rendez-vous
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</x-app-layout>
