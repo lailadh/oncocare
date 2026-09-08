@@ -7,53 +7,60 @@ use App\Models\User;
 
 class SuiviPolicy
 {
+    /**
+     * Médecin: يمكنو يشوف suivis ديالو.
+     * Patient: يمكنو يشوف suivis ديالو.
+     */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('suivi.view');
+        return in_array($user->role, ['medecin', 'patient']);
     }
 
+    /**
+     * عرض suivi واحد.
+     */
     public function view(User $user, Suivi $suivi): bool
     {
-        // Admin
-        if ($user->hasRole('admin')) {
-            return true;
+        // Médecin: غير suivis ديالو
+        if ($user->role === 'medecin' && $user->medecin) {
+            return $suivi->id_medecin == $user->medecin->id_medecin;
         }
 
-        // Médecin: uniquement ses propres suivis
-        if (
-            $user->hasPermission('suivi.view') &&
-            $user->medecin &&
-            $suivi->id_medecin === $user->medecin->id_medecin
-        ) {
-            return true;
+        // Patient: غير suivis ديالو
+        if ($user->role === 'patient' && $user->patient) {
+            return $suivi->id_patient == $user->patient->id_patient;
         }
 
         return false;
     }
 
+    /**
+     * إنشاء suivi: médecin فقط.
+     */
     public function create(User $user): bool
     {
-        return $user->hasPermission('suivi.create')
+        return $user->role === 'medecin'
             && $user->medecin !== null;
     }
 
+    /**
+     * تعديل suivi: médecin فقط و suivi ديالو.
+     */
     public function update(User $user, Suivi $suivi): bool
     {
-        // Admin
-        if ($user->hasRole('admin')) {
-            return true;
-        }
-
-        // Médecin: uniquement ses propres suivis
-        return
-            $user->hasPermission('suivi.update') &&
-            $user->medecin !== null &&
-            $suivi->id_medecin === $user->medecin->id_medecin;
+        return $user->role === 'medecin'
+            && $user->medecin !== null
+            && $suivi->id_medecin == $user->medecin->id_medecin;
     }
 
+    /**
+     * حذف suivi: médecin فقط و suivi ديالو.
+     */
     public function delete(User $user, Suivi $suivi): bool
     {
-        return false;
+        return $user->role === 'medecin'
+            && $user->medecin !== null
+            && $suivi->id_medecin == $user->medecin->id_medecin;
     }
 
     public function restore(User $user, Suivi $suivi): bool

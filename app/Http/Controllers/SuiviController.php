@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Suivi;
 use App\Models\Patient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class SuiviController extends Controller
 {
@@ -13,7 +14,13 @@ class SuiviController extends Controller
      */
     public function index()
     {
+        Gate::authorize('viewAny', Suivi::class);
+
         $user = auth()->user();
+
+        if ($user->role !== 'medecin' || !$user->medecin) {
+            abort(403);
+        }
 
         $medecin = $user->medecin;
 
@@ -30,13 +37,16 @@ class SuiviController extends Controller
      */
     public function create()
     {
-        $user = auth()->user();
+        Gate::authorize('create', Suivi::class);
 
+        $user = auth()->user();
         $medecin = $user->medecin;
-//
-//
+
         $patients = Patient::whereHas('medecins', function ($query) use ($medecin) {
-            $query->where('medecins.id_medecin', $medecin->id_medecin);
+            $query->where(
+                'medecins.id_medecin',
+                $medecin->id_medecin
+            );
         })->with('utilisateur')->get();
 
         return view('suivis.create', compact('patients'));
@@ -47,6 +57,8 @@ class SuiviController extends Controller
      */
     public function store(Request $request)
     {
+        Gate::authorize('create', Suivi::class);
+
         $request->validate([
             'date_suivi' => 'required|date',
             'type_cancer' => 'required|string',
@@ -58,6 +70,15 @@ class SuiviController extends Controller
         ]);
 
         $medecin = auth()->user()->medecin;
+
+        // Vérifier que le patient appartient bien au médecin connecté
+        $patientExiste = $medecin->patients()
+            ->where('patients.id_patient', $request->id_patient)
+            ->exists();
+
+        if (!$patientExiste) {
+            abort(403);
+        }
 
         Suivi::create([
             'date_suivi' => $request->date_suivi,
@@ -75,127 +96,116 @@ class SuiviController extends Controller
             ->with('success', 'Suivi ajouté avec succès.');
     }
 
-/**
- * Afficher les détails d'un suivi.
- */
-public function show(Suivi $suivi)
-{
-    $medecin = auth()->user()->medecin;
+    /**
+     * Afficher les détails d'un suivi.
+     */
+    public function show(Suivi $suivi)
+    {
+        Gate::authorize('view', $suivi);
 
-    // Vérifier que le suivi appartient au médecin connecté
-    if ($suivi->id_medecin != $medecin->id_medecin) {
-        abort(403);
+        $suivi->load([
+            'patient.utilisateur',
+            'medecin.utilisateur',
+        ]);
+
+        return view('suivis.show', compact('suivi'));
     }
 
-    $suivi->load('patient.utilisateur');
+    /**
+     * Afficher le formulaire de modification.
+     */
+    public function edit(Suivi $suivi)
+    {
+        Gate::authorize('update', $suivi);
 
-    return view('suivis.show', compact('suivi'));
-}
-
-
-/**
- * Afficher le formulaire de modification.
- */
-public function edit(Suivi $suivi)
-{
-    $medecin = auth()->user()->medecin;
-
-    if ($suivi->id_medecin != $medecin->id_medecin) {
-        abort(403);
+        return view('suivis.edit', compact('suivi'));
     }
 
-    return view('suivis.edit', compact('suivi'));
-}
+    /**
+     * Mettre à jour un suivi.
+     */
+    public function update(Request $request, Suivi $suivi)
+    {
+        Gate::authorize('update', $suivi);
 
+        $request->validate([
+            'date_suivi' => 'required|date',
+            'type_cancer' => 'required|string',
+            'stade' => 'required|string',
+            'observation' => 'nullable|string',
+            'evolution' => 'nullable|string',
+            'traitement' => 'nullable|string',
+        ]);
 
-/**
- * Mettre à jour un suivi.
- */
-public function update(Request $request, Suivi $suivi)
-{
-    $medecin = auth()->user()->medecin;
+        $suivi->update([
+            'date_suivi' => $request->date_suivi,
+            'type_cancer' => $request->type_cancer,
+            'stade' => $request->stade,
+            'observation' => $request->observation,
+            'evolution' => $request->evolution,
+            'traitement' => $request->traitement,
+        ]);
 
-    if ($suivi->id_medecin != $medecin->id_medecin) {
-        abort(403);
+        return redirect()
+            ->route('suivis.index')
+            ->with('success', 'Suivi modifié avec succès.');
     }
 
-    $request->validate([
-        'date_suivi' => 'required|date',
-        'type_cancer' => 'required|string',
-        'stade' => 'required|string',
-        'observation' => 'nullable|string',
-        'evolution' => 'nullable|string',
-        'traitement' => 'nullable|string',
-    ]);
+    /**
+     * Supprimer un suivi.
+     */
+    public function destroy(Suivi $suivi)
+    {
+        Gate::authorize('delete', $suivi);
 
-    $suivi->update([
-        'date_suivi' => $request->date_suivi,
-        'type_cancer' => $request->type_cancer,
-        'stade' => $request->stade,
-        'observation' => $request->observation,
-        'evolution' => $request->evolution,
-        'traitement' => $request->traitement,
-    ]);
+        $suivi->delete();
 
-    return redirect()
-        ->route('suivis.index')
-        ->with('success', 'Suivi modifié avec succès.');
-}
-
-
-/**
- * Supprimer un suivi.
- */
-public function destroy(Suivi $suivi)
-{
-    $medecin = auth()->user()->medecin;
-
-    if ($suivi->id_medecin != $medecin->id_medecin) {
-        abort(403);
+        return redirect()
+            ->route('suivis.index')
+            ->with('success', 'Suivi supprimé avec succès.');
     }
 
-    $suivi->delete();
+    /**
+     * Afficher les suivis du patient connecté.
+     */
+    public function patientSuivis()
+    {
+        Gate::authorize('viewAny', Suivi::class);
 
-    return redirect()
-        ->route('suivis.index')
-        ->with('success', 'Suivi supprimé avec succès.');
-}
+        $user = auth()->user();
 
+        if ($user->role !== 'patient' || !$user->patient) {
+            abort(403);
+        }
 
-/**
- * Afficher les suivis du patient connecté.
- */
-public function patientSuivis()
-{
-    $patient = auth()->user()->patient;
+        $patient = $user->patient;
 
-    $suivis = $patient->suivis()
-        ->with('medecin.utilisateur')
-        ->latest('date_suivi')
-        ->get();
+        $suivis = $patient->suivis()
+            ->with('medecin.utilisateur')
+            ->latest('date_suivi')
+            ->get();
 
-    return view('patient.suivis.index', compact('suivis'));
-}
-
-
-/**
- * Afficher les détails d'un suivi du patient.
- */
-public function patientShow(Suivi $suivi)
-{
-    $patient = auth()->user()->patient;
-
-    // Vérifier que ce suivi appartient au patient connecté
-    if ($suivi->id_patient != $patient->id_patient) {
-        abort(403);
+        return view('patient.suivis.index', compact('suivis'));
     }
 
-    $suivi->load([
-        'patient.utilisateur',
-        'medecin.utilisateur'
-    ]);
+    /**
+     * Afficher les détails d'un suivi du patient.
+     */
+    public function patientShow(Suivi $suivi)
+    {
+        Gate::authorize('view', $suivi);
 
-    return view('patient.suivis.show', compact('suivi'));
-}
+        $user = auth()->user();
 
+        if ($user->role !== 'patient' || !$user->patient) {
+            abort(403);
+        }
+
+        $suivi->load([
+            'patient.utilisateur',
+            'medecin.utilisateur',
+        ]);
+
+        return view('patient.suivis.show', compact('suivi'));
+    }
 }

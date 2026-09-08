@@ -46,11 +46,12 @@
 
     <br>
 
-    <a href="{{ route('suivis.edit', $suivi) }}">
-        Modifier
-    </a>
-
-    <br><br>
+    @can('update', $suivi)
+        <a href="{{ route('suivis.edit', $suivi) }}">
+            Modifier
+        </a>
+        <br><br>
+    @endcan
 
     <a href="{{ route('suivis.index') }}">
         ← Retour à la liste

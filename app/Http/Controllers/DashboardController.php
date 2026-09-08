@@ -8,22 +8,18 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->hasRole('medecin')) {
+        if ($user->role === 'medecin') {
             return view('dashboards.medecin');
         }
 
-        if ($user->hasRole('patient')) {
+        if ($user->role === 'patient') {
             return view('dashboards.patient');
         }
 
-        if ($user->hasRole('admin')) {
+        if ($user->role === 'admin') {
             return view('dashboards.admin');
         }
 
-        if ($user->hasRole('proche')) {
-            return view('dashboards.proche');
-        }
-
-        return view('dashboard');
+        abort(403);
     }
 }

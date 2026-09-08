@@ -8,9 +8,11 @@
 
     <h1>Liste des suivis</h1>
 
-    <a href="{{ route('suivis.create') }}">
-        + Ajouter un suivi
-    </a>
+    @can('create', App\Models\Suivi::class)
+        <a href="{{ route('suivis.create') }}">
+            + Ajouter un suivi
+        </a>
+    @endcan
 
     <br><br>
 
@@ -49,27 +51,31 @@
                     {{ $suivi->stade }}
                 </p>
 
+                @can('view', $suivi)
+                    <a href="{{ route('suivis.show', $suivi) }}">
+                        Voir
+                    </a>
+                @endcan
 
-<a href="{{ route('suivis.show', $suivi) }}">
-    Voir
-</a>
+                @can('update', $suivi)
+                    <a href="{{ route('suivis.edit', $suivi) }}">
+                        Modifier
+                    </a>
+                @endcan
 
-<a href="{{ route('suivis.edit', $suivi) }}">
-    Modifier
-</a>
+                @can('delete', $suivi)
+                    <form method="POST"
+                          action="{{ route('suivis.destroy', $suivi) }}"
+                          style="display: inline;">
 
-<form method="POST"
-      action="{{ route('suivis.destroy', $suivi) }}"
-      style="display: inline;">
+                        @csrf
+                        @method('DELETE')
 
-    @csrf
-    @method('DELETE')
-
-    <button type="submit">
-        Supprimer
-    </button>
-</form>
-
+                        <button type="submit">
+                            Supprimer
+                        </button>
+                    </form>
+                @endcan
 
             </div>
 
