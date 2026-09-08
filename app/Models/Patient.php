@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Patient extends Model
 {
@@ -25,13 +26,26 @@ class Patient extends Model
         );
     }
 
+
     public function medecins(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            Medecin::class,
-            'suivre',
-            'id_patient',
-            'id_medecin'
-        );
-    }
+{
+    return $this->belongsToMany(
+        Medecin::class,
+        'suivre',
+        'id_patient',
+        'id_medecin',
+        'id_patient',
+        'id_medecin'
+    );
+}
+public function suivis(): HasMany
+{
+    return $this->hasMany(
+        Suivi::class,
+        'id_patient',
+        'id_patient'
+    );
+}
+
+
 }
