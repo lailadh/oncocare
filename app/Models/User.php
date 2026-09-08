@@ -10,8 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Laratrust\Contracts\LaratrustUser;
-use Laratrust\Traits\HasRolesAndPermissions;
+
 
 #[Fillable([
     'nom',
@@ -24,11 +23,11 @@ use Laratrust\Traits\HasRolesAndPermissions;
     'password',
     'remember_token',
 ])]
-class User extends Authenticatable implements LaratrustUser
+class User extends Authenticatable
+
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRolesAndPermissions;
-
+use HasFactory, Notifiable;
     public function patient(): HasOne
     {
         return $this->hasOne(

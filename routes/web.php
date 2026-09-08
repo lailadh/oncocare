@@ -25,3 +25,13 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/patient/suivis', [SuiviController::class, 'patientSuivis'])
+        ->name('patient.suivis.index');
+
+    Route::get('/patient/suivis/{suivi}', [SuiviController::class, 'patientShow'])
+        ->name('patient.suivis.show');
+
+});

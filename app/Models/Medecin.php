@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 class Medecin extends Model
 {
     protected $primaryKey = 'id_medecin';
@@ -33,4 +33,14 @@ class Medecin extends Model
             'id_patient'
         );
     }
+
+public function rendezVous(): HasMany
+{
+    return $this->hasMany(
+        RendezVous::class,
+        'id_medecin',
+        'id_medecin'
+    );
+}
+
 }

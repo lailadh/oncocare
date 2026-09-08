@@ -47,5 +47,13 @@ public function suivis(): HasMany
     );
 }
 
+public function rendezVous(): HasMany
+{
+    return $this->hasMany(
+        RendezVous::class,
+        'id_patient',
+        'id_patient'
+    );
+}
 
 }

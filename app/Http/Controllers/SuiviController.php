@@ -161,4 +161,41 @@ public function destroy(Suivi $suivi)
         ->with('success', 'Suivi supprimé avec succès.');
 }
 
+
+/**
+ * Afficher les suivis du patient connecté.
+ */
+public function patientSuivis()
+{
+    $patient = auth()->user()->patient;
+
+    $suivis = $patient->suivis()
+        ->with('medecin.utilisateur')
+        ->latest('date_suivi')
+        ->get();
+
+    return view('patient.suivis.index', compact('suivis'));
+}
+
+
+/**
+ * Afficher les détails d'un suivi du patient.
+ */
+public function patientShow(Suivi $suivi)
+{
+    $patient = auth()->user()->patient;
+
+    // Vérifier que ce suivi appartient au patient connecté
+    if ($suivi->id_patient != $patient->id_patient) {
+        abort(403);
+    }
+
+    $suivi->load([
+        'patient.utilisateur',
+        'medecin.utilisateur'
+    ]);
+
+    return view('patient.suivis.show', compact('suivi'));
+}
+
 }
