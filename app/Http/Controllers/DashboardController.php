@@ -20,6 +20,10 @@ class DashboardController extends Controller
             return view('dashboards.admin');
         }
 
+        if ($user->role === 'proche') {
+            return view('dashboards.proche');
+        }
+
         abort(403);
     }
 }
