@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SuiviController;
 use App\Http\Controllers\RendezVousController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AutorisationProcheController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -112,6 +113,43 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
         ->name('patient.rendezvous.show');
 
 });
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Autorisations Proches
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'role:patient'])->group(function () {
+
+    Route::get('/patient/autorisations', [AutorisationProcheController::class, 'index'])
+        ->name('patient.autorisations.index');
+
+    Route::get('/patient/autorisations/create', [AutorisationProcheController::class, 'create'])
+        ->name('patient.autorisations.create');
+
+    Route::post('/patient/autorisations', [AutorisationProcheController::class, 'store'])
+        ->name('patient.autorisations.store');
+
+    Route::get('/patient/autorisations/{autorisationProche}/edit', [AutorisationProcheController::class, 'edit'])
+        ->name('patient.autorisations.edit');
+
+    Route::patch('/patient/autorisations/{autorisationProche}', [AutorisationProcheController::class, 'update'])
+        ->name('patient.autorisations.update');
+
+    Route::delete('/patient/autorisations/{autorisationProche}', [AutorisationProcheController::class, 'destroy'])
+        ->name('patient.autorisations.destroy');
+});
+
+
+Route::middleware(['auth', 'role:proche'])->group(function () {
+
+    Route::get('/proche/autorisations', [AutorisationProcheController::class, 'index'])
+        ->name('proche.autorisations.index');
+});
+
 
 
 require __DIR__.'/auth.php';

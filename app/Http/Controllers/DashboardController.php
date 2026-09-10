@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AutorisationProche;
+
 class DashboardController extends Controller
 {
     public function index()
@@ -21,7 +23,18 @@ class DashboardController extends Controller
         }
 
         if ($user->role === 'proche') {
-            return view('dashboards.proche');
+
+            $autorisations = AutorisationProche::with([
+                'patient.utilisateur'
+            ])
+            ->where('id_proche', $user->id)
+            ->where('statut', 'active')
+            ->get();
+
+            return view(
+                'dashboards.proche',
+                compact('autorisations')
+            );
         }
 
         abort(403);

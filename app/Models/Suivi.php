@@ -19,6 +19,11 @@ class Suivi extends Model
         'id_patient',
         'id_medecin',
     ];
+
+    protected $casts = [
+        'date_suivi' => 'date',
+    ];
+
     public function patient(): BelongsTo
     {
         return $this->belongsTo(
@@ -37,3 +42,4 @@ class Suivi extends Model
         );
     }
 }
+
