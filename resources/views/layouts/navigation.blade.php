@@ -1,236 +1,253 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-slate-200 shadow-sm">
+<nav x-data="{ open: false }">
 
-```
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {{-- SIDEBAR --}}
+    <aside
+        class="fixed inset-y-0 left-0 z-50 hidden w-[236px] flex-col bg-[#16302B] text-[#F7F5EC] lg:flex"
+    >
 
-    <div class="flex justify-between items-center h-16">
-
-        <!-- Logo -->
-        <div class="flex items-center">
-
+        {{-- Logo --}}
+        <div class="flex h-20 items-center px-7">
             <a href="{{ route('dashboard') }}"
-               class="flex items-center gap-3">
-
-                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-lg">
-                    O
-                </div>
-
-                <div>
-                    <h1 class="text-xl font-bold text-slate-800">
-                        OncoCare
-                    </h1>
-
-                    <p class="text-xs text-slate-500">
-                        Suivi oncologique
-                    </p>
-                </div>
-
+               class="font-serif text-2xl tracking-tight text-[#F7F5EC]">
+                Onco<span class="text-[#B8863E]">•</span>Care
             </a>
+        </div>
 
-            <!-- Desktop Navigation -->
-            <div class="hidden sm:flex items-center gap-6 ml-10">
+        {{-- Navigation --}}
+        <div class="flex-1 px-4">
 
+            {{-- Espace --}}
+            <p class="mb-3 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9DB0A7]">
+                Espace
+            </p>
+
+            <div class="space-y-1">
+
+                {{-- Dashboard --}}
                 <a href="{{ route('dashboard') }}"
-                   class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">
-                    Dashboard
+                   class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition
+                   {{ request()->routeIs('dashboard')
+                        ? 'bg-[#1F433C] text-[#F7F5EC]'
+                        : 'text-[#C9D4CE] hover:bg-[#1F433C] hover:text-white' }}">
+                    <span class="text-base">⌂</span>
+                    <span>Tableau de bord</span>
                 </a>
 
-
+                {{-- Médecin --}}
                 @if(auth()->user()->role === 'medecin')
 
                     <a href="{{ route('suivis.index') }}"
-                       class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">
-                        Suivis
+                       class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition
+                       {{ request()->routeIs('suivis.*')
+                            ? 'bg-[#1F433C] text-[#F7F5EC]'
+                            : 'text-[#C9D4CE] hover:bg-[#1F433C] hover:text-white' }}">
+                        <span class="text-base">◫</span>
+                        <span>Suivi médical</span>
                     </a>
 
                     <a href="{{ route('rendezvous.index') }}"
-                       class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">
-                        Rendez-vous
+                       class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition
+                       {{ request()->routeIs('rendezvous.*')
+                            ? 'bg-[#1F433C] text-[#F7F5EC]'
+                            : 'text-[#C9D4CE] hover:bg-[#1F433C] hover:text-white' }}">
+                        <span class="text-base">□</span>
+                        <span>Rendez-vous</span>
                     </a>
 
                 @endif
 
-
+                {{-- Patient --}}
                 @if(auth()->user()->role === 'patient')
 
                     <a href="{{ route('patient.suivis.index') }}"
-                       class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">
-                        Mes suivis
+                       class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition
+                       {{ request()->routeIs('patient.suivis.*')
+                            ? 'bg-[#1F433C] text-[#F7F5EC]'
+                            : 'text-[#C9D4CE] hover:bg-[#1F433C] hover:text-white' }}">
+                        <span class="text-base">◫</span>
+                        <span>Mes suivis</span>
                     </a>
 
                     <a href="{{ route('patient.rendezvous.index') }}"
-                       class="text-sm font-medium text-slate-600 hover:text-blue-600 transition">
-                        Mes rendez-vous
+                       class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition
+                       {{ request()->routeIs('patient.rendezvous.*')
+                            ? 'bg-[#1F433C] text-[#F7F5EC]'
+                            : 'text-[#C9D4CE] hover:bg-[#1F433C] hover:text-white' }}">
+                        <span class="text-base">□</span>
+                        <span>Mes rendez-vous</span>
                     </a>
 
                 @endif
 
             </div>
 
+            {{-- Compte --}}
+            <p class="mb-3 mt-8 px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9DB0A7]">
+                Compte
+            </p>
+
+            <div class="space-y-1">
+
+                <a href="{{ route('profile.edit') }}"
+                   class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition
+                   {{ request()->routeIs('profile.*')
+                        ? 'bg-[#1F433C] text-[#F7F5EC]'
+                        : 'text-[#C9D4CE] hover:bg-[#1F433C] hover:text-white' }}">
+                    <span class="text-base">○</span>
+                    <span>Profil</span>
+                </a>
+
+                {{-- Logout --}}
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <button type="submit"
+                            class="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#C9D4CE] transition hover:bg-[#1F433C] hover:text-white">
+                        <span class="text-base">↪</span>
+                        <span>Déconnexion</span>
+                    </button>
+                </form>
+
+            </div>
+
         </div>
 
+        {{-- Footer --}}
+        <div class="border-t border-[#315047] px-7 py-5">
+            <p class="text-xs leading-5 text-[#9DB0A7]">
+                Suivi & accompagnement
+                <br>
+                <span class="text-[#6E8F76]">
+                    — hors diagnostic médical.
+                </span>
+            </p>
+        </div>
 
-        <!-- User -->
-        <div class="hidden sm:flex items-center gap-4">
+    </aside>
+
+
+    {{-- MOBILE SIDEBAR --}}
+    <div
+        x-show="open"
+        class="fixed inset-0 z-40 bg-black/40 lg:hidden"
+        @click="open = false"
+        x-cloak
+    ></div>
+
+    <aside
+        x-show="open"
+        class="fixed inset-y-0 left-0 z-50 flex w-[236px] flex-col bg-[#16302B] text-[#F7F5EC] lg:hidden"
+        x-cloak
+    >
+
+        <div class="flex h-20 items-center justify-between px-7">
+            <span class="font-serif text-2xl">
+                Onco<span class="text-[#B8863E]">•</span>Care
+            </span>
+
+            <button @click="open = false"
+                    class="text-xl text-[#C9D4CE]">
+                ×
+            </button>
+        </div>
+
+        <div class="flex-1 px-4">
+
+            <a href="{{ route('dashboard') }}"
+               class="mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#C9D4CE] hover:bg-[#1F433C]">
+                <span>⌂</span>
+                Tableau de bord
+            </a>
+
+            @if(auth()->user()->role === 'medecin')
+
+                <a href="{{ route('suivis.index') }}"
+                   class="mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#C9D4CE] hover:bg-[#1F433C]">
+                    <span>◫</span>
+                    Suivi médical
+                </a>
+
+                <a href="{{ route('rendezvous.index') }}"
+                   class="mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#C9D4CE] hover:bg-[#1F433C]">
+                    <span>□</span>
+                    Rendez-vous
+                </a>
+
+            @endif
+
+            @if(auth()->user()->role === 'patient')
+
+                <a href="{{ route('patient.suivis.index') }}"
+                   class="mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#C9D4CE] hover:bg-[#1F433C]">
+                    <span>◫</span>
+                    Mes suivis
+                </a>
+
+                <a href="{{ route('patient.rendezvous.index') }}"
+                   class="mb-1 flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#C9D4CE] hover:bg-[#1F433C]">
+                    <span>□</span>
+                    Mes rendez-vous
+                </a>
+
+            @endif
 
             <a href="{{ route('profile.edit') }}"
-               class="flex items-center gap-3">
-
-                <div class="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-semibold">
-
-                    {{ strtoupper(substr(auth()->user()->prenom, 0, 1)) }}
-
-                </div>
-
-                <div class="text-left">
-
-                    <p class="text-sm font-semibold text-slate-800">
-
-                        {{ auth()->user()->prenom }}
-                        {{ auth()->user()->nom }}
-
-                    </p>
-
-                    <p class="text-xs text-slate-500">
-
-                        {{ ucfirst(auth()->user()->role) }}
-
-                    </p>
-
-                </div>
-
+               class="mt-6 flex items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[#C9D4CE] hover:bg-[#1F433C]">
+                <span>○</span>
+                Profil
             </a>
-
-
-            <!-- Logout -->
-            <form method="POST" action="{{ route('logout') }}">
-
-                @csrf
-
-                <button type="submit"
-                    class="px-4 py-2 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition">
-
-                    Logout
-
-                </button>
-
-            </form>
 
         </div>
 
+    </aside>
 
-        <!-- Mobile Button -->
-        <div class="flex sm:hidden">
 
-            <button
-                @click="open = !open"
-                class="p-2 rounded-lg text-slate-600 hover:bg-slate-100">
+    {{-- TOPBAR --}}
+    <header class="fixed right-0 top-0 z-30 hidden h-20 items-center justify-between border-b border-[#DAD5C4] bg-[#F7F5EC] px-8 lg:left-[236px] lg:flex">
 
-                <svg
-                    class="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24">
+        <div>
+            <p class="text-xs uppercase tracking-[0.15em] text-[#6E6B61]">
+                Espace {{ auth()->user()->role === 'medecin' ? 'Médecin' : 'Patient' }}
+            </p>
+        </div>
 
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4 6h16M4 12h16M4 18h16"
-                    />
+        <div class="flex items-center gap-3">
 
-                </svg>
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#D9E3D6] text-sm font-semibold text-[#16302B]">
+                {{ strtoupper(substr(auth()->user()->prenom, 0, 1)) }}{{ strtoupper(substr(auth()->user()->nom, 0, 1)) }}
+            </div>
 
-            </button>
+            <div class="leading-tight">
+                <p class="text-sm font-semibold text-[#262420]">
+                    {{ auth()->user()->prenom }} {{ auth()->user()->nom }}
+                </p>
+
+                <p class="text-xs text-[#5B5A52]">
+                    {{ ucfirst(auth()->user()->role) }}
+                </p>
+            </div>
 
         </div>
 
-    </div>
-
-</div>
+    </header>
 
 
-<!-- Mobile Menu -->
-<div
-    x-show="open"
-    class="sm:hidden border-t border-slate-200 bg-white">
+    {{-- MOBILE TOPBAR --}}
+    <header class="fixed left-0 right-0 top-0 z-30 flex h-16 items-center justify-between border-b border-[#DAD5C4] bg-[#F7F5EC] px-5 lg:hidden">
 
-    <div class="px-4 py-4 space-y-3">
+        <button @click="open = true"
+                class="text-2xl text-[#16302B]">
+            ☰
+        </button>
 
-        <a href="{{ route('dashboard') }}"
-           class="block text-slate-700 font-medium">
+        <span class="font-serif text-xl text-[#16302B]">
+            Onco<span class="text-[#B8863E]">•</span>Care
+        </span>
 
-            Dashboard
+        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-[#D9E3D6] text-xs font-semibold text-[#16302B]">
+            {{ strtoupper(substr(auth()->user()->prenom, 0, 1)) }}{{ strtoupper(substr(auth()->user()->nom, 0, 1)) }}
+        </div>
 
-        </a>
-
-
-        @if(auth()->user()->role === 'medecin')
-
-            <a href="{{ route('suivis.index') }}"
-               class="block text-slate-700 font-medium">
-
-                Suivis
-
-            </a>
-
-            <a href="{{ route('rendezvous.index') }}"
-               class="block text-slate-700 font-medium">
-
-                Rendez-vous
-
-            </a>
-
-        @endif
-
-
-        @if(auth()->user()->role === 'patient')
-
-            <a href="{{ route('patient.suivis.index') }}"
-               class="block text-slate-700 font-medium">
-
-                Mes suivis
-
-            </a>
-
-            <a href="{{ route('patient.rendezvous.index') }}"
-               class="block text-slate-700 font-medium">
-
-                Mes rendez-vous
-
-            </a>
-
-        @endif
-
-
-        <hr>
-
-
-        <a href="{{ route('profile.edit') }}"
-           class="block text-slate-700 font-medium">
-
-            Mon profil
-
-        </a>
-
-
-        <form method="POST" action="{{ route('logout') }}">
-
-            @csrf
-
-            <button
-                type="submit"
-                class="text-red-600 font-medium">
-
-                Logout
-
-            </button>
-
-        </form>
-
-    </div>
-
-</div>
-```
+    </header>
 
 </nav>
