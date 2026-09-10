@@ -183,4 +183,68 @@ class RendezVousController extends Controller
             compact('rendezVous')
         );
     }
+
+    /**
+     * Liste des rendez-vous accessibles au proche.
+     */
+    public function procheRendezVous()
+    {
+        $user = auth()->user();
+
+        if ($user->role !== 'proche') {
+            abort(403);
+        }
+
+        $autorisations = \App\Models\AutorisationProche::where('id_proche', $user->id)
+            ->where('statut', 'active')
+            ->where('acces_rendez_vous', 1)
+            ->get();
+
+        $patientIds = $autorisations->pluck('id_patient');
+
+        $rendezVous = RendezVous::with([
+            'patient.utilisateur',
+            'medecin.utilisateur',
+        ])
+        ->whereIn('id_patient', $patientIds)
+        ->latest('date_heure')
+        ->get();
+
+        return view(
+            'proche.rendezvous.index',
+            compact('rendezVous')
+        );
+    }
+
+    /**
+     * Détails d'un rendez-vous accessible au proche.
+     */
+    public function procheShow(RendezVous $rendezVous)
+    {
+        $user = auth()->user();
+
+        if ($user->role !== 'proche') {
+            abort(403);
+        }
+
+        $autorise = \App\Models\AutorisationProche::where('id_proche', $user->id)
+            ->where('id_patient', $rendezVous->id_patient)
+            ->where('statut', 'active')
+            ->where('acces_rendez_vous', 1)
+            ->exists();
+
+        if (!$autorise) {
+            abort(403);
+        }
+
+        $rendezVous->load([
+            'patient.utilisateur',
+            'medecin.utilisateur',
+        ]);
+
+        return view(
+            'proche.rendezvous.show',
+            compact('rendezVous')
+        );
+    }
 }

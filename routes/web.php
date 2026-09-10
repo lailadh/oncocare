@@ -148,6 +148,18 @@ Route::middleware(['auth', 'role:proche'])->group(function () {
 
     Route::get('/proche/autorisations', [AutorisationProcheController::class, 'index'])
         ->name('proche.autorisations.index');
+
+    Route::get('/proche/suivis', [SuiviController::class, 'procheSuivis'])
+        ->name('proche.suivis.index');
+
+    Route::get('/proche/suivis/{suivi}', [SuiviController::class, 'procheShow'])
+        ->name('proche.suivis.show');
+
+    Route::get('/proche/rendezvous', [RendezVousController::class, 'procheRendezVous'])
+        ->name('proche.rendezvous.index');
+
+    Route::get('/proche/rendezvous/{rendezVous}', [RendezVousController::class, 'procheShow'])
+        ->name('proche.rendezvous.show');
 });
 
 

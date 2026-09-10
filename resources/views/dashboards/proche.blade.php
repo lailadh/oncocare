@@ -1,4 +1,3 @@
-```blade
 <x-app-layout>
 
     <style>
@@ -377,9 +376,9 @@
                     uniquement lorsqu'un accès vous a été accordé.
                 </p>
 
-                <a href="#" class="feature-link">
-                    Consulter le suivi →
-                </a>
+              <a href="{{ route('proche.suivis.index') }}" class="feature-link">
+    Consulter le suivi →
+</a>
 
             </div>
 
@@ -399,9 +398,9 @@
                     cette information vous est accessible.
                 </p>
 
-                <a href="#" class="feature-link">
-                    Voir les rendez-vous →
-                </a>
+              <a href="{{ route('proche.rendezvous.index') }}" class="feature-link">
+    Voir les rendez-vous →
+</a>
 
             </div>
 
@@ -410,4 +409,4 @@
     </div>
 
 </x-app-layout>
-```
+

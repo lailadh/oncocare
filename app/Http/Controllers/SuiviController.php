@@ -47,7 +47,9 @@ class SuiviController extends Controller
                 'medecins.id_medecin',
                 $medecin->id_medecin
             );
-        })->with('utilisateur')->get();
+        })
+        ->with('utilisateur')
+        ->get();
 
         return view('suivis.create', compact('patients'));
     }
@@ -109,6 +111,71 @@ class SuiviController extends Controller
         ]);
 
         return view('suivis.show', compact('suivi'));
+    }
+
+    /**
+     * Afficher les suivis accessibles au proche.
+     */
+    public function procheSuivis()
+    {
+        $user = auth()->user();
+
+        if ($user->role !== 'proche') {
+            abort(403);
+        }
+
+        $autorisations = \App\Models\AutorisationProche::with([
+            'patient.utilisateur'
+        ])
+        ->where('id_proche', $user->id)
+        ->where('statut', 'active')
+        ->where('acces_suivi', 1)
+        ->get();
+
+        $patientIds = $autorisations->pluck('id_patient');
+
+        $suivis = Suivi::with([
+            'patient.utilisateur',
+            'medecin.utilisateur'
+        ])
+        ->whereIn('id_patient', $patientIds)
+        ->latest('date_suivi')
+        ->get();
+
+        return view('proche.suivis.index', compact('suivis'));
+    }
+
+    /**
+     * Afficher les détails d'un suivi accessible au proche.
+     */
+    public function procheShow(Suivi $suivi)
+    {
+        $user = auth()->user();
+
+        if ($user->role !== 'proche') {
+            abort(403);
+        }
+
+        // Vérifier que le proche a bien accès au suivi
+        $autorise = \App\Models\AutorisationProche::where(
+            'id_proche',
+            $user->id
+        )
+        ->where('id_patient', $suivi->id_patient)
+        ->where('statut', 'active')
+        ->where('acces_suivi', 1)
+        ->exists();
+
+        if (!$autorise) {
+            abort(403);
+        }
+
+        $suivi->load([
+            'patient.utilisateur',
+            'medecin.utilisateur',
+        ]);
+
+        return view('proche.suivis.show', compact('suivi'));
     }
 
     /**
