@@ -6,6 +6,7 @@ use App\Http\Controllers\SuiviController;
 use App\Http\Controllers\RendezVousController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AutorisationProcheController;
+use App\Http\Controllers\MedecinController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,12 +43,15 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:medecin'])->group(function () {
-
+Route::middleware(['auth'])->group(function () {
     Route::resource('suivis', SuiviController::class);
 
-});
+    Route::get('/medecin/patients', [MedecinController::class, 'patients'])
+        ->name('medecin.patients.index');
 
+    Route::get('/medecin/patients/{patient}', [MedecinController::class, 'showPatient'])
+        ->name('medecin.patients.show');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -55,7 +59,7 @@ Route::middleware(['auth', 'role:medecin'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:patient'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
     Route::get('/patient/suivis', [SuiviController::class, 'patientSuivis'])
         ->name('patient.suivis.index');
@@ -72,7 +76,7 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:medecin'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
     Route::get('/rendezvous', [RendezVousController::class, 'index'])
         ->name('rendezvous.index');
@@ -98,7 +102,7 @@ Route::middleware(['auth', 'role:medecin'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:patient'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
     Route::get('/patient/rendezvous', [RendezVousController::class, 'patientRendezVous'])
         ->name('patient.rendezvous.index');
@@ -122,8 +126,7 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:patient'])->group(function () {
-
+Route::middleware(['auth'])->group(function () {
     Route::get('/patient/autorisations', [AutorisationProcheController::class, 'index'])
         ->name('patient.autorisations.index');
 
@@ -144,8 +147,7 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
 });
 
 
-Route::middleware(['auth', 'role:proche'])->group(function () {
-
+Route::middleware(['auth'])->group(function () {
     Route::get('/proche/autorisations', [AutorisationProcheController::class, 'index'])
         ->name('proche.autorisations.index');
 
