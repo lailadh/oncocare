@@ -36,7 +36,13 @@ class RendezVousController extends Controller
     {
         Gate::authorize('create', RendezVous::class);
 
-        $patient = auth()->user()->patient;
+        $user = auth()->user();
+
+        if ($user->role !== 'patient' || !$user->patient) {
+            abort(403);
+        }
+
+        $patient = $user->patient;
 
         $medecins = $patient->medecins()
             ->with('utilisateur')
@@ -52,13 +58,19 @@ class RendezVousController extends Controller
     {
         Gate::authorize('create', RendezVous::class);
 
+        $user = auth()->user();
+
+        if ($user->role !== 'patient' || !$user->patient) {
+            abort(403);
+        }
+
         $request->validate([
             'date_heure' => 'required|date|after:now',
             'motif' => 'required|string|max:1000',
             'id_medecin' => 'required|exists:medecins,id_medecin',
         ]);
 
-        $patient = auth()->user()->patient;
+        $patient = $user->patient;
 
         // Vérifier que le médecin est lié au patient
         $medecinExiste = $patient->medecins()
@@ -83,11 +95,22 @@ class RendezVousController extends Controller
     }
 
     /**
-     * Afficher un rendez-vous.
+     * Afficher un rendez-vous pour le médecin.
      */
     public function show(RendezVous $rendezVous)
     {
         Gate::authorize('view', $rendezVous);
+
+        $user = auth()->user();
+
+        if ($user->role !== 'medecin' || !$user->medecin) {
+            abort(403);
+        }
+
+        // Vérifier que le rendez-vous appartient au médecin connecté
+        if ($rendezVous->id_medecin !== $user->medecin->id_medecin) {
+            abort(403);
+        }
 
         $rendezVous->load([
             'patient.utilisateur',
@@ -104,6 +127,17 @@ class RendezVousController extends Controller
     {
         Gate::authorize('update', $rendezVous);
 
+        $user = auth()->user();
+
+        if ($user->role !== 'medecin' || !$user->medecin) {
+            abort(403);
+        }
+
+        // Vérifier que le rendez-vous appartient au médecin connecté
+        if ($rendezVous->id_medecin !== $user->medecin->id_medecin) {
+            abort(403);
+        }
+
         return view('rendezvous.edit', compact('rendezVous'));
     }
 
@@ -113,6 +147,17 @@ class RendezVousController extends Controller
     public function update(Request $request, RendezVous $rendezVous)
     {
         Gate::authorize('update', $rendezVous);
+
+        $user = auth()->user();
+
+        if ($user->role !== 'medecin' || !$user->medecin) {
+            abort(403);
+        }
+
+        // Vérifier que le rendez-vous appartient au médecin connecté
+        if ($rendezVous->id_medecin !== $user->medecin->id_medecin) {
+            abort(403);
+        }
 
         $request->validate([
             'statut' => 'required|in:en_attente,confirme,refuse',
@@ -133,6 +178,17 @@ class RendezVousController extends Controller
     public function destroy(RendezVous $rendezVous)
     {
         Gate::authorize('delete', $rendezVous);
+
+        $user = auth()->user();
+
+        if ($user->role !== 'medecin' || !$user->medecin) {
+            abort(403);
+        }
+
+        // Vérifier que le rendez-vous appartient au médecin connecté
+        if ($rendezVous->id_medecin !== $user->medecin->id_medecin) {
+            abort(403);
+        }
 
         $rendezVous->delete();
 
@@ -170,13 +226,21 @@ class RendezVousController extends Controller
      */
     public function patientShow(RendezVous $rendezVous)
     {
-        Gate::authorize('view', $rendezVous);
-
         $user = auth()->user();
 
         if ($user->role !== 'patient' || !$user->patient) {
             abort(403);
         }
+
+        // Vérifier que le rendez-vous appartient bien au patient connecté
+        if ($rendezVous->id_patient !== $user->patient->id_patient) {
+            abort(403);
+        }
+
+        $rendezVous->load([
+            'patient.utilisateur',
+            'medecin.utilisateur',
+        ]);
 
         return view(
             'patient.rendezvous.show',
@@ -195,10 +259,13 @@ class RendezVousController extends Controller
             abort(403);
         }
 
-        $autorisations = \App\Models\AutorisationProche::where('id_proche', $user->id)
-            ->where('statut', 'active')
-            ->where('acces_rendez_vous', 1)
-            ->get();
+        $autorisations = \App\Models\AutorisationProche::where(
+            'id_proche',
+            $user->id
+        )
+        ->where('statut', 'active')
+        ->where('acces_rendez_vous', 1)
+        ->get();
 
         $patientIds = $autorisations->pluck('id_patient');
 
@@ -227,11 +294,15 @@ class RendezVousController extends Controller
             abort(403);
         }
 
-        $autorise = \App\Models\AutorisationProche::where('id_proche', $user->id)
-            ->where('id_patient', $rendezVous->id_patient)
-            ->where('statut', 'active')
-            ->where('acces_rendez_vous', 1)
-            ->exists();
+        // Vérifier que le proche a bien accès aux rendez-vous du patient
+        $autorise = \App\Models\AutorisationProche::where(
+            'id_proche',
+            $user->id
+        )
+        ->where('id_patient', $rendezVous->id_patient)
+        ->where('statut', 'active')
+        ->where('acces_rendez_vous', 1)
+        ->exists();
 
         if (!$autorise) {
             abort(403);

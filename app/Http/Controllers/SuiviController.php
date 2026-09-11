@@ -258,21 +258,24 @@ class SuiviController extends Controller
     /**
      * Afficher les détails d'un suivi du patient.
      */
-    public function patientShow(Suivi $suivi)
-    {
-        Gate::authorize('view', $suivi);
+   public function patientShow(Suivi $suivi)
+{
+    $user = auth()->user();
 
-        $user = auth()->user();
-
-        if ($user->role !== 'patient' || !$user->patient) {
-            abort(403);
-        }
-
-        $suivi->load([
-            'patient.utilisateur',
-            'medecin.utilisateur',
-        ]);
-
-        return view('patient.suivis.show', compact('suivi'));
+    if ($user->role !== 'patient' || !$user->patient) {
+        abort(403);
     }
+
+    // Vérifier que le suivi appartient bien au patient connecté
+    if ($suivi->id_patient !== $user->patient->id_patient) {
+        abort(403);
+    }
+
+    $suivi->load([
+        'patient.utilisateur',
+        'medecin.utilisateur',
+    ]);
+
+    return view('patient.suivis.show', compact('suivi'));
+}
 }

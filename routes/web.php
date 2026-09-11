@@ -4,13 +4,27 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SuiviController;
 use App\Http\Controllers\RendezVousController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AutorisationProcheController;
 use App\Http\Controllers\MedecinController;
+use Illuminate\Support\Facades\Route;
+
+
+/*
+|--------------------------------------------------------------------------
+| Page d'accueil
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
@@ -39,27 +53,41 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Suivis - Médecin
+| Médecin - Suivis
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'role:medecin'])->group(function () {
+
     Route::resource('suivis', SuiviController::class);
+
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| Médecin - Patients
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'role:medecin'])->group(function () {
 
     Route::get('/medecin/patients', [MedecinController::class, 'patients'])
         ->name('medecin.patients.index');
 
     Route::get('/medecin/patients/{patient}', [MedecinController::class, 'showPatient'])
         ->name('medecin.patients.show');
+
 });
+
 
 /*
 |--------------------------------------------------------------------------
-| Suivis - Patient
+| Patient - Suivis
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'role:patient'])->group(function () {
 
     Route::get('/patient/suivis', [SuiviController::class, 'patientSuivis'])
         ->name('patient.suivis.index');
@@ -72,11 +100,11 @@ Route::middleware(['auth'])->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Rendez-vous - Médecin
+| Médecin - Rendez-vous
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'role:medecin'])->group(function () {
 
     Route::get('/rendezvous', [RendezVousController::class, 'index'])
         ->name('rendezvous.index');
@@ -98,11 +126,11 @@ Route::middleware(['auth'])->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Rendez-vous - Patient
+| Patient - Rendez-vous
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'role:patient'])->group(function () {
 
     Route::get('/patient/rendezvous', [RendezVousController::class, 'patientRendezVous'])
         ->name('patient.rendezvous.index');
@@ -119,14 +147,14 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-
 /*
 |--------------------------------------------------------------------------
-| Autorisations Proches
+| Patient - Autorisations des proches
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'role:patient'])->group(function () {
+
     Route::get('/patient/autorisations', [AutorisationProcheController::class, 'index'])
         ->name('patient.autorisations.index');
 
@@ -144,10 +172,18 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/patient/autorisations/{autorisationProche}', [AutorisationProcheController::class, 'destroy'])
         ->name('patient.autorisations.destroy');
+
 });
 
 
-Route::middleware(['auth'])->group(function () {
+/*
+|--------------------------------------------------------------------------
+| Proche
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'role:proche'])->group(function () {
+
     Route::get('/proche/autorisations', [AutorisationProcheController::class, 'index'])
         ->name('proche.autorisations.index');
 
@@ -162,8 +198,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/proche/rendezvous/{rendezVous}', [RendezVousController::class, 'procheShow'])
         ->name('proche.rendezvous.show');
+
 });
 
 
+/*
+|--------------------------------------------------------------------------
+| Authentication
+|--------------------------------------------------------------------------
+*/
 
 require __DIR__.'/auth.php';
