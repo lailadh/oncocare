@@ -6,6 +6,8 @@ use App\Http\Controllers\SuiviController;
 use App\Http\Controllers\RendezVousController;
 use App\Http\Controllers\AutorisationProcheController;
 use App\Http\Controllers\MedecinController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminUserController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -198,6 +200,32 @@ Route::middleware(['auth', 'role:proche'])->group(function () {
 
     Route::get('/proche/rendezvous/{rendezVous}', [RendezVousController::class, 'procheShow'])
         ->name('proche.rendezvous.show');
+
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| Admin
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+
+    // Dashboard administrateur
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])
+        ->name('admin.dashboard');
+
+    // Gestion des utilisateurs
+    Route::get('/admin/users', [AdminUserController::class, 'index'])
+        ->name('admin.users.index');
+
+    // Modifier le rôle d'un utilisateur
+    Route::get('/admin/users/{user}/edit', [AdminUserController::class, 'edit'])
+        ->name('admin.users.edit');
+
+    Route::patch('/admin/users/{user}', [AdminUserController::class, 'update'])
+        ->name('admin.users.update');
 
 });
 
