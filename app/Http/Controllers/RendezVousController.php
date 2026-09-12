@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RendezVous;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -81,12 +82,26 @@ class RendezVousController extends Controller
             abort(403);
         }
 
+        // Créer le rendez-vous
         RendezVous::create([
             'date_heure' => $request->date_heure,
             'motif' => $request->motif,
             'statut' => 'en_attente',
             'id_patient' => $patient->id_patient,
             'id_medecin' => $request->id_medecin,
+        ]);
+
+        // Récupérer le médecin
+        $medecin = \App\Models\Medecin::findOrFail($request->id_medecin);
+
+        // Notification au médecin
+        Notification::create([
+            'titre' => 'Nouvelle demande de rendez-vous',
+            'type' => 'rendezvous',
+            'message' => 'Le patient ' . $user->prenom . ' ' . $user->nom . ' a envoyé une demande de rendez-vous.',
+            'lu' => false,
+            'date_notification' => now(),
+            'id_utilisateur' => $medecin->id_utilisateur,
         ]);
 
         return redirect()
@@ -163,8 +178,31 @@ class RendezVousController extends Controller
             'statut' => 'required|in:en_attente,confirme,refuse',
         ]);
 
+        // Modifier le statut
         $rendezVous->update([
             'statut' => $request->statut,
+        ]);
+
+        // Récupérer le patient
+        $rendezVous->load('patient');
+
+        // Traduction du statut pour la notification
+        $statuts = [
+            'en_attente' => 'En attente',
+            'confirme' => 'Confirmé',
+            'refuse' => 'Refusé',
+        ];
+
+        $statutLabel = $statuts[$request->statut];
+
+        // Notification au patient
+        Notification::create([
+            'titre' => 'Statut du rendez-vous modifié',
+            'type' => 'rendezvous',
+            'message' => 'Le statut de votre rendez-vous a été modifié : ' . $statutLabel . '.',
+            'lu' => false,
+            'date_notification' => now(),
+            'id_utilisateur' => $rendezVous->patient->id_utilisateur,
         ]);
 
         return redirect()

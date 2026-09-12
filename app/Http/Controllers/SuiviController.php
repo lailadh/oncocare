@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Suivi;
 use App\Models\Patient;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -82,6 +83,7 @@ class SuiviController extends Controller
             abort(403);
         }
 
+        // Créer le suivi
         Suivi::create([
             'date_suivi' => $request->date_suivi,
             'type_cancer' => $request->type_cancer,
@@ -91,6 +93,19 @@ class SuiviController extends Controller
             'traitement' => $request->traitement,
             'id_patient' => $request->id_patient,
             'id_medecin' => $medecin->id_medecin,
+        ]);
+
+        // Récupérer le patient
+        $patient = Patient::findOrFail($request->id_patient);
+
+        // Envoyer une notification au patient
+        Notification::create([
+            'titre' => 'Nouveau suivi médical',
+            'type' => 'suivi',
+            'message' => 'Un nouveau suivi médical a été ajouté à votre dossier.',
+            'lu' => false,
+            'date_notification' => now(),
+            'id_utilisateur' => $patient->id_utilisateur,
         ]);
 
         return redirect()
@@ -213,6 +228,19 @@ class SuiviController extends Controller
             'traitement' => $request->traitement,
         ]);
 
+        // Charger le patient lié au suivi
+        $suivi->load('patient');
+
+        // Envoyer une notification au patient
+        Notification::create([
+            'titre' => 'Suivi médical mis à jour',
+            'type' => 'suivi',
+            'message' => 'Votre suivi médical a été mis à jour par votre médecin.',
+            'lu' => false,
+            'date_notification' => now(),
+            'id_utilisateur' => $suivi->patient->id_utilisateur,
+        ]);
+
         return redirect()
             ->route('suivis.index')
             ->with('success', 'Suivi modifié avec succès.');
@@ -258,24 +286,24 @@ class SuiviController extends Controller
     /**
      * Afficher les détails d'un suivi du patient.
      */
-   public function patientShow(Suivi $suivi)
-{
-    $user = auth()->user();
+    public function patientShow(Suivi $suivi)
+    {
+        $user = auth()->user();
 
-    if ($user->role !== 'patient' || !$user->patient) {
-        abort(403);
+        if ($user->role !== 'patient' || !$user->patient) {
+            abort(403);
+        }
+
+        // Vérifier que le suivi appartient bien au patient connecté
+        if ($suivi->id_patient !== $user->patient->id_patient) {
+            abort(403);
+        }
+
+        $suivi->load([
+            'patient.utilisateur',
+            'medecin.utilisateur',
+        ]);
+
+        return view('patient.suivis.show', compact('suivi'));
     }
-
-    // Vérifier que le suivi appartient bien au patient connecté
-    if ($suivi->id_patient !== $user->patient->id_patient) {
-        abort(403);
-    }
-
-    $suivi->load([
-        'patient.utilisateur',
-        'medecin.utilisateur',
-    ]);
-
-    return view('patient.suivis.show', compact('suivi'));
-}
 }
