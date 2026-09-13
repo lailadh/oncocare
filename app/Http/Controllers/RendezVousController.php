@@ -249,6 +249,8 @@ class RendezVousController extends Controller
             abort(403);
         }
 
+        // Récupérer uniquement les patients
+        // que le proche est autorisé à consulter.
         $autorisations = AutorisationProche::where(
             'id_proche',
             $user->id
@@ -284,19 +286,14 @@ class RendezVousController extends Controller
             abort(403);
         }
 
-        // Vérifier l'autorisation active du proche
-        $autorise = AutorisationProche::where(
-            'id_proche',
-            $user->id
-        )
-            ->where('id_patient', $rendezVous->id_patient)
-            ->where('statut', 'active')
-            ->where('acces_rendez_vous', 1)
-            ->exists();
-
-        if (!$autorise) {
-            abort(403);
-        }
+        /*
+         * La Policy vérifie :
+         * - que l'utilisateur est bien un proche ;
+         * - qu'il est autorisé pour ce patient ;
+         * - que l'autorisation est active ;
+         * - qu'il possède l'accès aux rendez-vous.
+         */
+        Gate::authorize('view', $rendezVous);
 
         $rendezVous->load([
             'patient.utilisateur',

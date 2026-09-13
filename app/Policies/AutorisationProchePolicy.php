@@ -7,41 +7,66 @@ use App\Models\User;
 
 class AutorisationProchePolicy
 {
+    /**
+     * Qui peut consulter la liste des autorisations ?
+     */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['patient', 'proche']);
+        return in_array($user->role, [
+            'patient',
+            'proche',
+        ]);
     }
 
-    public function view(User $user, AutorisationProche $autorisation): bool
-    {
-        // Patient: يشوف غير autorisations ديالو
+    /**
+     * Consulter une autorisation précise.
+     */
+    public function view(
+        User $user,
+        AutorisationProche $autorisation
+    ): bool {
+        // Patient : uniquement ses propres autorisations
         if ($user->role === 'patient' && $user->patient) {
             return $autorisation->id_patient === $user->patient->id_patient;
         }
 
-        // Proche: يشوف غير autorisations اللي مربوط بها
+        // Proche : uniquement ses autorisations actives
         if ($user->role === 'proche') {
-            return $autorisation->id_proche === $user->id;
+            return $autorisation->id_proche === $user->id
+                && $autorisation->statut === 'active';
         }
 
         return false;
     }
 
+    /**
+     * Création : patient uniquement.
+     */
     public function create(User $user): bool
     {
         return $user->role === 'patient'
             && $user->patient !== null;
     }
 
-    public function update(User $user, AutorisationProche $autorisation): bool
-    {
+    /**
+     * Modification : uniquement par le patient propriétaire.
+     */
+    public function update(
+        User $user,
+        AutorisationProche $autorisation
+    ): bool {
         return $user->role === 'patient'
             && $user->patient !== null
             && $autorisation->id_patient === $user->patient->id_patient;
     }
 
-    public function delete(User $user, AutorisationProche $autorisation): bool
-    {
+    /**
+     * Suppression : uniquement par le patient propriétaire.
+     */
+    public function delete(
+        User $user,
+        AutorisationProche $autorisation
+    ): bool {
         return $user->role === 'patient'
             && $user->patient !== null
             && $autorisation->id_patient === $user->patient->id_patient;

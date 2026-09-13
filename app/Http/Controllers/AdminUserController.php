@@ -42,6 +42,18 @@ class AdminUserController extends Controller
     }
 
     /**
+     * Liste des proches
+     */
+    public function proches()
+    {
+        $proches = User::where('role', 'proche')
+            ->latest()
+            ->get();
+
+        return view('admin.proches.index', compact('proches'));
+    }
+
+    /**
      * Modifier un utilisateur
      */
     public function edit(User $user)

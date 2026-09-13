@@ -4,38 +4,51 @@ namespace App\Policies;
 
 use App\Models\Suivi;
 use App\Models\User;
+use App\Models\AutorisationProche;
 
 class SuiviPolicy
 {
     /**
-     * Médecin: يمكنو يشوف suivis ديالو.
-     * Patient: يمكنو يشوف suivis ديالو.
+     * Qui peut consulter la liste des suivis ?
      */
     public function viewAny(User $user): bool
     {
-        return in_array($user->role, ['medecin', 'patient']);
+        return in_array($user->role, [
+            'medecin',
+            'patient',
+            'proche',
+        ]);
     }
 
     /**
-     * عرض suivi واحد.
+     * Afficher un suivi précis.
      */
     public function view(User $user, Suivi $suivi): bool
     {
-        // Médecin: غير suivis ديالو
+        // Médecin : uniquement ses propres suivis
         if ($user->role === 'medecin' && $user->medecin) {
-            return $suivi->id_medecin == $user->medecin->id_medecin;
+            return $suivi->id_medecin === $user->medecin->id_medecin;
         }
 
-        // Patient: غير suivis ديالو
+        // Patient : uniquement ses propres suivis
         if ($user->role === 'patient' && $user->patient) {
-            return $suivi->id_patient == $user->patient->id_patient;
+            return $suivi->id_patient === $user->patient->id_patient;
+        }
+
+        // Proche : uniquement si le patient l'a autorisé
+        if ($user->role === 'proche') {
+            return AutorisationProche::where('id_proche', $user->id)
+                ->where('id_patient', $suivi->id_patient)
+                ->where('statut', 'active')
+                ->where('acces_suivi', true)
+                ->exists();
         }
 
         return false;
     }
 
     /**
-     * إنشاء suivi: médecin فقط.
+     * Création d'un suivi : médecin uniquement.
      */
     public function create(User $user): bool
     {
@@ -44,30 +57,38 @@ class SuiviPolicy
     }
 
     /**
-     * تعديل suivi: médecin فقط و suivi ديالو.
+     * Modification d'un suivi :
+     * médecin uniquement et uniquement ses propres suivis.
      */
     public function update(User $user, Suivi $suivi): bool
     {
         return $user->role === 'medecin'
             && $user->medecin !== null
-            && $suivi->id_medecin == $user->medecin->id_medecin;
+            && $suivi->id_medecin === $user->medecin->id_medecin;
     }
 
     /**
-     * حذف suivi: médecin فقط و suivi ديالو.
+     * Suppression d'un suivi :
+     * médecin uniquement et uniquement ses propres suivis.
      */
     public function delete(User $user, Suivi $suivi): bool
     {
         return $user->role === 'medecin'
             && $user->medecin !== null
-            && $suivi->id_medecin == $user->medecin->id_medecin;
+            && $suivi->id_medecin === $user->medecin->id_medecin;
     }
 
+    /**
+     * La restauration n'est pas autorisée.
+     */
     public function restore(User $user, Suivi $suivi): bool
     {
         return false;
     }
 
+    /**
+     * La suppression définitive n'est pas autorisée.
+     */
     public function forceDelete(User $user, Suivi $suivi): bool
     {
         return false;

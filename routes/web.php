@@ -243,6 +243,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/patients', [AdminUserController::class, 'patients'])
         ->name('admin.patients.index');
 
+    // Gestion des proches
+    Route::get('/admin/proches', [AdminUserController::class, 'proches'])
+        ->name('admin.proches.index');
+
     // Modifier un utilisateur
     Route::get('/admin/users/{user}/edit', [AdminUserController::class, 'edit'])
         ->name('admin.users.edit');
