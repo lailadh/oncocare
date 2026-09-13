@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Suivi;
 use App\Models\Patient;
 use App\Models\Notification;
+use App\Models\AutorisationProche;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -25,22 +26,30 @@ class SuiviController extends Controller
 
         $medecin = $user->medecin;
 
-        $suivis = Suivi::with(['patient.utilisateur'])
-            ->where('id_medecin', $medecin->id_medecin)
-            ->latest('date_suivi')
-            ->get();
+        $suivis = Suivi::with([
+            'patient.utilisateur'
+        ])
+        ->where('id_medecin', $medecin->id_medecin)
+        ->latest('date_suivi')
+        ->get();
 
         return view('suivis.index', compact('suivis'));
     }
 
+
     /**
-     * Afficher le formulaire de création.
+     * Afficher le formulaire de création d'un suivi.
      */
     public function create()
     {
         Gate::authorize('create', Suivi::class);
 
         $user = auth()->user();
+
+        if ($user->role !== 'medecin' || !$user->medecin) {
+            abort(403);
+        }
+
         $medecin = $user->medecin;
 
         $patients = Patient::whereHas('medecins', function ($query) use ($medecin) {
@@ -54,6 +63,7 @@ class SuiviController extends Controller
 
         return view('suivis.create', compact('patients'));
     }
+
 
     /**
      * Enregistrer un nouveau suivi.
@@ -74,7 +84,11 @@ class SuiviController extends Controller
 
         $medecin = auth()->user()->medecin;
 
-        // Vérifier que le patient appartient bien au médecin connecté
+        if (!$medecin) {
+            abort(403);
+        }
+
+        // Vérifier que le patient est bien suivi par le médecin connecté
         $patientExiste = $medecin->patients()
             ->where('patients.id_patient', $request->id_patient)
             ->exists();
@@ -84,7 +98,7 @@ class SuiviController extends Controller
         }
 
         // Créer le suivi
-        Suivi::create([
+        $suivi = Suivi::create([
             'date_suivi' => $request->date_suivi,
             'type_cancer' => $request->type_cancer,
             'stade' => $request->stade,
@@ -98,7 +112,7 @@ class SuiviController extends Controller
         // Récupérer le patient
         $patient = Patient::findOrFail($request->id_patient);
 
-        // Envoyer une notification au patient
+        // Notification au patient
         Notification::create([
             'titre' => 'Nouveau suivi médical',
             'type' => 'suivi',
@@ -113,8 +127,9 @@ class SuiviController extends Controller
             ->with('success', 'Suivi ajouté avec succès.');
     }
 
+
     /**
-     * Afficher les détails d'un suivi.
+     * Afficher les détails d'un suivi pour le médecin.
      */
     public function show(Suivi $suivi)
     {
@@ -128,27 +143,40 @@ class SuiviController extends Controller
         return view('suivis.show', compact('suivi'));
     }
 
+
     /**
      * Afficher les suivis accessibles au proche.
+     *
+     * Le proche peut uniquement voir les suivis
+     * lorsque acces_suivi = 1.
      */
     public function procheSuivis()
     {
         $user = auth()->user();
 
+        // Vérifier que l'utilisateur connecté est bien un proche
         if ($user->role !== 'proche') {
             abort(403);
         }
 
-        $autorisations = \App\Models\AutorisationProche::with([
-            'patient.utilisateur'
-        ])
-        ->where('id_proche', $user->id)
+        /*
+         * Chercher uniquement les autorisations :
+         * - appartenant au proche connecté
+         * - actives
+         * - avec accès aux suivis
+         */
+        $autorisations = AutorisationProche::where(
+            'id_proche',
+            $user->id
+        )
         ->where('statut', 'active')
         ->where('acces_suivi', 1)
         ->get();
 
+        // Récupérer les IDs des patients autorisés
         $patientIds = $autorisations->pluck('id_patient');
 
+        // Récupérer uniquement leurs suivis
         $suivis = Suivi::with([
             'patient.utilisateur',
             'medecin.utilisateur'
@@ -160,31 +188,45 @@ class SuiviController extends Controller
         return view('proche.suivis.index', compact('suivis'));
     }
 
+
     /**
-     * Afficher les détails d'un suivi accessible au proche.
+     * Afficher le détail d'un suivi accessible au proche.
+     *
+     * L'accès est refusé si acces_suivi = 0.
      */
     public function procheShow(Suivi $suivi)
     {
         $user = auth()->user();
 
+        // Vérifier que l'utilisateur connecté est un proche
         if ($user->role !== 'proche') {
             abort(403);
         }
 
-        // Vérifier que le proche a bien accès au suivi
-        $autorise = \App\Models\AutorisationProche::where(
+        /*
+         * Vérifier que le proche possède :
+         * - une autorisation active
+         * - pour le patient concerné
+         * - avec accès aux suivis
+         */
+        $autorise = AutorisationProche::where(
             'id_proche',
             $user->id
         )
-        ->where('id_patient', $suivi->id_patient)
+        ->where(
+            'id_patient',
+            $suivi->id_patient
+        )
         ->where('statut', 'active')
         ->where('acces_suivi', 1)
         ->exists();
 
+        // Si acces_suivi = 0 => accès refusé
         if (!$autorise) {
             abort(403);
         }
 
+        // Charger les informations nécessaires
         $suivi->load([
             'patient.utilisateur',
             'medecin.utilisateur',
@@ -193,8 +235,9 @@ class SuiviController extends Controller
         return view('proche.suivis.show', compact('suivi'));
     }
 
+
     /**
-     * Afficher le formulaire de modification.
+     * Afficher le formulaire de modification d'un suivi.
      */
     public function edit(Suivi $suivi)
     {
@@ -202,6 +245,7 @@ class SuiviController extends Controller
 
         return view('suivis.edit', compact('suivi'));
     }
+
 
     /**
      * Mettre à jour un suivi.
@@ -228,10 +272,10 @@ class SuiviController extends Controller
             'traitement' => $request->traitement,
         ]);
 
-        // Charger le patient lié au suivi
+        // Charger le patient
         $suivi->load('patient');
 
-        // Envoyer une notification au patient
+        // Notification au patient
         Notification::create([
             'titre' => 'Suivi médical mis à jour',
             'type' => 'suivi',
@@ -246,6 +290,7 @@ class SuiviController extends Controller
             ->with('success', 'Suivi modifié avec succès.');
     }
 
+
     /**
      * Supprimer un suivi.
      */
@@ -259,6 +304,7 @@ class SuiviController extends Controller
             ->route('suivis.index')
             ->with('success', 'Suivi supprimé avec succès.');
     }
+
 
     /**
      * Afficher les suivis du patient connecté.
@@ -283,8 +329,9 @@ class SuiviController extends Controller
         return view('patient.suivis.index', compact('suivis'));
     }
 
+
     /**
-     * Afficher les détails d'un suivi du patient.
+     * Afficher le détail d'un suivi pour le patient.
      */
     public function patientShow(Suivi $suivi)
     {

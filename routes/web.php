@@ -132,14 +132,14 @@ Route::middleware(['auth', 'role:medecin'])->group(function () {
     Route::get('/rendezvous', [RendezVousController::class, 'index'])
         ->name('rendezvous.index');
 
+    Route::get('/rendezvous/create', [RendezVousController::class, 'create'])
+        ->name('rendezvous.create');
+
+    Route::post('/rendezvous', [RendezVousController::class, 'store'])
+        ->name('rendezvous.store');
+
     Route::get('/rendezvous/{rendezVous}', [RendezVousController::class, 'show'])
         ->name('rendezvous.show');
-
-    Route::get('/rendezvous/{rendezVous}/edit', [RendezVousController::class, 'edit'])
-        ->name('rendezvous.edit');
-
-    Route::patch('/rendezvous/{rendezVous}', [RendezVousController::class, 'update'])
-        ->name('rendezvous.update');
 
     Route::delete('/rendezvous/{rendezVous}', [RendezVousController::class, 'destroy'])
         ->name('rendezvous.destroy');
@@ -157,12 +157,6 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
 
     Route::get('/patient/rendezvous', [RendezVousController::class, 'patientRendezVous'])
         ->name('patient.rendezvous.index');
-
-    Route::get('/patient/rendezvous/create', [RendezVousController::class, 'create'])
-        ->name('patient.rendezvous.create');
-
-    Route::post('/patient/rendezvous', [RendezVousController::class, 'store'])
-        ->name('patient.rendezvous.store');
 
     Route::get('/patient/rendezvous/{rendezVous}', [RendezVousController::class, 'patientShow'])
         ->name('patient.rendezvous.show');
@@ -237,11 +231,19 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])
         ->name('admin.dashboard');
 
-    // Gestion des utilisateurs
+    // Gestion globale des utilisateurs
     Route::get('/admin/users', [AdminUserController::class, 'index'])
         ->name('admin.users.index');
 
-    // Modifier le rôle d'un utilisateur
+    // Gestion des médecins
+    Route::get('/admin/medecins', [AdminUserController::class, 'medecins'])
+        ->name('admin.medecins.index');
+
+    // Gestion des patients
+    Route::get('/admin/patients', [AdminUserController::class, 'patients'])
+        ->name('admin.patients.index');
+
+    // Modifier un utilisateur
     Route::get('/admin/users/{user}/edit', [AdminUserController::class, 'edit'])
         ->name('admin.users.edit');
 
@@ -257,4 +259,4 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

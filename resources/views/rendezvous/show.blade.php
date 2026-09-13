@@ -23,8 +23,11 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+            {{-- Patient --}}
             <div>
-                <p class="text-sm text-gray-500">Patient</p>
+                <p class="text-sm text-gray-500">
+                    Patient
+                </p>
 
                 <p class="mt-1 text-lg font-semibold text-gray-800">
                     {{ $rendezVous->patient->utilisateur->prenom }}
@@ -32,8 +35,11 @@
                 </p>
             </div>
 
+            {{-- Médecin --}}
             <div>
-                <p class="text-sm text-gray-500">Médecin</p>
+                <p class="text-sm text-gray-500">
+                    Médecin
+                </p>
 
                 <p class="mt-1 text-lg font-semibold text-gray-800">
                     Dr {{ $rendezVous->medecin->utilisateur->prenom }}
@@ -41,32 +47,44 @@
                 </p>
             </div>
 
+            {{-- Date --}}
             <div>
-                <p class="text-sm text-gray-500">Date</p>
+                <p class="text-sm text-gray-500">
+                    Date
+                </p>
 
                 <p class="mt-1 text-gray-800">
                     {{ \Carbon\Carbon::parse($rendezVous->date_heure)->format('d/m/Y') }}
                 </p>
             </div>
 
+            {{-- Heure --}}
             <div>
-                <p class="text-sm text-gray-500">Heure</p>
+                <p class="text-sm text-gray-500">
+                    Heure
+                </p>
 
                 <p class="mt-1 text-gray-800">
                     {{ \Carbon\Carbon::parse($rendezVous->date_heure)->format('H:i') }}
                 </p>
             </div>
 
+            {{-- Motif --}}
             <div>
-                <p class="text-sm text-gray-500">Motif</p>
+                <p class="text-sm text-gray-500">
+                    Motif
+                </p>
 
                 <p class="mt-1 text-gray-800">
                     {{ $rendezVous->motif }}
                 </p>
             </div>
 
+            {{-- Statut --}}
             <div>
-                <p class="text-sm text-gray-500">Statut</p>
+                <p class="text-sm text-gray-500">
+                    Statut
+                </p>
 
                 <div class="mt-1">
 
@@ -94,6 +112,14 @@
                             Refusé
                         </span>
 
+                    @else
+
+                        <span class="inline-flex px-3 py-1 rounded-full
+                                     text-sm font-medium
+                                     bg-gray-100 text-gray-700">
+                            {{ $rendezVous->statut }}
+                        </span>
+
                     @endif
 
                 </div>
@@ -103,20 +129,27 @@
 
         <div class="mt-8 pt-6 border-t flex items-center justify-between">
 
+            {{-- Retour --}}
             <a href="{{ route('rendezvous.index') }}"
                class="text-gray-600 hover:text-gray-900">
                 ← Retour aux rendez-vous
             </a>
 
-            @if($rendezVous->statut === 'en_attente')
+            {{-- Supprimer --}}
+            <form method="POST"
+                  action="{{ route('rendezvous.destroy', $rendezVous) }}"
+                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?');">
 
-                <a href="{{ route('rendezvous.edit', $rendezVous) }}"
-                   class="bg-blue-600 hover:bg-blue-700
-                          text-white px-5 py-2 rounded-lg">
-                    Gérer le rendez-vous
-                </a>
+                @csrf
+                @method('DELETE')
 
-            @endif
+                <button type="submit"
+                        class="bg-red-600 hover:bg-red-700
+                               text-white px-5 py-2 rounded-lg">
+                    Supprimer le rendez-vous
+                </button>
+
+            </form>
 
         </div>
 

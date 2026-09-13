@@ -4,11 +4,11 @@
 
         <div class="mb-6">
             <h1 class="text-2xl font-bold text-gray-800">
-                Demander un rendez-vous
+                Créer un rendez-vous
             </h1>
 
             <p class="text-gray-600 mt-1">
-                Envoyez une demande de rendez-vous à votre médecin.
+                Planifiez un rendez-vous pour l'un de vos patients.
             </p>
         </div>
 
@@ -30,30 +30,31 @@
 
         <div class="bg-white rounded-xl shadow p-6">
 
-            <form method="POST" action="{{ route('patient.rendezvous.store') }}">
+            <form method="POST" action="{{ route('rendezvous.store') }}">
                 @csrf
 
+                {{-- Patient --}}
                 <div class="mb-5">
-                    <label for="id_medecin"
+                    <label for="id_patient"
                            class="block text-sm font-medium text-gray-700 mb-2">
-                        Médecin
+                        Patient
                     </label>
 
-                    <select name="id_medecin"
-                            id="id_medecin"
+                    <select name="id_patient"
+                            id="id_patient"
                             required
                             class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
 
                         <option value="">
-                            -- Sélectionnez un médecin --
+                            -- Sélectionnez un patient --
                         </option>
 
-                        @foreach($medecins as $medecin)
-                            <option value="{{ $medecin->id_medecin }}"
-                                {{ old('id_medecin') == $medecin->id_medecin ? 'selected' : '' }}>
+                        @foreach($patients as $patient)
+                            <option value="{{ $patient->id_patient }}"
+                                {{ old('id_patient') == $patient->id_patient ? 'selected' : '' }}>
 
-                                Dr {{ $medecin->utilisateur->prenom }}
-                                {{ $medecin->utilisateur->nom }}
+                                {{ $patient->utilisateur->prenom }}
+                                {{ $patient->utilisateur->nom }}
 
                             </option>
                         @endforeach
@@ -61,6 +62,8 @@
                     </select>
                 </div>
 
+
+                {{-- Date et heure --}}
                 <div class="mb-5">
                     <label for="date_heure"
                            class="block text-sm font-medium text-gray-700 mb-2">
@@ -76,6 +79,8 @@
                            class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
+
+                {{-- Motif --}}
                 <div class="mb-5">
                     <label for="motif"
                            class="block text-sm font-medium text-gray-700 mb-2">
@@ -101,6 +106,11 @@
                             Contrôle de suivi
                         </option>
 
+                        <option value="Consultation médicale"
+                            {{ old('motif') === 'Consultation médicale' ? 'selected' : '' }}>
+                            Consultation médicale
+                        </option>
+
                         <option value="Autre"
                             {{ old('motif') === 'Autre' ? 'selected' : '' }}>
                             Autre
@@ -109,16 +119,18 @@
                     </select>
                 </div>
 
+
+                {{-- Boutons --}}
                 <div class="flex items-center justify-between mt-6">
 
-                    <a href="{{ route('patient.rendezvous.index') }}"
+                    <a href="{{ route('rendezvous.index') }}"
                        class="text-gray-600 hover:text-gray-900">
                         ← Retour
                     </a>
 
                     <button type="submit"
                             class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg">
-                        Envoyer la demande
+                        Créer le rendez-vous
                     </button>
 
                 </div>

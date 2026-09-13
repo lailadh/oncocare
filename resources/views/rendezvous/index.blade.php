@@ -3,20 +3,32 @@
 <div class="p-6 max-w-7xl mx-auto">
 
     <div class="flex items-center justify-between mb-6">
+
         <div>
             <h1 class="text-2xl font-bold text-gray-800">
-                Demandes de rendez-vous
+                Mes rendez-vous
             </h1>
 
             <p class="text-gray-600 mt-1">
-                Consultez et gérez les rendez-vous de vos patients.
+                Consultez les rendez-vous planifiés pour vos patients.
             </p>
         </div>
 
-        <a href="{{ route('dashboard') }}"
-           class="text-gray-600 hover:text-gray-900">
-            ← Retour au dashboard
-        </a>
+        <div class="flex items-center gap-4">
+
+            <a href="{{ route('rendezvous.create') }}"
+               class="bg-blue-600 hover:bg-blue-700
+                      text-white px-4 py-2 rounded-lg font-medium">
+                + Créer un rendez-vous
+            </a>
+
+            <a href="{{ route('dashboard') }}"
+               class="text-gray-600 hover:text-gray-900">
+                ← Retour au dashboard
+            </a>
+
+        </div>
+
     </div>
 
     @if(session('success'))
@@ -31,9 +43,17 @@
         @if($rendezVous->isEmpty())
 
             <div class="p-8 text-center text-gray-500">
-                <p class="text-lg">
+
+                <p class="text-lg mb-4">
                     Aucun rendez-vous trouvé.
                 </p>
+
+                <a href="{{ route('rendezvous.create') }}"
+                   class="inline-block bg-blue-600 hover:bg-blue-700
+                          text-white px-4 py-2 rounded-lg">
+                    + Créer un rendez-vous
+                </a>
+
             </div>
 
         @else
@@ -43,7 +63,9 @@
                 <table class="w-full text-left">
 
                     <thead class="bg-gray-50 border-b">
+
                         <tr>
+
                             <th class="px-6 py-4 font-semibold text-gray-700">
                                 Patient
                             </th>
@@ -67,7 +89,9 @@
                             <th class="px-6 py-4 font-semibold text-gray-700">
                                 Action
                             </th>
+
                         </tr>
+
                     </thead>
 
                     <tbody class="divide-y">
@@ -76,25 +100,40 @@
 
                             <tr class="hover:bg-gray-50">
 
+                                {{-- Patient --}}
                                 <td class="px-6 py-4">
+
                                     <div class="font-medium text-gray-800">
+
                                         {{ $rendezVousItem->patient->utilisateur->prenom }}
                                         {{ $rendezVousItem->patient->utilisateur->nom }}
+
                                     </div>
+
                                 </td>
 
+                                {{-- Date --}}
                                 <td class="px-6 py-4 text-gray-600">
+
                                     {{ \Carbon\Carbon::parse($rendezVousItem->date_heure)->format('d/m/Y') }}
+
                                 </td>
 
+                                {{-- Heure --}}
                                 <td class="px-6 py-4 text-gray-600">
+
                                     {{ \Carbon\Carbon::parse($rendezVousItem->date_heure)->format('H:i') }}
+
                                 </td>
 
+                                {{-- Motif --}}
                                 <td class="px-6 py-4 text-gray-600">
+
                                     {{ $rendezVousItem->motif }}
+
                                 </td>
 
+                                {{-- Statut --}}
                                 <td class="px-6 py-4">
 
                                     @if($rendezVousItem->statut === 'en_attente')
@@ -121,28 +160,43 @@
                                             Refusé
                                         </span>
 
+                                    @else
+
+                                        <span class="inline-flex px-3 py-1 rounded-full
+                                                     text-sm font-medium
+                                                     bg-gray-100 text-gray-700">
+                                            {{ $rendezVousItem->statut }}
+                                        </span>
+
                                     @endif
 
                                 </td>
 
+                                {{-- Actions --}}
                                 <td class="px-6 py-4">
 
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex items-center gap-3">
 
+                                        {{-- Voir --}}
                                         <a href="{{ route('rendezvous.show', $rendezVousItem) }}"
                                            class="text-blue-600 hover:text-blue-800 font-medium">
                                             Voir
                                         </a>
 
-                                        @if($rendezVousItem->statut === 'en_attente')
+                                        {{-- Supprimer --}}
+                                        <form method="POST"
+                                              action="{{ route('rendezvous.destroy', $rendezVousItem) }}"
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?');">
 
-                                            <a href="{{ route('rendezvous.edit', $rendezVousItem) }}"
-                                               class="bg-blue-600 hover:bg-blue-700
-                                                      text-white px-3 py-2 rounded-lg text-sm">
-                                                Gérer
-                                            </a>
+                                            @csrf
+                                            @method('DELETE')
 
-                                        @endif
+                                            <button type="submit"
+                                                    class="text-red-600 hover:text-red-800 font-medium">
+                                                Supprimer
+                                            </button>
+
+                                        </form>
 
                                     </div>
 
