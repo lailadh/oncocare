@@ -1,106 +1,194 @@
 <x-app-layout>
 
-    <div class="py-10 bg-slate-50 min-h-screen">
+    <div class="onco-page">
 
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="onco-container">
 
-            {{-- Header --}}
-            <div class="flex items-center justify-between mb-6">
+            {{-- ====================================================== --}}
+            {{-- HEADER --}}
+            {{-- ====================================================== --}}
 
-                <div>
-                    <h1 class="text-2xl font-bold text-slate-800">
-                        Dossier du patient
-                    </h1>
+            <div class="onco-page-header">
 
-                    <p class="mt-1 text-slate-500">
-                        Consultez les informations et l'historique du patient.
-                    </p>
-                </div>
-
-                <a href="{{ route('medecin.patients.index') }}"
-                   class="inline-flex items-center px-4 py-2 rounded-lg
-                          bg-slate-200 text-slate-700 text-sm font-medium
-                          hover:bg-slate-300 transition">
-                    ← Retour
+                <a
+                    href="{{ route('medecin.patients.index') }}"
+                    class="onco-back-link"
+                >
+                    ← Retour à mes patients
                 </a>
 
-            </div>
+                <div class="onco-title-wrap">
 
-            {{-- Informations personnelles --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
-
-                <div class="flex items-center gap-4 mb-6">
-
-                    <div class="w-14 h-14 rounded-full bg-pink-100
-                                flex items-center justify-center">
-
-                        <span class="text-2xl">
-                            👤
-                        </span>
-
+                    <div
+                        class="onco-page-icon"
+                        style="background:#F1EFF8;color:#7567A8;"
+                    >
+                        ◌
                     </div>
 
                     <div>
 
-                        <h2 class="text-xl font-bold text-slate-800">
-                            {{ $patient->utilisateur->prenom }}
-                            {{ $patient->utilisateur->nom }}
-                        </h2>
+                        <h1 class="onco-page-title">
+                            Dossier du patient
+                        </h1>
 
-                        <p class="text-sm text-slate-500">
-                            Patient OncoCare
+                        <p class="onco-page-subtitle">
+                            Consultez les informations et l'historique du patient.
                         </p>
 
                     </div>
 
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            </div>
 
-                    <div>
-                        <p class="text-sm text-slate-500">
+
+            {{-- ====================================================== --}}
+            {{-- PATIENT PROFILE --}}
+            {{-- ====================================================== --}}
+
+            <div
+                class="onco-card"
+                style="margin-top:28px;"
+            >
+
+                <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+
+                    {{-- Identity --}}
+                    <div class="onco-user-cell">
+
+                        <div
+                            class="onco-avatar"
+                            style="
+                                width:64px;
+                                height:64px;
+                                background:#F1EFF8;
+                                color:#7567A8;
+                                font-size:22px;
+                            "
+                        >
+                            {{ strtoupper(substr($patient->utilisateur->prenom ?? 'P', 0, 1)) }}
+                        </div>
+
+                        <div>
+
+                            <div
+                                class="text-2xl font-medium text-[#293331]"
+                                style="font-family:'Newsreader',serif;"
+                            >
+                                {{ $patient->utilisateur->prenom }}
+                                {{ $patient->utilisateur->nom }}
+                            </div>
+
+                            <div class="mt-1 text-sm text-[#66706D]">
+                                Patient OncoCare
+                            </div>
+
+                            <div class="mt-3">
+                                <span
+                                    class="onco-role-badge patient"
+                                    style="
+                                        background:#F1EFF8;
+                                        color:#655A88;
+                                    "
+                                >
+                                    Patient suivi
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    {{-- Security --}}
+                    <div
+                        class="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold"
+                        style="
+                            background:#F8F6FB;
+                            color:#655A88;
+                            border:1px solid #DED9EB;
+                        "
+                    >
+                        <span>🔒</span>
+                        Dossier sécurisé
+                    </div>
+
+                </div>
+
+
+                {{-- Personal information --}}
+                <div
+                    class="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+                >
+
+                    <div
+                        class="rounded-2xl p-4"
+                        style="background:#FAF9F8;"
+                    >
+
+                        <p class="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8B918E]">
                             Email
                         </p>
 
-                        <p class="mt-1 font-medium text-slate-800">
+                        <p class="mt-2 break-all text-sm font-medium text-[#293331]">
                             {{ $patient->utilisateur->email }}
                         </p>
+
                     </div>
 
 
-                    <div>
-                        <p class="text-sm text-slate-500">
+                    <div
+                        class="rounded-2xl p-4"
+                        style="background:#FAF9F8;"
+                    >
+
+                        <p class="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8B918E]">
                             Téléphone
                         </p>
 
-                        <p class="mt-1 font-medium text-slate-800">
-                            {{ $patient->utilisateur->telephone ?? '—' }}
+                        <p class="mt-2 text-sm font-medium text-[#293331]">
+                            {{ $patient->utilisateur->telephone ?? 'Non renseigné' }}
                         </p>
+
                     </div>
 
 
-                    <div>
-                        <p class="text-sm text-slate-500">
+                    <div
+                        class="rounded-2xl p-4"
+                        style="background:#FAF9F8;"
+                    >
+
+                        <p class="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8B918E]">
                             Date de naissance
                         </p>
 
-                        <p class="mt-1 font-medium text-slate-800">
-                            {{ $patient->date_naissance
-                                ? \Carbon\Carbon::parse($patient->date_naissance)->format('d/m/Y')
-                                : '—'
+                        <p class="mt-2 text-sm font-medium text-[#293331]">
+
+                            {{
+                                $patient->date_naissance
+                                    ? \Carbon\Carbon::parse($patient->date_naissance)->format('d/m/Y')
+                                    : 'Non renseignée'
                             }}
+
                         </p>
+
                     </div>
 
 
-                    <div>
-                        <p class="text-sm text-slate-500">
+                    <div
+                        class="rounded-2xl p-4"
+                        style="background:#FAF9F8;"
+                    >
+
+                        <p class="text-[10px] font-bold uppercase tracking-[0.08em] text-[#8B918E]">
                             Adresse
                         </p>
 
-                        <p class="mt-1 font-medium text-slate-800">
-                            {{ $patient->adresse ?? '—' }}
+                        <p class="mt-2 text-sm font-medium text-[#293331]">
+                            {{ $patient->adresse ?? 'Non renseignée' }}
                         </p>
+
                     </div>
 
                 </div>
@@ -108,49 +196,155 @@
             </div>
 
 
-            {{-- Historique des suivis --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            {{-- ====================================================== --}}
+            {{-- FOLLOW-UP SUMMARY --}}
+            {{-- ====================================================== --}}
 
-                <div class="p-6 border-b border-slate-200">
+            <div
+                class="onco-summary-grid"
+                style="
+                    margin-top:24px;
+                    grid-template-columns:repeat(2,minmax(0,1fr));
+                "
+            >
 
-                    <h2 class="text-xl font-bold text-slate-800">
-                        Historique des suivis
-                    </h2>
+                <div class="onco-summary-card">
 
-                    <p class="mt-1 text-sm text-slate-500">
-                        Les différents suivis médicaux enregistrés pour ce patient.
-                    </p>
+                    <div>
+
+                        <span
+                            class="onco-summary-label"
+                            style="color:#655A88;"
+                        >
+                            Suivis médicaux
+                        </span>
+
+                        <div class="onco-summary-value">
+                            {{ $patient->suivis->count() }}
+                        </div>
+
+                        <p class="mt-1 text-xs text-[#756D84]">
+                            suivis enregistrés
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="onco-summary-icon"
+                        style="background:#F1EFF8;color:#7567A8;"
+                    >
+                        ♡
+                    </div>
+
+                </div>
+
+
+                <div class="onco-summary-card">
+
+                    <div>
+
+                        <span
+                            class="onco-summary-label"
+                            style="color:#63856D;"
+                        >
+                            Accès
+                        </span>
+
+                        <div
+                            class="onco-summary-value"
+                            style="font-size:20px;"
+                        >
+                            Autorisé
+                        </div>
+
+                        <p class="mt-1 text-xs text-[#607467]">
+                            Dossier accessible dans le cadre du suivi
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="onco-summary-icon"
+                        style="background:#EEF5F0;color:#7FA68A;"
+                    >
+                        ✓
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- ====================================================== --}}
+            {{-- HISTORY --}}
+            {{-- ====================================================== --}}
+
+            <div
+                class="onco-card"
+                style="
+                    margin-top:24px;
+                    padding:0;
+                "
+            >
+
+                {{-- Header --}}
+                <div
+                    class="onco-card-header"
+                    style="
+                        padding:22px 24px;
+                        margin-bottom:0;
+                    "
+                >
+
+                    <div>
+
+                        <h2 class="onco-card-title">
+                            Historique des suivis
+                        </h2>
+
+                        <p class="onco-card-description">
+                            Les différents suivis médicaux enregistrés pour ce patient.
+                        </p>
+
+                    </div>
+
+                    <span
+                        class="onco-badge"
+                        style="background:#F1EFF8;color:#655A88;"
+                    >
+                        {{ $patient->suivis->count() }} suivi(s)
+                    </span>
 
                 </div>
 
 
                 @if ($patient->suivis->count())
 
-                    <div class="overflow-x-auto">
+                    <div class="onco-table-wrapper">
 
-                        <table class="w-full text-left">
+                        <table class="onco-table">
 
-                            <thead class="bg-slate-50 border-b border-slate-200">
+                            <thead>
 
                                 <tr>
 
-                                    <th class="px-6 py-4 text-sm font-semibold text-slate-700">
+                                    <th>
                                         Date
                                     </th>
 
-                                    <th class="px-6 py-4 text-sm font-semibold text-slate-700">
+                                    <th>
                                         Type de cancer
                                     </th>
 
-                                    <th class="px-6 py-4 text-sm font-semibold text-slate-700">
+                                    <th>
                                         Stade
                                     </th>
 
-                                    <th class="px-6 py-4 text-sm font-semibold text-slate-700">
+                                    <th>
                                         Évolution
                                     </th>
 
-                                    <th class="px-6 py-4 text-sm font-semibold text-slate-700">
+                                    <th>
                                         Traitement
                                     </th>
 
@@ -159,37 +353,81 @@
                             </thead>
 
 
-                            <tbody class="divide-y divide-slate-200">
+                            <tbody>
 
                                 @foreach ($patient->suivis as $suivi)
 
-                                    <tr class="hover:bg-slate-50 transition">
+                                    <tr>
 
-                                        <td class="px-6 py-4 text-slate-600">
-                                            {{ $suivi->date_suivi
-                                                ? \Carbon\Carbon::parse($suivi->date_suivi)->format('d/m/Y')
-                                                : '—'
-                                            }}
+                                        {{-- Date --}}
+                                        <td>
+
+                                            <span
+                                                class="font-semibold text-[#293331]"
+                                            >
+                                                {{
+                                                    $suivi->date_suivi
+                                                        ? \Carbon\Carbon::parse($suivi->date_suivi)->format('d/m/Y')
+                                                        : 'Non renseignée'
+                                                }}
+                                            </span>
+
                                         </td>
 
 
-                                        <td class="px-6 py-4 text-slate-700">
-                                            {{ $suivi->type_cancer ?? '—' }}
+                                        {{-- Cancer --}}
+                                        <td>
+
+                                            <span class="onco-table-primary">
+                                                {{ $suivi->type_cancer ?? 'Non renseigné' }}
+                                            </span>
+
                                         </td>
 
 
-                                        <td class="px-6 py-4 text-slate-700">
-                                            {{ $suivi->stade ?? '—' }}
+                                        {{-- Stade --}}
+                                        <td>
+
+                                            <span
+                                                class="onco-badge"
+                                                style="background:#F1EFF8;color:#655A88;"
+                                            >
+                                                {{ $suivi->stade ?? 'Non renseigné' }}
+                                            </span>
+
                                         </td>
 
 
-                                        <td class="px-6 py-4 text-slate-600">
-                                            {{ $suivi->evolution ?? '—' }}
+                                        {{-- Evolution --}}
+                                        <td>
+
+                                            @if($suivi->evolution)
+
+                                                <span
+                                                    class="onco-badge"
+                                                    style="background:#EEF5F0;color:#63856D;"
+                                                >
+                                                    {{ $suivi->evolution }}
+                                                </span>
+
+                                            @else
+
+                                                <span class="onco-table-secondary">
+                                                    Non renseignée
+                                                </span>
+
+                                            @endif
+
                                         </td>
 
 
-                                        <td class="px-6 py-4 text-slate-600">
-                                            {{ $suivi->traitement ?? '—' }}
+                                        {{-- Traitement --}}
+                                        <td>
+
+                                            <span class="onco-table-secondary">
+                                                {{ $suivi->traitement ?? 'Non renseigné' }}
+                                            </span>
+
                                         </td>
 
                                     </tr>
@@ -204,23 +442,71 @@
 
                 @else
 
-                    <div class="p-10 text-center">
+                    <div
+                        class="onco-empty-state"
+                        style="padding:56px 24px;"
+                    >
 
-                        <div class="text-4xl mb-4">
+                        <div
+                            class="onco-empty-icon"
+                            style="background:#F1EFF8;color:#7567A8;"
+                        >
                             🩺
                         </div>
 
-                        <h3 class="text-lg font-semibold text-slate-800">
+                        <h3 class="onco-empty-title">
                             Aucun suivi médical
                         </h3>
 
-                        <p class="mt-2 text-slate-500">
+                        <p class="onco-empty-text">
                             Aucun suivi médical n'est encore enregistré pour ce patient.
                         </p>
 
                     </div>
 
                 @endif
+
+            </div>
+
+
+            {{-- ====================================================== --}}
+            {{-- PRIVACY --}}
+            {{-- ====================================================== --}}
+
+            <div
+                class="onco-info-card"
+                style="
+                    margin-top:24px;
+                    border-color:#DED9EB;
+                    background:#F8F6FB;
+                "
+            >
+
+                <div
+                    class="onco-info-icon"
+                    style="background:#F1EFF8;color:#7567A8;"
+                >
+                    🔒
+                </div>
+
+                <div>
+
+                    <h3
+                        class="onco-info-title"
+                        style="color:#655A88;"
+                    >
+                        Confidentialité du dossier
+                    </h3>
+
+                    <p
+                        class="onco-info-text"
+                        style="color:#756D84;"
+                    >
+                        Les informations affichées sont réservées au médecin
+                        associé à ce patient dans le cadre de son suivi médical.
+                    </p>
+
+                </div>
 
             </div>
 

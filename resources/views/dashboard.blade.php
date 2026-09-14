@@ -1,17 +1,585 @@
 <x-app-layout>
+
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
+
+        <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#7567A8]">
+                OncoCare
+            </p>
+
+            <h2
+                class="mt-1 text-3xl font-medium leading-tight text-[#293331]"
+                style="font-family: 'Newsreader', serif;"
+            >
+                Tableau de bord
+            </h2>
+
+        </div>
+
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
+
+    <div class="py-10">
+
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+
+            {{-- Welcome card --}}
+            <div
+                class="relative overflow-hidden rounded-[24px] border border-[#E3DDD8] bg-white p-7 shadow-[0_8px_30px_rgba(41,51,49,0.05)]"
+            >
+
+                {{-- Decorative shapes --}}
+                <div class="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#D99AA6]/10"></div>
+
+                <div class="absolute -bottom-20 right-24 h-40 w-40 rounded-full bg-[#7FA68A]/10"></div>
+
+
+                <div class="relative">
+
+                    <div class="inline-flex items-center gap-2 rounded-full bg-[#F5F2FA] px-3 py-1.5 text-xs font-semibold text-[#655A88]">
+
+                        <span class="h-2 w-2 rounded-full bg-[#7567A8]"></span>
+
+                        Espace sécurisé
+
+                    </div>
+
+
+                    <h1
+                        class="mt-5 text-4xl font-medium leading-tight text-[#293331]"
+                        style="font-family: 'Newsreader', serif;"
+                    >
+                        Bienvenue
+                        @auth
+                            {{ auth()->user()->prenom }}
+                        @endauth
+                        👋
+                    </h1>
+
+
+                    <p class="mt-3 max-w-2xl text-sm leading-7 text-[#66706D]">
+                        Bienvenue dans votre espace personnel OncoCare.
+                        Votre tableau de bord vous permet d'accéder rapidement
+                        aux fonctionnalités disponibles selon votre rôle.
+                    </p>
+
+
+                    {{-- Role --}}
+                    @auth
+
+                        <div class="mt-6 flex flex-wrap items-center gap-3">
+
+                            <span class="text-xs text-[#66706D]">
+                                Votre espace :
+                            </span>
+
+
+                            @if(auth()->user()->role === 'patient')
+
+                                <span class="onco-role-badge patient">
+                                    Patient
+                                </span>
+
+                            @elseif(auth()->user()->role === 'medecin')
+
+                                <span class="onco-role-badge medecin">
+                                    Médecin
+                                </span>
+
+                            @elseif(auth()->user()->role === 'proche')
+
+                                <span class="onco-role-badge proche">
+                                    Proche
+                                </span>
+
+                            @elseif(auth()->user()->role === 'admin')
+
+                                <span class="onco-role-badge admin">
+                                    Administrateur
+                                </span>
+
+                            @endif
+
+                        </div>
+
+                    @endauth
+
                 </div>
+
             </div>
+
+
+            {{-- Quick access --}}
+            <div class="mt-6">
+
+                <div class="mb-4">
+
+                    <h3
+                        class="text-2xl font-medium text-[#293331]"
+                        style="font-family: 'Newsreader', serif;"
+                    >
+                        Accès rapide
+                    </h3>
+
+                    <p class="mt-1 text-sm text-[#66706D]">
+                        Accédez directement aux principales fonctionnalités de votre espace.
+                    </p>
+
+                </div>
+
+
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+
+                    {{-- ================= PATIENT ================= --}}
+
+                    @auth
+                        @if(auth()->user()->role === 'patient')
+
+                            <a
+                                href="{{ route('patient.suivis.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#E8BBC4] hover:shadow-[0_10px_30px_rgba(217,154,166,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#FBF1F3] text-[#D99AA6]">
+                                    ♡
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Mes suivis
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Consultez votre historique médical.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#9A6470]">
+                                    Consulter →
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="{{ route('patient.rendezvous.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#E8BBC4] hover:shadow-[0_10px_30px_rgba(217,154,166,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F8F1E1] text-[#C7A45B]">
+                                    ◷
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Rendez-vous
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Consultez vos rendez-vous médicaux.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#9A6470]">
+                                    Consulter →
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="{{ route('patient.autorisations.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#E8BBC4] hover:shadow-[0_10px_30px_rgba(217,154,166,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#FBF1F3] text-[#D99AA6]">
+                                    ◌
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Mes proches
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Gérez les accès de vos proches.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#9A6470]">
+                                    Gérer →
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="{{ route('notifications.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#E8BBC4] hover:shadow-[0_10px_30px_rgba(217,154,166,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F2FA] text-[#7567A8]">
+                                    ◉
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Notifications
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Consultez vos dernières notifications.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#9A6470]">
+                                    Ouvrir →
+                                </span>
+
+                            </a>
+
+                        @endif
+                    @endauth
+
+
+                    {{-- ================= MEDECIN ================= --}}
+
+                    @auth
+                        @if(auth()->user()->role === 'medecin')
+
+                            <a
+                                href="{{ route('medecin.patients.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#A9A2CC] hover:shadow-[0_10px_30px_rgba(117,103,168,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F1EFF8] text-[#7567A8]">
+                                    ◌
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Mes patients
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Consultez les patients que vous accompagnez.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#655A88]">
+                                    Consulter →
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="{{ route('suivis.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#A9A2CC] hover:shadow-[0_10px_30px_rgba(117,103,168,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F1EFF8] text-[#7567A8]">
+                                    ♡
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Suivis médicaux
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Gérez les suivis de vos patients.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#655A88]">
+                                    Ouvrir →
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="{{ route('rendezvous.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#A9A2CC] hover:shadow-[0_10px_30px_rgba(117,103,168,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F1EFF8] text-[#7567A8]">
+                                    ◷
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Rendez-vous
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Gérez vos rendez-vous.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#655A88]">
+                                    Ouvrir →
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="{{ route('notifications.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#A9A2CC] hover:shadow-[0_10px_30px_rgba(117,103,168,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F1EFF8] text-[#7567A8]">
+                                    ◉
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Notifications
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Consultez vos notifications.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#655A88]">
+                                    Ouvrir →
+                                </span>
+
+                            </a>
+
+                        @endif
+                    @endauth
+
+
+                    {{-- ================= PROCHE ================= --}}
+
+                    @auth
+                        @if(auth()->user()->role === 'proche')
+
+                            <a
+                                href="{{ route('proche.autorisations.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#AFC8BA] hover:shadow-[0_10px_30px_rgba(127,166,138,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F0F6F2] text-[#7FA68A]">
+                                    ◌
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Mes autorisations
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Consultez les accès accordés.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#4E755B]">
+                                    Consulter →
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="{{ route('proche.suivis.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#AFC8BA] hover:shadow-[0_10px_30px_rgba(127,166,138,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F0F6F2] text-[#7FA68A]">
+                                    ♡
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Suivis accessibles
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Consultez uniquement les informations autorisées.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#4E755B]">
+                                    Ouvrir →
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="{{ route('proche.rendezvous.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#AFC8BA] hover:shadow-[0_10px_30px_rgba(127,166,138,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F0F6F2] text-[#7FA68A]">
+                                    ◷
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Rendez-vous
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Consultez les rendez-vous accessibles.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#4E755B]">
+                                    Ouvrir →
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="{{ route('notifications.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#AFC8BA] hover:shadow-[0_10px_30px_rgba(127,166,138,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F0F6F2] text-[#7FA68A]">
+                                    ◉
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Notifications
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Consultez les notifications qui vous concernent.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#4E755B]">
+                                    Ouvrir →
+                                </span>
+
+                            </a>
+
+                        @endif
+                    @endauth
+
+
+                    {{-- ================= ADMIN ================= --}}
+
+                    @auth
+                        @if(auth()->user()->role === 'admin')
+
+                            <a
+                                href="{{ route('admin.users.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#A98DAD] hover:shadow-[0_10px_30px_rgba(107,76,111,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F4EFF5] text-[#6B4C6F]">
+                                    ◌
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Utilisateurs
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Consultez les comptes de la plateforme.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#654867]">
+                                    Ouvrir →
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="{{ route('admin.medecins.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#A98DAD] hover:shadow-[0_10px_30px_rgba(107,76,111,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F4EFF5] text-[#6B4C6F]">
+                                    ✚
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Médecins
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Consultez les comptes des médecins.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#654867]">
+                                    Consulter →
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="{{ route('admin.patients.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#A98DAD] hover:shadow-[0_10px_30px_rgba(107,76,111,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F4EFF5] text-[#6B4C6F]">
+                                    ♡
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Patients
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Consultez les comptes des patients.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#654867]">
+                                    Consulter →
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="{{ route('admin.proches.index') }}"
+                                class="group rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.045)] transition hover:-translate-y-1 hover:border-[#A98DAD] hover:shadow-[0_10px_30px_rgba(107,76,111,0.10)]"
+                            >
+
+                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F4EFF5] text-[#6B4C6F]">
+                                    ◌
+                                </div>
+
+                                <h4 class="mt-4 text-sm font-semibold text-[#293331]">
+                                    Proches
+                                </h4>
+
+                                <p class="mt-1 text-xs leading-5 text-[#66706D]">
+                                    Consultez les comptes des proches.
+                                </p>
+
+                                <span class="mt-4 inline-flex text-xs font-semibold text-[#654867]">
+                                    Consulter →
+                                </span>
+
+                            </a>
+
+                        @endif
+                    @endauth
+
+                </div>
+
+            </div>
+
+
+            {{-- Privacy --}}
+            <div class="mt-6 rounded-[18px] border border-[#D7E6DB] bg-[#F1F7F2] p-5">
+
+                <div class="flex items-start gap-3">
+
+                    <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white border border-[#DCE9DF] text-[#7FA68A]">
+                        🔒
+                    </div>
+
+                    <div>
+
+                        <p class="text-sm font-semibold text-[#41644B]">
+                            Votre confidentialité est une priorité
+                        </p>
+
+                        <p class="mt-1 max-w-3xl text-xs leading-5 text-[#607467]">
+                            OncoCare adapte l'accès aux informations selon votre rôle
+                            et vos autorisations. Chaque utilisateur n'accède qu'aux
+                            fonctionnalités et données qui lui sont destinées.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
+
 </x-app-layout>

@@ -1,125 +1,386 @@
 <x-app-layout>
 
-    <div class="p-6">
+    <div class="onco-page">
 
-        <div class="max-w-7xl mx-auto">
+        <div class="onco-container">
 
-            {{-- Retour --}}
-            <a
-                href="{{ route('admin.dashboard') }}"
-                class="text-sm text-gray-600 hover:text-gray-900"
-            >
-                ← Retour Dashboard
-            </a>
+            {{-- En-tête --}}
+            <div class="onco-page-header">
 
-            {{-- Titre --}}
-            <div class="mt-6">
-                <h1 class="text-2xl font-bold">
-                    Gestion des patients
-                </h1>
+                <div>
+                    <a
+                        href="{{ route('admin.dashboard') }}"
+                        class="onco-back-link"
+                    >
+                        ← Retour au dashboard
+                    </a>
 
-                <p class="mt-2 text-gray-600">
-                    Consultez les comptes des patients de la plateforme.
-                </p>
+                    <div class="onco-title-wrap">
+                        <div
+                            class="onco-page-icon"
+                            style="background:#FBF1F3;color:#D99AA6;"
+                        >
+                            ♡
+                        </div>
+
+                        <div>
+                            <h1 class="onco-page-title">
+                                Gestion des patients
+                            </h1>
+
+                            <p class="onco-page-subtitle">
+                                Consultez les comptes des patients de la plateforme.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            {{-- Message succès --}}
+
+            {{-- Messages --}}
             @if(session('success'))
-                <div class="mt-4 rounded-lg bg-green-100 p-4 text-green-800">
-                    {{ session('success') }}
+                <div
+                    class="onco-alert onco-alert-success"
+                    style="margin-top:24px;"
+                >
+                    <div class="onco-alert-icon">
+                        ✓
+                    </div>
+
+                    <div>
+                        <div class="onco-alert-title">
+                            Opération réussie
+                        </div>
+
+                        <div class="onco-alert-text">
+                            {{ session('success') }}
+                        </div>
+                    </div>
                 </div>
             @endif
 
-            {{-- Message erreur --}}
+
             @if(session('error'))
-                <div class="mt-4 rounded-lg bg-red-100 p-4 text-red-800">
-                    {{ session('error') }}
+                <div
+                    class="onco-alert onco-alert-error"
+                    style="margin-top:24px;"
+                >
+                    <div class="onco-alert-icon">
+                        !
+                    </div>
+
+                    <div>
+                        <div class="onco-alert-title">
+                            Une erreur est survenue
+                        </div>
+
+                        <div class="onco-alert-text">
+                            {{ session('error') }}
+                        </div>
+                    </div>
                 </div>
             @endif
 
-            {{-- Liste des patients --}}
-            <div class="mt-6 overflow-hidden rounded-lg bg-white shadow">
 
-                <table class="w-full">
+            {{-- Résumé --}}
+            <div
+                class="onco-summary-grid"
+                style="margin-top:28px;"
+            >
 
-                    <thead class="bg-gray-100">
-                        <tr>
+                <div class="onco-summary-card">
 
-                            <th class="px-6 py-3 text-left">
-                                Nom
-                            </th>
+                    <div>
+                        <span class="onco-summary-label">
+                            Patients enregistrés
+                        </span>
 
-                            <th class="px-6 py-3 text-left">
-                                Email
-                            </th>
+                        <div class="onco-summary-value">
+                            {{ $patients->count() }}
+                        </div>
+                    </div>
 
-                            <th class="px-6 py-3 text-left">
-                                Téléphone
-                            </th>
+                    <div
+                        class="onco-summary-icon"
+                        style="background:#FBF1F3;color:#D99AA6;"
+                    >
+                        ♡
+                    </div>
 
-                            <th class="px-6 py-3 text-left">
-                                Rôle
-                            </th>
+                </div>
 
-                            <th class="px-6 py-3 text-left">
-                                Action
-                            </th>
 
-                        </tr>
-                    </thead>
+                <div class="onco-summary-card">
 
-                    <tbody>
+                    <div>
+                        <span class="onco-summary-label">
+                            Rôle
+                        </span>
 
-                        @forelse($patients as $patient)
+                        <div
+                            class="onco-summary-value"
+                            style="font-size:20px;"
+                        >
+                            Patient
+                        </div>
+                    </div>
 
-                            <tr class="border-t">
+                    <div
+                        class="onco-summary-icon"
+                        style="background:#FBF1F3;color:#D99AA6;"
+                    >
+                        P
+                    </div>
 
-                                <td class="px-6 py-4">
-                                    {{ $patient->prenom }}
-                                    {{ $patient->nom }}
-                                </td>
+                </div>
 
-                                <td class="px-6 py-4">
-                                    {{ $patient->email }}
-                                </td>
 
-                                <td class="px-6 py-4">
-                                    {{ $patient->telephone ?? '—' }}
-                                </td>
+                <div class="onco-summary-card">
 
-                                <td class="px-6 py-4">
-                                    Patient
-                                </td>
+                    <div>
+                        <span class="onco-summary-label">
+                            Accès
+                        </span>
 
-                                <td class="px-6 py-4">
+                        <div
+                            class="onco-summary-value"
+                            style="font-size:20px;"
+                        >
+                            Sécurisé
+                        </div>
+                    </div>
 
-                                    <a
-                                        href="{{ route('admin.users.edit', $patient) }}"
-                                        class="text-blue-600 hover:underline"
-                                    >
-                                        Modifier
-                                    </a>
+                    <div
+                        class="onco-summary-icon"
+                        style="background:#EEF6F1;color:#7FA68A;"
+                    >
+                        ✓
+                    </div>
 
-                                </td>
+                </div>
 
-                            </tr>
+            </div>
 
-                        @empty
 
+            {{-- Tableau --}}
+            <div
+                class="onco-card"
+                style="margin-top:28px;"
+            >
+
+                <div class="onco-card-header">
+
+                    <div>
+                        <h2 class="onco-card-title">
+                            Liste des patients
+                        </h2>
+
+                        <p class="onco-card-description">
+                            Les comptes patients enregistrés sur OncoCare.
+                        </p>
+                    </div>
+
+                    <span
+                        class="onco-badge"
+                        style="background:#FBF1F3;color:#B97886;"
+                    >
+                        {{ $patients->count() }} patient(s)
+                    </span>
+
+                </div>
+
+
+                <div class="onco-table-wrapper">
+
+                    <table class="onco-table">
+
+                        <thead>
                             <tr>
-                                <td
-                                    colspan="5"
-                                    class="px-6 py-8 text-center text-gray-500"
-                                >
-                                    Aucun patient enregistré.
-                                </td>
+
+                                <th>
+                                    Patient
+                                </th>
+
+                                <th>
+                                    Email
+                                </th>
+
+                                <th>
+                                    Téléphone
+                                </th>
+
+                                <th>
+                                    Rôle
+                                </th>
+
+                                <th>
+                                    Statut
+                                </th>
+
                             </tr>
+                        </thead>
 
-                        @endforelse
 
-                    </tbody>
+                        <tbody>
 
-                </table>
+                            @forelse($patients as $patient)
+
+                                <tr>
+
+                                    {{-- Patient --}}
+                                    <td>
+
+                                        <div class="onco-user-cell">
+
+                                            <div
+                                                class="onco-avatar"
+                                                style="background:#FBF1F3;color:#B97886;"
+                                            >
+                                                {{ strtoupper(substr($patient->prenom ?? 'P', 0, 1)) }}
+                                            </div>
+
+                                            <div>
+
+                                                <div class="onco-user-name">
+                                                    {{ $patient->prenom }}
+                                                    {{ $patient->nom }}
+                                                </div>
+
+                                                <div class="onco-user-meta">
+                                                    Compte patient
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    {{-- Email --}}
+                                    <td>
+                                        <span class="onco-table-primary">
+                                            {{ $patient->email }}
+                                        </span>
+                                    </td>
+
+
+                                    {{-- Téléphone --}}
+                                    <td>
+
+                                        <span class="onco-table-secondary">
+                                            {{ $patient->telephone ?? 'Non renseigné' }}
+                                        </span>
+
+                                    </td>
+
+
+                                    {{-- Rôle --}}
+                                    <td>
+
+                                        <span
+                                            class="onco-badge"
+                                            style="background:#FBF1F3;color:#B97886;"
+                                        >
+                                            Patient
+                                        </span>
+
+                                    </td>
+
+
+                                    {{-- Statut --}}
+                                    <td>
+
+                                        <span
+                                            class="onco-status"
+                                            style="color:#5D806A;"
+                                        >
+                                            <span
+                                                class="onco-status-dot"
+                                                style="background:#7FA68A;"
+                                            ></span>
+
+                                            Actif
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                            @empty
+
+                                <tr>
+
+                                    <td
+                                        colspan="5"
+                                        style="padding:56px 24px;"
+                                    >
+
+                                        <div class="onco-empty-state">
+
+                                            <div
+                                                class="onco-empty-icon"
+                                                style="background:#FBF1F3;color:#D99AA6;"
+                                            >
+                                                ♡
+                                            </div>
+
+                                            <h3 class="onco-empty-title">
+                                                Aucun patient enregistré
+                                            </h3>
+
+                                            <p class="onco-empty-text">
+                                                Aucun compte patient n'est actuellement disponible.
+                                            </p>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            @endforelse
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            {{-- Confidentialité --}}
+            <div
+                class="onco-info-card"
+                style="
+                    margin-top:24px;
+                    border-color:#EED7DC;
+                    background:#FFF9FA;
+                "
+            >
+
+                <div
+                    class="onco-info-icon"
+                    style="background:#FBF1F3;color:#D99AA6;"
+                >
+                    🔒
+                </div>
+
+                <div>
+
+                    <h3 class="onco-info-title">
+                        Confidentialité des données
+                    </h3>
+
+                    <p class="onco-info-text">
+                        Les informations personnelles des patients sont
+                        accessibles uniquement dans le cadre des droits
+                        d'administration de la plateforme.
+                    </p>
+
+                </div>
 
             </div>
 
