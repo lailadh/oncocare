@@ -1,193 +1,550 @@
 <x-app-layout>
 
-    <div class="p-6 max-w-6xl mx-auto">
+    <div class="onco-page">
 
-        <div class="flex justify-between items-center mb-6">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">
-                    Mes rendez-vous
-                </h1>
+        <div class="onco-container">
 
-                <p class="text-gray-600 mt-1">
-                    Consultez vos rendez-vous médicaux.
-                </p>
-            </div>
-        </div>
+            {{-- ====================================================== --}}
+            {{-- HEADER --}}
+            {{-- ====================================================== --}}
 
-        @if(session('success'))
-            <div class="mb-4 bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded-lg">
-                {{ session('success') }}
-            </div>
-        @endif
+            <div class="onco-page-header">
 
-        @if($rendezVous->isEmpty())
+                <div>
 
-            <div class="bg-white rounded-xl shadow p-8 text-center">
+                    <a
+                        href="{{ route('dashboard') }}"
+                        class="onco-back-link"
+                    >
+                        ← Retour au dashboard
+                    </a>
 
-                <div class="text-4xl mb-3">
-                    📅
+                    <div class="onco-title-wrap">
+
+                        <div
+                            class="onco-page-icon"
+                            style="background:#FBF1F3;color:#D99AA6;"
+                        >
+                            ◷
+                        </div>
+
+                        <div>
+
+                            <h1 class="onco-page-title">
+                                Mes rendez-vous
+                            </h1>
+
+                            <p class="onco-page-subtitle">
+                                Consultez vos rendez-vous médicaux.
+                            </p>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <h2 class="text-lg font-semibold text-gray-800">
-                    Aucun rendez-vous
-                </h2>
+            </div>
 
-                <p class="text-gray-500 mt-2">
-                    Vous n'avez pas encore de rendez-vous planifié.
-                </p>
 
-                <p class="text-gray-500 mt-1">
-                    Votre médecin vous informera lorsqu'un rendez-vous sera planifié.
-                </p>
+            {{-- ====================================================== --}}
+            {{-- SUCCESS --}}
+            {{-- ====================================================== --}}
+
+            @if(session('success'))
+
+                <div
+                    class="onco-alert"
+                    style="
+                        margin-top:24px;
+                        border-color:#D5E5D9;
+                        background:#F0F7F1;
+                    "
+                >
+
+                    <div
+                        class="onco-alert-icon"
+                        style="color:#7FA68A;"
+                    >
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <div
+                            class="onco-alert-title"
+                            style="color:#4D7257;"
+                        >
+                            Opération réussie
+                        </div>
+
+                        <div class="onco-alert-text">
+                            {{ session('success') }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            @endif
+
+
+            {{-- ====================================================== --}}
+            {{-- SUMMARY --}}
+            {{-- ====================================================== --}}
+
+            <div
+                class="onco-summary-grid"
+                style="
+                    margin-top:28px;
+                    grid-template-columns:repeat(2,minmax(0,1fr));
+                "
+            >
+
+                {{-- Total --}}
+                <div class="onco-summary-card">
+
+                    <div>
+
+                        <span
+                            class="onco-summary-label"
+                            style="color:#9A6470;"
+                        >
+                            Mes rendez-vous
+                        </span>
+
+                        <div class="onco-summary-value">
+                            {{ $rendezVous->count() }}
+                        </div>
+
+                        <p class="mt-1 text-xs text-[#8B6D74]">
+                            rendez-vous planifiés
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="onco-summary-icon"
+                        style="background:#FBF1F3;color:#D99AA6;"
+                    >
+                        ◷
+                    </div>
+
+                </div>
+
+
+                {{-- En attente --}}
+                <div class="onco-summary-card">
+
+                    <div>
+
+                        <span
+                            class="onco-summary-label"
+                            style="color:#8A6B32;"
+                        >
+                            En attente
+                        </span>
+
+                        <div class="onco-summary-value">
+                            {{ $rendezVous->where('statut', 'en_attente')->count() }}
+                        </div>
+
+                        <p class="mt-1 text-xs text-[#756D84]">
+                            demandes en attente de confirmation
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="onco-summary-icon"
+                        style="background:#F8F1E1;color:#C7A45B;"
+                    >
+                        !
+                    </div>
+
+                </div>
 
             </div>
 
-        @else
 
-            <div class="bg-white rounded-xl shadow overflow-hidden">
+            {{-- ====================================================== --}}
+            {{-- TABLE --}}
+            {{-- ====================================================== --}}
 
-                <div class="overflow-x-auto">
+            <div
+                class="onco-card"
+                style="
+                    margin-top:28px;
+                    padding:0;
+                "
+            >
 
-                    <table class="w-full text-left">
+                <div
+                    class="onco-card-header"
+                    style="
+                        padding:22px 24px;
+                        margin-bottom:0;
+                    "
+                >
 
-                        <thead class="bg-gray-50 border-b">
+                    <div>
 
-                            <tr>
+                        <h2 class="onco-card-title">
+                            Historique des rendez-vous
+                        </h2>
 
-                                <th class="px-6 py-4 font-semibold text-gray-700">
-                                    Date
-                                </th>
+                        <p class="onco-card-description">
+                            Retrouvez les informations principales de vos rendez-vous.
+                        </p>
 
-                                <th class="px-6 py-4 font-semibold text-gray-700">
-                                    Médecin
-                                </th>
+                    </div>
 
-                                <th class="px-6 py-4 font-semibold text-gray-700">
-                                    Motif
-                                </th>
+                    <span
+                        class="onco-badge"
+                        style="background:#FBF1F3;color:#9A6470;"
+                    >
+                        {{ $rendezVous->count() }} rendez-vous
+                    </span>
 
-                                <th class="px-6 py-4 font-semibold text-gray-700">
-                                    Statut
-                                </th>
+                </div>
 
-                                <th class="px-6 py-4 font-semibold text-gray-700">
-                                    Action
-                                </th>
 
-                            </tr>
+                @if($rendezVous->isEmpty())
 
-                        </thead>
+                    {{-- Empty state --}}
+                    <div
+                        class="onco-empty-state"
+                        style="padding:60px 24px;"
+                    >
 
-                        <tbody class="divide-y">
+                        <div
+                            class="onco-empty-icon"
+                            style="background:#FBF1F3;color:#D99AA6;"
+                        >
+                            ◷
+                        </div>
 
-                            @foreach($rendezVous as $rdv)
+                        <h2 class="onco-empty-title">
+                            Aucun rendez-vous
+                        </h2>
 
-                                <tr class="hover:bg-gray-50">
+                        <p class="onco-empty-text">
+                            Vous n'avez pas encore de rendez-vous planifié.
+                            Votre médecin vous informera lorsqu'un rendez-vous
+                            sera disponible.
+                        </p>
 
-                                    {{-- Date --}}
-                                    <td class="px-6 py-4">
+                    </div>
 
-                                        <div class="font-medium text-gray-800">
+                @else
 
-                                            {{ \Carbon\Carbon::parse($rdv->date_heure)->format('d/m/Y') }}
+                    <div class="onco-table-wrapper">
 
-                                        </div>
+                        <table class="onco-table">
 
-                                        <div class="text-sm text-gray-500">
+                            <thead>
 
-                                            {{ \Carbon\Carbon::parse($rdv->date_heure)->format('H:i') }}
+                                <tr>
 
-                                        </div>
+                                    <th>
+                                        Date
+                                    </th>
 
-                                    </td>
+                                    <th>
+                                        Médecin
+                                    </th>
 
-                                    {{-- Médecin --}}
-                                    <td class="px-6 py-4">
+                                    <th>
+                                        Motif
+                                    </th>
 
-                                        @if($rdv->medecin && $rdv->medecin->utilisateur)
+                                    <th>
+                                        Statut
+                                    </th>
 
-                                            Dr {{ $rdv->medecin->utilisateur->prenom }}
-                                            {{ $rdv->medecin->utilisateur->nom }}
-
-                                        @else
-
-                                            <span class="text-gray-400">
-                                                Médecin non disponible
-                                            </span>
-
-                                        @endif
-
-                                    </td>
-
-                                    {{-- Motif --}}
-                                    <td class="px-6 py-4 text-gray-700">
-
-                                        {{ $rdv->motif ?? '—' }}
-
-                                    </td>
-
-                                    {{-- Statut --}}
-                                    <td class="px-6 py-4">
-
-                                        @if($rdv->statut === 'confirme')
-
-                                            <span class="inline-flex px-3 py-1 rounded-full
-                                                         text-sm font-medium
-                                                         bg-green-100 text-green-700">
-                                                Confirmé
-                                            </span>
-
-                                        @elseif($rdv->statut === 'refuse')
-
-                                            <span class="inline-flex px-3 py-1 rounded-full
-                                                         text-sm font-medium
-                                                         bg-red-100 text-red-700">
-                                                Refusé
-                                            </span>
-
-                                        @else
-
-                                            <span class="inline-flex px-3 py-1 rounded-full
-                                                         text-sm font-medium
-                                                         bg-yellow-100 text-yellow-700">
-                                                En attente
-                                            </span>
-
-                                        @endif
-
-                                    </td>
-
-                                    {{-- Action --}}
-                                    <td class="px-6 py-4">
-
-                                        <a href="{{ route('patient.rendezvous.show', $rdv) }}"
-                                           class="text-blue-600 hover:text-blue-800 font-medium">
-                                            Voir détails
-                                        </a>
-
-                                    </td>
+                                    <th>
+                                        Action
+                                    </th>
 
                                 </tr>
 
-                            @endforeach
+                            </thead>
 
-                        </tbody>
 
-                    </table>
+                            <tbody>
+
+                                @foreach($rendezVous as $rdv)
+
+                                    <tr>
+
+                                        {{-- Date --}}
+                                        <td>
+
+                                            <div class="flex items-center gap-3">
+
+                                                <div
+                                                    class="onco-avatar"
+                                                    style="
+                                                        width:42px;
+                                                        height:42px;
+                                                        background:#FBF1F3;
+                                                        color:#B97886;
+                                                        font-size:14px;
+                                                    "
+                                                >
+                                                    ◷
+                                                </div>
+
+                                                <div>
+
+                                                    <div class="onco-user-name">
+
+                                                        {{
+                                                            \Carbon\Carbon::parse(
+                                                                $rdv->date_heure
+                                                            )->format('d/m/Y')
+                                                        }}
+
+                                                    </div>
+
+                                                    <div class="onco-user-meta">
+
+                                                        {{
+                                                            \Carbon\Carbon::parse(
+                                                                $rdv->date_heure
+                                                            )->format('H:i')
+                                                        }}
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        {{-- Médecin --}}
+                                        <td>
+
+                                            @if($rdv->medecin && $rdv->medecin->utilisateur)
+
+                                                <div class="onco-user-cell">
+
+                                                    <div
+                                                        class="onco-avatar"
+                                                        style="
+                                                            background:#F1EFF8;
+                                                            color:#655A88;
+                                                        "
+                                                    >
+                                                        {{
+                                                            strtoupper(
+                                                                substr(
+                                                                    $rdv->medecin->utilisateur->prenom ?? 'M',
+                                                                    0,
+                                                                    1
+                                                                )
+                                                            )
+                                                        }}
+                                                    </div>
+
+                                                    <div>
+
+                                                        <div class="onco-user-name">
+                                                            Dr {{ $rdv->medecin->utilisateur->prenom }}
+                                                            {{ $rdv->medecin->utilisateur->nom }}
+                                                        </div>
+
+                                                        <div class="onco-user-meta">
+                                                            Médecin associé
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            @else
+
+                                                <span class="onco-table-secondary">
+                                                    Médecin non disponible
+                                                </span>
+
+                                            @endif
+
+                                        </td>
+
+
+                                        {{-- Motif --}}
+                                        <td>
+
+                                            <span class="onco-table-secondary">
+                                                {{ $rdv->motif ?? 'Non renseigné' }}
+                                            </span>
+
+                                        </td>
+
+
+                                        {{-- Statut --}}
+                                        <td>
+
+                                            @if($rdv->statut === 'confirme')
+
+                                                <span
+                                                    class="onco-badge"
+                                                    style="
+                                                        background:#EAF4EC;
+                                                        color:#4B7655;
+                                                    "
+                                                >
+                                                    <span
+                                                        style="
+                                                            width:7px;
+                                                            height:7px;
+                                                            border-radius:50%;
+                                                            background:#7FA68A;
+                                                        "
+                                                    ></span>
+
+                                                    Confirmé
+                                                </span>
+
+                                            @elseif($rdv->statut === 'refuse')
+
+                                                <span
+                                                    class="onco-badge"
+                                                    style="
+                                                        background:#F7E9EB;
+                                                        color:#9A5661;
+                                                    "
+                                                >
+                                                    <span
+                                                        style="
+                                                            width:7px;
+                                                            height:7px;
+                                                            border-radius:50%;
+                                                            background:#D99AA6;
+                                                        "
+                                                    ></span>
+
+                                                    Refusé
+                                                </span>
+
+                                            @else
+
+                                                <span
+                                                    class="onco-badge"
+                                                    style="
+                                                        background:#F8F1E1;
+                                                        color:#8A6B32;
+                                                    "
+                                                >
+                                                    <span
+                                                        style="
+                                                            width:7px;
+                                                            height:7px;
+                                                            border-radius:50%;
+                                                            background:#C7A45B;
+                                                        "
+                                                    ></span>
+
+                                                    En attente
+                                                </span>
+
+                                            @endif
+
+                                        </td>
+
+
+                                        {{-- Action --}}
+                                        <td>
+
+                                            <a
+                                                href="{{ route('patient.rendezvous.show', $rdv) }}"
+                                                class="onco-btn"
+                                                style="
+                                                    min-height:36px;
+                                                    padding:8px 12px;
+                                                    font-size:11px;
+                                                    background:#FBF1F3;
+                                                    color:#9A6470;
+                                                    border:1px solid #F0DDE1;
+                                                "
+                                            >
+                                                Voir les détails
+                                                <span>→</span>
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+
+                                @endforeach
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                @endif
+
+            </div>
+
+
+            {{-- ====================================================== --}}
+            {{-- INFORMATION --}}
+            {{-- ====================================================== --}}
+
+            <div
+                class="onco-info-card"
+                style="
+                    margin-top:24px;
+                    border-color:#EED7DC;
+                    background:#FFF9FA;
+                "
+            >
+
+                <div
+                    class="onco-info-icon"
+                    style="background:#FBF1F3;color:#D99AA6;"
+                >
+                    ♡
+                </div>
+
+                <div>
+
+                    <h3
+                        class="onco-info-title"
+                        style="color:#9A6470;"
+                    >
+                        Suivi de vos rendez-vous
+                    </h3>
+
+                    <p
+                        class="onco-info-text"
+                        style="color:#8B6D74;"
+                    >
+                        Consultez le statut de chaque rendez-vous. Votre médecin
+                        vous informera de toute modification ou confirmation.
+                    </p>
 
                 </div>
 
             </div>
 
-        @endif
 
-        {{-- Retour dashboard --}}
-        <div class="mt-6">
+            {{-- Retour --}}
+            <div style="margin-top:20px;">
 
-            <a href="{{ route('dashboard') }}"
-               class="text-gray-600 hover:text-gray-900">
-                ← Retour au dashboard
-            </a>
+                <a
+                    href="{{ route('dashboard') }}"
+                    class="onco-back-link"
+                >
+                    ← Retour au dashboard
+                </a>
+
+            </div>
 
         </div>
 

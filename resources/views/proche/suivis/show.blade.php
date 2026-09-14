@@ -1,55 +1,33 @@
 <x-app-layout>
 
-    <div class="min-h-screen bg-slate-50 py-10">
-
-        <div class="max-w-5xl mx-auto px-6">
+    <div class="onco-page">
+        <div class="onco-container">
 
             {{-- Retour --}}
             <div class="mb-6">
                 <a href="{{ route('proche.suivis.index') }}"
-                   class="text-sm text-pink-600 hover:text-pink-700">
+                   class="onco-back-link">
                     ← Retour aux suivis
                 </a>
             </div>
 
+
             {{-- Header --}}
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-slate-800">
-                    Détail du suivi médical
-                </h1>
+            <div class="onco-page-header">
 
-                <p class="mt-2 text-slate-500">
-                    Informations médicales accessibles selon votre autorisation.
-                </p>
-            </div>
+                <div class="onco-title-wrap">
 
-            {{-- Informations patient --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
-
-                <h2 class="text-xl font-bold text-slate-800 mb-5">
-                    👤 Patient
-                </h2>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                    <div>
-                        <p class="text-sm text-slate-400">
-                            Nom complet
-                        </p>
-
-                        <p class="font-semibold text-slate-700">
-                            {{ $suivi->patient->utilisateur->prenom ?? '' }}
-                            {{ $suivi->patient->utilisateur->nom ?? '' }}
-                        </p>
+                    <div class="onco-page-icon role-proche">
+                        🩺
                     </div>
 
                     <div>
-                        <p class="text-sm text-slate-400">
-                            Date du suivi
-                        </p>
+                        <h1 class="onco-page-title">
+                            Détail du suivi médical
+                        </h1>
 
-                        <p class="font-semibold text-slate-700">
-                            {{ \Carbon\Carbon::parse($suivi->date_suivi)->format('d/m/Y') }}
+                        <p class="onco-page-subtitle">
+                            Informations médicales accessibles selon votre autorisation.
                         </p>
                     </div>
 
@@ -57,96 +35,289 @@
 
             </div>
 
-            {{-- Informations médicales --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
 
-                <h2 class="text-xl font-bold text-slate-800 mb-5">
-                    🩺 Informations médicales
-                </h2>
+            {{-- Patient --}}
+            <div class="onco-card mb-6">
+
+                <div class="onco-card-header">
+                    <div>
+                        <h2>
+                            👤 Patient
+                        </h2>
+
+                        <p class="onco-card-description">
+                            Informations générales du patient concerné par ce suivi.
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <div class="onco-info-card">
+
+                        <div class="onco-info-icon role-proche">
+                            👤
+                        </div>
+
+                        <div>
+                            <div class="onco-info-title">
+                                Nom complet
+                            </div>
+
+                            <div class="onco-info-text">
+                                <span class="font-semibold text-slate-800">
+                                    {{ $suivi->patient->utilisateur->prenom ?? '' }}
+                                    {{ $suivi->patient->utilisateur->nom ?? '' }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="onco-info-card">
+
+                        <div class="onco-info-icon role-proche">
+                            📅
+                        </div>
+
+                        <div>
+                            <div class="onco-info-title">
+                                Date du suivi
+                            </div>
+
+                            <div class="onco-info-text">
+                                <span class="font-semibold text-slate-800">
+                                    {{ \Carbon\Carbon::parse($suivi->date_suivi)->format('d/m/Y') }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- Informations médicales --}}
+            <div class="onco-card mb-6">
+
+                <div class="onco-card-header">
+
+                    <div>
+                        <h2>
+                            🩺 Informations médicales
+                        </h2>
+
+                        <p class="onco-card-description">
+                            Données du suivi médical accessibles à votre profil.
+                        </p>
+                    </div>
+
+                </div>
+
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-                    <div>
-                        <p class="text-sm text-slate-400">
-                            Type de cancer
-                        </p>
+                    {{-- Type cancer --}}
+                    <div class="onco-info-card">
 
-                        <p class="font-semibold text-slate-700">
-                            {{ $suivi->type_cancer }}
-                        </p>
+                        <div class="onco-info-icon role-proche">
+                            ✚
+                        </div>
+
+                        <div>
+                            <div class="onco-info-title">
+                                Type de cancer
+                            </div>
+
+                            <div class="onco-info-text">
+                                <span class="font-semibold text-slate-800">
+                                    {{ $suivi->type_cancer }}
+                                </span>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div>
-                        <p class="text-sm text-slate-400">
-                            Stade
-                        </p>
 
-                        <p class="font-semibold text-slate-700">
-                            {{ $suivi->stade }}
-                        </p>
+                    {{-- Stade --}}
+                    <div class="onco-info-card">
+
+                        <div class="onco-info-icon role-proche">
+                            ◎
+                        </div>
+
+                        <div>
+                            <div class="onco-info-title">
+                                Stade
+                            </div>
+
+                            <div class="onco-info-text">
+                                <span class="font-semibold text-slate-800">
+                                    {{ $suivi->stade }}
+                                </span>
+                            </div>
+                        </div>
+
                     </div>
 
+
+                    {{-- Evolution --}}
                     @if($suivi->evolution)
-                        <div>
-                            <p class="text-sm text-slate-400">
-                                Évolution
-                            </p>
 
-                            <p class="text-slate-700">
-                                {{ $suivi->evolution }}
-                            </p>
+                        <div class="onco-info-card">
+
+                            <div class="onco-info-icon role-proche">
+                                ↗
+                            </div>
+
+                            <div>
+                                <div class="onco-info-title">
+                                    Évolution
+                                </div>
+
+                                <div class="onco-info-text">
+                                    {{ $suivi->evolution }}
+                                </div>
+                            </div>
+
                         </div>
+
                     @endif
 
+
+                    {{-- Observation --}}
                     @if($suivi->observation)
-                        <div>
-                            <p class="text-sm text-slate-400">
-                                Observation
-                            </p>
 
-                            <p class="text-slate-700">
-                                {{ $suivi->observation }}
-                            </p>
+                        <div class="onco-info-card">
+
+                            <div class="onco-info-icon role-proche">
+                                ◌
+                            </div>
+
+                            <div>
+                                <div class="onco-info-title">
+                                    Observation
+                                </div>
+
+                                <div class="onco-info-text">
+                                    {{ $suivi->observation }}
+                                </div>
+                            </div>
+
                         </div>
+
                     @endif
 
-                    @if($suivi->traitement)
-                        <div class="md:col-span-2">
-                            <p class="text-sm text-slate-400">
-                                Traitement
-                            </p>
 
-                            <p class="text-slate-700">
-                                {{ $suivi->traitement }}
-                            </p>
+                    {{-- Traitement --}}
+                    @if($suivi->traitement)
+
+                        <div class="onco-info-card md:col-span-2">
+
+                            <div class="onco-info-icon role-proche">
+                                💊
+                            </div>
+
+                            <div>
+                                <div class="onco-info-title">
+                                    Traitement
+                                </div>
+
+                                <div class="onco-info-text">
+                                    {{ $suivi->traitement }}
+                                </div>
+                            </div>
+
                         </div>
+
                     @endif
 
                 </div>
 
             </div>
+
 
             {{-- Médecin --}}
             @if($suivi->medecin && $suivi->medecin->utilisateur)
 
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="onco-card mb-6">
 
-                    <h2 class="text-xl font-bold text-slate-800 mb-5">
-                        👨‍⚕️ Médecin
-                    </h2>
+                    <div class="onco-card-header">
 
-                    <p class="text-slate-700">
-                        Dr.
-                        {{ $suivi->medecin->utilisateur->prenom }}
-                        {{ $suivi->medecin->utilisateur->nom }}
-                    </p>
+                        <div>
+                            <h2>
+                                👨‍⚕️ Médecin
+                            </h2>
+
+                            <p class="onco-card-description">
+                                Professionnel de santé associé à ce suivi.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="onco-info-card">
+
+                        <div class="onco-info-icon role-medecin">
+                            👨‍⚕️
+                        </div>
+
+                        <div>
+
+                            <div class="onco-info-title">
+                                Médecin traitant
+                            </div>
+
+                            <div class="text-base font-semibold text-slate-800 mt-1">
+                                Dr.
+                                {{ $suivi->medecin->utilisateur->prenom }}
+                                {{ $suivi->medecin->utilisateur->nom }}
+                            </div>
+
+                            @if($suivi->medecin->specialite)
+                                <div class="onco-info-text mt-1">
+                                    {{ $suivi->medecin->specialite }}
+                                </div>
+                            @endif
+
+                        </div>
+
+                    </div>
 
                 </div>
 
             @endif
 
-        </div>
 
+            {{-- Confidentialité --}}
+            <div class="onco-info-card role-proche">
+
+                <div class="onco-info-icon">
+                    🔒
+                </div>
+
+                <div>
+
+                    <div class="onco-info-title">
+                        Informations protégées
+                    </div>
+
+                    <div class="onco-info-text">
+                        Ces informations médicales sont affichées uniquement
+                        parce qu'une autorisation active vous a été accordée
+                        par le patient.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
     </div>
 
 </x-app-layout>

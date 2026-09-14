@@ -1,118 +1,278 @@
 <x-app-layout>
 
-    <div class="min-h-screen bg-slate-50 py-10">
-
-        <div class="max-w-6xl mx-auto px-6">
+    <div class="onco-page">
+        <div class="onco-container">
 
             {{-- Header --}}
-            <div class="mb-8">
-                <a href="{{ route('dashboard') }}"
-                   class="text-sm text-pink-600 hover:text-pink-700">
-                    ← Retour au dashboard
-                </a>
+            <div class="onco-page-header">
 
-                <h1 class="mt-4 text-3xl font-bold text-slate-800">
-                    Suivi médical
-                </h1>
+                <div class="onco-title-wrap">
 
-                <p class="mt-2 text-slate-500">
-                    Consultez les informations de suivi médical auxquelles
-                    vous êtes autorisé.
-                </p>
+                    <div class="onco-page-icon role-proche">
+                        ♡
+                    </div>
+
+                    <div>
+                        <h1 class="onco-page-title">
+                            Suivis accessibles
+                        </h1>
+
+                        <p class="onco-page-subtitle">
+                            Consultez les informations de suivi médical auxquelles
+                            vous êtes autorisé.
+                        </p>
+                    </div>
+
+                </div>
+
             </div>
 
 
-            {{-- Liste des suivis --}}
-            @if($suivis->count())
+            {{-- Résumé --}}
+            <div class="onco-summary-grid">
 
-                <div class="space-y-5">
+                <div class="onco-summary-card">
 
-                    @foreach($suivis as $suivi)
+                    <div class="onco-summary-label">
+                        Suivis accessibles
+                    </div>
 
-                        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                    <div class="onco-summary-value">
+                        {{ $suivis->count() }}
+                    </div>
 
-                            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div class="onco-summary-icon">
+                        🩺
+                    </div>
 
-                                <div>
+                </div>
 
-                                    <p class="text-sm text-slate-400">
-                                        Date du suivi
-                                    </p>
 
-                                    <h2 class="text-xl font-bold text-slate-800">
-                                        {{ \Carbon\Carbon::parse($suivi->date_suivi)->format('d/m/Y') }}
-                                    </h2>
+                <div class="onco-summary-card">
 
-                                    <div class="mt-3 space-y-1 text-sm text-slate-600">
+                    <div class="onco-summary-label">
+                        Patients concernés
+                    </div>
 
-                                        <p>
-                                            <strong>Patient :</strong>
-                                            {{ $suivi->patient->utilisateur->prenom ?? '' }}
-                                            {{ $suivi->patient->utilisateur->nom ?? '' }}
-                                        </p>
+                    <div class="onco-summary-value">
+                        {{ $suivis->pluck('id_patient')->unique()->count() }}
+                    </div>
 
-                                        <p>
-                                            <strong>Type de cancer :</strong>
-                                            {{ $suivi->type_cancer }}
-                                        </p>
+                    <div class="onco-summary-icon">
+                        👥
+                    </div>
 
-                                        <p>
-                                            <strong>Stade :</strong>
-                                            {{ $suivi->stade }}
-                                        </p>
+                </div>
 
-                                        @if($suivi->medecin && $suivi->medecin->utilisateur)
-                                            <p>
-                                                <strong>Médecin :</strong>
-                                                Dr.
-                                                {{ $suivi->medecin->utilisateur->prenom }}
-                                                {{ $suivi->medecin->utilisateur->nom }}
-                                            </p>
-                                        @endif
+
+                <div class="onco-summary-card">
+
+                    <div class="onco-summary-label">
+                        Dernier suivi
+                    </div>
+
+                    <div class="onco-summary-value">
+                        @if($suivis->count())
+                            {{ \Carbon\Carbon::parse($suivis->first()->date_suivi)->format('d/m/Y') }}
+                        @else
+                            —
+                        @endif
+                    </div>
+
+                    <div class="onco-summary-icon">
+                        📅
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {{-- Liste --}}
+            <div class="onco-card">
+
+                <div class="onco-card-header">
+
+                    <div>
+                        <h2>
+                            Historique des suivis
+                        </h2>
+
+                        <p class="onco-card-description">
+                            Vous pouvez consulter uniquement les suivis
+                            auxquels le patient vous a donné accès.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                @if($suivis->count())
+
+                    <div class="space-y-5">
+
+                        @foreach($suivis as $suivi)
+
+                            <div class="onco-info-card">
+
+                                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+
+                                    {{-- Informations --}}
+                                    <div class="flex items-start gap-4">
+
+                                        <div class="onco-info-icon role-proche">
+                                            🩺
+                                        </div>
+
+                                        <div>
+
+                                            <div class="flex flex-wrap items-center gap-3">
+
+                                                <h3 class="text-lg font-semibold text-slate-800">
+                                                    Suivi du
+                                                    {{ \Carbon\Carbon::parse($suivi->date_suivi)->format('d/m/Y') }}
+                                                </h3>
+
+                                                <span class="onco-status onco-status-success">
+                                                    <span class="onco-status-dot"></span>
+                                                    Accessible
+                                                </span>
+
+                                            </div>
+
+
+                                            <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+
+                                                <div>
+                                                    <span class="font-medium text-slate-500">
+                                                        Patient
+                                                    </span>
+
+                                                    <p class="text-slate-800 font-medium">
+                                                        {{ $suivi->patient->utilisateur->prenom ?? '' }}
+                                                        {{ $suivi->patient->utilisateur->nom ?? '' }}
+                                                    </p>
+                                                </div>
+
+
+                                                <div>
+                                                    <span class="font-medium text-slate-500">
+                                                        Type de cancer
+                                                    </span>
+
+                                                    <p class="text-slate-800">
+                                                        {{ $suivi->type_cancer }}
+                                                    </p>
+                                                </div>
+
+
+                                                <div>
+                                                    <span class="font-medium text-slate-500">
+                                                        Stade
+                                                    </span>
+
+                                                    <p class="text-slate-800">
+                                                        {{ $suivi->stade }}
+                                                    </p>
+                                                </div>
+
+
+                                                @if($suivi->medecin && $suivi->medecin->utilisateur)
+
+                                                    <div>
+                                                        <span class="font-medium text-slate-500">
+                                                            Médecin
+                                                        </span>
+
+                                                        <p class="text-slate-800">
+                                                            Dr.
+                                                            {{ $suivi->medecin->utilisateur->prenom }}
+                                                            {{ $suivi->medecin->utilisateur->nom }}
+                                                        </p>
+                                                    </div>
+
+                                                @endif
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {{-- Action --}}
+                                    <div class="lg:flex-shrink-0">
+
+                                        <a href="{{ route('proche.suivis.show', $suivi) }}"
+                                           class="onco-btn onco-btn-proche">
+
+                                            Consulter le suivi
+
+                                            <span class="ml-2">
+                                                →
+                                            </span>
+
+                                        </a>
 
                                     </div>
 
                                 </div>
 
-
-                                <div>
-                                    <a href="{{ route('proche.suivis.show', $suivi) }}"
-                                       class="inline-flex items-center px-5 py-2.5 rounded-xl bg-pink-600 text-white font-medium hover:bg-pink-700 transition">
-                                        Consulter →
-                                    </a>
-                                </div>
-
                             </div>
 
-                        </div>
+                        @endforeach
 
-                    @endforeach
-
-                </div>
-
-            @else
-
-                <div class="bg-white rounded-2xl border border-slate-200 p-10 text-center">
-
-                    <div class="text-4xl mb-4">
-                        📋
                     </div>
 
-                    <h2 class="text-xl font-semibold text-slate-700">
-                        Aucun suivi disponible
-                    </h2>
+                @else
 
-                    <p class="mt-2 text-slate-500">
-                        Aucun suivi médical n'est actuellement disponible
-                        pour les patients auxquels vous avez accès.
-                    </p>
+                    <div class="onco-empty-state">
+
+                        <div class="onco-empty-icon">
+                            🩺
+                        </div>
+
+                        <h3>
+                            Aucun suivi disponible
+                        </h3>
+
+                        <p>
+                            Aucun suivi médical n'est actuellement disponible
+                            pour les patients auxquels vous avez accès.
+                        </p>
+
+                    </div>
+
+                @endif
+
+            </div>
+
+
+            {{-- Confidentialité --}}
+            <div class="onco-info-card role-proche">
+
+                <div class="onco-info-icon">
+                    🔒
+                </div>
+
+                <div>
+
+                    <div class="onco-info-title">
+                        Accès protégé
+                    </div>
+
+                    <div class="onco-info-text">
+                        Les données affichées sont accessibles uniquement grâce
+                        à une autorisation active accordée par le patient.
+                        Vous ne pouvez consulter aucune information supplémentaire
+                        sans autorisation.
+                    </div>
 
                 </div>
 
-            @endif
+            </div>
 
         </div>
-
     </div>
 
 </x-app-layout>
