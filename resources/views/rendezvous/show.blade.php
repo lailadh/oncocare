@@ -86,6 +86,48 @@
 
 
             {{-- ====================================================== --}}
+            {{-- ERROR --}}
+            {{-- ====================================================== --}}
+
+            @if($errors->has('rendezVous'))
+
+                <div
+                    class="onco-alert"
+                    style="
+                        margin-top:24px;
+                        border-color:#F0D7DF;
+                        background:#FDF3F5;
+                    "
+                >
+
+                    <div
+                        class="onco-alert-icon"
+                        style="color:#C9788D;"
+                    >
+                        !
+                    </div>
+
+                    <div>
+
+                        <div
+                            class="onco-alert-title"
+                            style="color:#9A5661;"
+                        >
+                            Attention
+                        </div>
+
+                        <div class="onco-alert-text">
+                            {{ $errors->first('rendezVous') }}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            @endif
+
+
+            {{-- ====================================================== --}}
             {{-- MAIN CARD --}}
             {{-- ====================================================== --}}
 
@@ -140,11 +182,9 @@
                                     Patient
                                 </p>
 
-                                <p
-                                    class="mt-1 text-lg font-semibold text-[#293331]"
-                                >
-                                    {{ $rendezVous->patient->utilisateur->prenom }}
-                                    {{ $rendezVous->patient->utilisateur->nom }}
+                                <p class="mt-1 text-lg font-semibold text-[#293331]">
+                                    {{ $rendezVous->patient->utilisateur->prenom ?? '' }}
+                                    {{ $rendezVous->patient->utilisateur->nom ?? '' }}
                                 </p>
 
                             </div>
@@ -192,11 +232,9 @@
                                     Médecin
                                 </p>
 
-                                <p
-                                    class="mt-1 text-lg font-semibold text-[#293331]"
-                                >
-                                    Dr {{ $rendezVous->medecin->utilisateur->prenom }}
-                                    {{ $rendezVous->medecin->utilisateur->nom }}
+                                <p class="mt-1 text-lg font-semibold text-[#293331]">
+                                    Dr {{ $rendezVous->medecin->utilisateur->prenom ?? '' }}
+                                    {{ $rendezVous->medecin->utilisateur->nom ?? '' }}
                                 </p>
 
                             </div>
@@ -241,14 +279,18 @@
                                 ◷
                             </span>
 
-                            <p
-                                class="text-lg font-semibold text-[#293331]"
-                            >
-                                {{
-                                    \Carbon\Carbon::parse(
-                                        $rendezVous->date_heure
-                                    )->format('d/m/Y')
-                                }}
+                            <p class="text-lg font-semibold text-[#293331]">
+
+                                @if($rendezVous->date_heure)
+
+                                    {{ $rendezVous->date_heure->format('d/m/Y') }}
+
+                                @else
+
+                                    Non planifiée
+
+                                @endif
+
                             </p>
 
                         </div>
@@ -281,14 +323,18 @@
                                 ◷
                             </span>
 
-                            <p
-                                class="text-lg font-semibold text-[#293331]"
-                            >
-                                {{
-                                    \Carbon\Carbon::parse(
-                                        $rendezVous->date_heure
-                                    )->format('H:i')
-                                }}
+                            <p class="text-lg font-semibold text-[#293331]">
+
+                                @if($rendezVous->date_heure)
+
+                                    {{ $rendezVous->date_heure->format('H:i') }}
+
+                                @else
+
+                                    —
+
+                                @endif
+
                             </p>
 
                         </div>
@@ -391,6 +437,28 @@
                                     Refusé
                                 </span>
 
+                            @elseif($rendezVous->statut === 'terminee')
+
+                                <span
+                                    class="onco-badge"
+                                    style="
+                                        background:#F3F1F5;
+                                        color:#6D6878;
+                                        font-size:12px;
+                                    "
+                                >
+                                    <span
+                                        style="
+                                            width:7px;
+                                            height:7px;
+                                            border-radius:50%;
+                                            background:#8F8998;
+                                        "
+                                    ></span>
+
+                                    Terminé
+                                </span>
+
                             @else
 
                                 <span class="onco-badge onco-badge-neutral">
@@ -404,6 +472,46 @@
                     </div>
 
                 </div>
+
+
+                {{-- ================================================== --}}
+                {{-- DEMANDE EN ATTENTE --}}
+                {{-- ================================================== --}}
+
+                @if($rendezVous->statut === 'en_attente')
+
+                    <div
+                        class="mt-6 rounded-2xl border border-[#E5D9BD] bg-[#FCF8EF] p-5"
+                    >
+
+                        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+                            <div>
+
+                                <p class="text-sm font-semibold text-[#7D612E]">
+                                    Cette demande est en attente de planification.
+                                </p>
+
+                                <p class="mt-1 text-xs leading-5 text-[#8A7650]">
+                                    Choisissez une date et une heure pour confirmer
+                                    le rendez-vous du patient.
+                                </p>
+
+                            </div>
+
+                            <a
+                                href="{{ route('rendezvous.edit', $rendezVous) }}"
+                                class="onco-btn onco-btn-medecin"
+                            >
+                                Planifier et confirmer
+                                <span>→</span>
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                @endif
 
 
                 {{-- ================================================== --}}
@@ -423,23 +531,41 @@
                     </a>
 
 
-                    <form
-                        method="POST"
-                        action="{{ route('rendezvous.destroy', $rendezVous) }}"
-                        onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?');"
-                    >
+                    <div class="flex flex-col gap-3 sm:flex-row">
 
-                        @csrf
-                        @method('DELETE')
+                        {{-- Planifier --}}
+                        @if($rendezVous->statut === 'en_attente')
 
-                        <button
-                            type="submit"
-                            class="onco-btn onco-btn-danger"
+                            <a
+                                href="{{ route('rendezvous.edit', $rendezVous) }}"
+                                class="onco-btn onco-btn-medecin"
+                            >
+                                Planifier
+                            </a>
+
+                        @endif
+
+
+                        {{-- Supprimer --}}
+                        <form
+                            method="POST"
+                            action="{{ route('rendezvous.destroy', $rendezVous) }}"
+                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?');"
                         >
-                            Supprimer le rendez-vous
-                        </button>
 
-                    </form>
+                            @csrf
+                            @method('DELETE')
+
+                            <button
+                                type="submit"
+                                class="onco-btn onco-btn-danger"
+                            >
+                                Supprimer le rendez-vous
+                            </button>
+
+                        </form>
+
+                    </div>
 
                 </div>
 

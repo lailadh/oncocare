@@ -11,9 +11,11 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
+
 Route::get('/', function () {
     return view('home');
 })->name('home');
+
 
 // =====================================================
 // DASHBOARD
@@ -116,6 +118,14 @@ Route::middleware(['auth', 'role:medecin'])->group(function () {
     // Détail d'un rendez-vous
     Route::get('/rendezvous/{rendezVous}', [RendezVousController::class, 'show'])
         ->name('rendezvous.show');
+
+    // Modifier / traiter une demande de rendez-vous
+    Route::get('/rendezvous/{rendezVous}/edit', [RendezVousController::class, 'edit'])
+        ->name('rendezvous.edit');
+
+    // Confirmer une demande avec une date et une heure
+    Route::patch('/rendezvous/{rendezVous}', [RendezVousController::class, 'update'])
+        ->name('rendezvous.update');
 
     // Suppression d'un rendez-vous
     Route::delete('/rendezvous/{rendezVous}', [RendezVousController::class, 'destroy'])
