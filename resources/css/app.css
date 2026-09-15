@@ -9,61 +9,113 @@
 */
 
 :root {
-    /* Global */
+    /* =====================================================
+       GLOBAL
+       ===================================================== */
+
     --onco-bg: #F7F4F2;
     --onco-white: #FFFFFF;
-    --onco-text: #293331;
-    --onco-muted: #66706D;
+
+    /* Texte plus lisible */
+    --onco-text: #34324A;
+    --onco-muted: #667085;
+
     --onco-border: #E3DDD8;
     --onco-neutral: #F1EEEB;
+
     --onco-gold: #C7A45B;
 
-    /* Patient */
+
+    /* =====================================================
+       PATIENT
+       ===================================================== */
+
     --patient-primary: #D99AA6;
     --patient-light: #FBF1F3;
     --patient-accent: #E8BBC4;
 
-    /* Medecin */
-    --medecin-primary: #7567A8;
-    --medecin-light: #F1EFF8;
-    --medecin-accent: #A9A2CC;
 
-    /* Proche */
+    /* =====================================================
+       MEDECIN
+       Violet + Rose + Bleu
+       ===================================================== */
+
+    --medecin-primary: #6C63A8;
+    --medecin-light: #EEEAF8;
+    --medecin-accent: #D98FA5;
+
+    --medecin-blue: #5B8DEF;
+    --medecin-blue-light: #EAF2FF;
+
+    --medecin-pink: #D98FA5;
+    --medecin-pink-light: #F8E9EE;
+
+    --medecin-text: #34324A;
+    --medecin-muted: #667085;
+
+
+    /* =====================================================
+       PROCHE
+       ===================================================== */
+
     --proche-primary: #7FA68A;
     --proche-light: #F0F6F2;
     --proche-accent: #AFC8BA;
 
-    /* Admin */
+
+    /* =====================================================
+       ADMIN
+       ===================================================== */
+
     --admin-primary: #6B4C6F;
     --admin-light: #F4EFF5;
     --admin-accent: #A98DAD;
 
-    /* Dark sidebar colors */
+
+    /* =====================================================
+       SIDEBAR
+       ===================================================== */
+
     --patient-dark: #51353D;
-    --medecin-dark: #403761;
+    --medecin-dark: #514B70;
     --proche-dark: #334D3D;
     --admin-dark: #39283B;
 
-    /* Sizes */
+
+    /* =====================================================
+       SIZES
+       ===================================================== */
+
     --sidebar-width: 250px;
     --topbar-height: 76px;
 
-    /* Radius */
+
+    /* =====================================================
+       RADIUS
+       ===================================================== */
+
     --radius-sm: 10px;
     --radius-md: 14px;
     --radius-lg: 18px;
     --radius-pill: 999px;
 
-    /* Shadows */
+
+    /* =====================================================
+       SHADOWS
+       ===================================================== */
+
     --shadow-soft:
         0 8px 30px rgba(41, 51, 49, 0.05);
 
     --shadow-card:
         0 4px 18px rgba(41, 51, 49, 0.045);
 
-    /* Transition */
-    --transition:
-        180ms ease;
+
+    /* =====================================================
+       TRANSITION
+       ===================================================== */
+
+    --transition: 180ms ease;
 }
 
 
@@ -79,12 +131,18 @@ html {
 
 body {
     margin: 0;
+
     background: var(--onco-bg);
+
     color: var(--onco-text);
+
     font-family: "IBM Plex Sans", sans-serif;
+
     -webkit-font-smoothing: antialiased;
+
     text-rendering: optimizeLegibility;
 }
+
 
 h1,
 h2,
@@ -93,8 +151,10 @@ h4,
 h5,
 h6 {
     font-family: "Newsreader", serif;
+
     color: var(--onco-text);
 }
+
 
 button,
 input,
@@ -103,13 +163,16 @@ textarea {
     font-family: inherit;
 }
 
+
 button,
 a {
     -webkit-tap-highlight-color: transparent;
 }
 
+
 ::selection {
     background: var(--patient-accent);
+
     color: var(--onco-text);
 }
 
@@ -122,11 +185,14 @@ a {
 
 .onco-body {
     min-height: 100vh;
+
     background: var(--onco-bg);
 }
 
+
 .onco-app {
     min-height: 100vh;
+
     display: flex;
 }
 
@@ -139,28 +205,32 @@ a {
 
 .onco-sidebar {
     position: fixed;
+
     inset: 0 auto 0 0;
+
     z-index: 50;
 
     width: var(--sidebar-width);
+
     min-height: 100vh;
 
     padding: 28px 18px 20px;
 
     display: flex;
+
     flex-direction: column;
 
     background:
         linear-gradient(
             180deg,
-            #3D3341 0%,
-            #342E37 100%
+            #514B70 0%,
+            #45405F 100%
         );
 
-    color: #fff;
+    color: #FFFFFF;
 
     box-shadow:
-        8px 0 30px rgba(41, 51, 49, 0.06);
+        8px 0 30px rgba(55, 51, 79, 0.10);
 
     overflow-y: auto;
 
@@ -179,32 +249,41 @@ a {
     padding: 2px 8px 24px;
 }
 
+
 .onco-logo {
     display: inline-flex;
+
     align-items: baseline;
 
     color: #FFFFFF;
 
     font-family: "Newsreader", serif;
+
     font-size: 28px;
+
     font-weight: 500;
+
     letter-spacing: -0.4px;
 
     text-decoration: none;
 }
 
+
 .onco-logo-dot {
     margin: 0 2px;
-    color: var(--onco-gold);
+
+    color: #E5A2B6;
 }
+
 
 .onco-sidebar-subtitle {
     margin: 6px 0 0;
 
     font-size: 11px;
+
     line-height: 1.4;
 
-    color: rgba(255, 255, 255, 0.58);
+    color: #E6E3EF;
 }
 
 
@@ -216,59 +295,79 @@ a {
 
 .onco-user-card {
     display: flex;
+
     align-items: center;
+
     gap: 12px;
 
     margin: 0 4px 24px;
+
     padding: 12px;
 
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+
     border-radius: var(--radius-md);
 
-    background: rgba(255, 255, 255, 0.055);
+    background: rgba(255, 255, 255, 0.08);
 }
+
 
 .onco-avatar,
 .onco-profile-avatar {
     width: 42px;
+
     height: 42px;
 
     flex-shrink: 0;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     border-radius: 50%;
 
-    background: #EFE5E8;
-    color: #694F58;
+    background: #F1EAF4;
+
+    color: #5F5788;
 
     font-family: "Newsreader", serif;
+
     font-size: 16px;
+
     font-weight: 600;
 }
+
 
 .onco-user-info {
     min-width: 0;
 }
 
+
 .onco-user-name {
     color: #FFFFFF;
 
     font-size: 13px;
-    font-weight: 600;
+
+    font-weight: 700;
 
     white-space: nowrap;
+
     overflow: hidden;
+
     text-overflow: ellipsis;
 }
 
+
 .onco-user-role {
-    margin-top: 2px;
+    margin-top: 3px;
 
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.58);
+
+    font-weight: 600;
+
+    color: #EAE7F2;
 }
 
 
@@ -280,41 +379,52 @@ a {
 
 .onco-nav {
     display: flex;
+
     flex-direction: column;
+
     gap: 4px;
 }
 
+
 .onco-nav-title {
-    margin: 5px 10px 8px;
+    margin: 6px 10px 9px;
 
     font-size: 10px;
-    font-weight: 600;
+
+    font-weight: 700;
+
     letter-spacing: 0.14em;
 
-    color: rgba(255, 255, 255, 0.42);
+    color: #E5E1EE;
 }
+
 
 .onco-nav-link,
 .onco-logout {
     width: 100%;
 
     display: flex;
+
     align-items: center;
+
     gap: 11px;
 
     padding: 11px 12px;
 
     border: 0;
+
     border-radius: 11px;
 
     background: transparent;
 
-    color: rgba(255, 255, 255, 0.68);
+    color: #F8F7FB;
 
     font-size: 13.5px;
-    font-weight: 500;
+
+    font-weight: 600;
 
     text-decoration: none;
+
     text-align: left;
 
     cursor: pointer;
@@ -325,42 +435,63 @@ a {
         transform var(--transition);
 }
 
+
 .onco-nav-link:hover,
 .onco-logout:hover {
-    background: rgba(255, 255, 255, 0.075);
+    background: rgba(255, 255, 255, 0.11);
+
     color: #FFFFFF;
+
+    transform: translateX(1px);
 }
+
 
 .onco-nav-link.active {
     color: #FFFFFF;
-    background: rgba(255, 255, 255, 0.105);
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(217, 143, 165, 0.30),
+            rgba(108, 99, 168, 0.28)
+        );
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
+
 
 .onco-nav-link.active::before {
     content: "";
 
     width: 3px;
-    height: 23px;
+
+    height: 24px;
 
     margin-right: -3px;
 
     border-radius: 999px;
 
-    background: var(--onco-gold);
+    background: #E5A2B6;
 }
+
 
 .onco-nav-icon {
     width: 22px;
+
     min-width: 22px;
 
     display: inline-flex;
+
     align-items: center;
+
     justify-content: center;
 
     font-size: 17px;
+
     line-height: 1;
 
-    opacity: 0.9;
+    opacity: 0.96;
 }
 
 
@@ -372,27 +503,33 @@ a {
 
 .onco-sidebar-bottom {
     margin-top: auto;
+
     padding-top: 18px;
 }
+
 
 .onco-sidebar-bottom form {
     margin: 4px 0 0;
 }
 
+
 .onco-logout {
     margin-top: 2px;
 }
 
+
 .onco-disclaimer {
     margin: 20px 8px 0;
+
     padding-top: 16px;
 
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
 
     font-size: 10.5px;
+
     line-height: 1.6;
 
-    color: rgba(255, 255, 255, 0.38);
+    color: rgba(255, 255, 255, 0.58);
 }
 
 
@@ -404,6 +541,7 @@ a {
 
 .onco-main {
     width: calc(100% - var(--sidebar-width));
+
     min-height: 100vh;
 
     margin-left: var(--sidebar-width);
@@ -422,21 +560,28 @@ a {
     min-height: var(--topbar-height);
 
     display: flex;
+
     align-items: center;
+
     justify-content: flex-end;
 
     padding: 16px 34px;
 
-    background: rgba(247, 244, 242, 0.92);
+    background:
+        rgba(247, 244, 242, 0.94);
 
-    border-bottom: 1px solid rgba(227, 221, 216, 0.85);
+    border-bottom:
+        1px solid rgba(227, 221, 216, 0.90);
 
     backdrop-filter: blur(10px);
 }
 
+
 .onco-topbar-right {
     display: flex;
+
     align-items: center;
+
     gap: 14px;
 }
 
@@ -451,14 +596,18 @@ a {
     display: none;
 }
 
+
 .onco-mobile-menu {
     width: 40px;
+
     height: 40px;
 
     border: 1px solid var(--onco-border);
+
     border-radius: 11px;
 
     background: var(--onco-white);
+
     color: var(--onco-text);
 
     cursor: pointer;
@@ -468,22 +617,29 @@ a {
         border-color var(--transition);
 }
 
+
 .onco-mobile-menu:hover {
     border-color: #D0C7C1;
+
+    background: #FCFBFA;
 }
+
 
 .onco-mobile-logo {
     color: var(--onco-text);
 
     font-family: "Newsreader", serif;
+
     font-size: 21px;
+
     font-weight: 600;
 
     text-decoration: none;
 }
 
+
 .onco-mobile-logo span {
-    color: var(--onco-gold);
+    color: #D98FA5;
 }
 
 
@@ -495,16 +651,21 @@ a {
 
 .onco-top-icon {
     width: 40px;
+
     height: 40px;
 
     display: inline-flex;
+
     align-items: center;
+
     justify-content: center;
 
     border: 1px solid var(--onco-border);
+
     border-radius: 50%;
 
     background: var(--onco-white);
+
     color: var(--onco-text);
 
     text-decoration: none;
@@ -515,9 +676,12 @@ a {
         box-shadow var(--transition);
 }
 
+
 .onco-top-icon:hover {
     transform: translateY(-1px);
-    border-color: var(--onco-gold);
+
+    border-color: var(--medecin-accent);
+
     box-shadow: var(--shadow-card);
 }
 
@@ -530,7 +694,9 @@ a {
 
 .onco-profile-chip {
     display: flex;
+
     align-items: center;
+
     gap: 10px;
 
     padding: 4px 10px 4px 4px;
@@ -538,35 +704,49 @@ a {
     border-radius: 14px;
 
     color: var(--onco-text);
+
     text-decoration: none;
 
-    transition: background var(--transition);
+    transition:
+        background var(--transition);
 }
 
+
 .onco-profile-chip:hover {
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.75);
 }
+
 
 .onco-profile-avatar {
     width: 38px;
+
     height: 38px;
 
     font-size: 14px;
 }
 
+
 .onco-profile-text {
     display: flex;
+
     flex-direction: column;
+
     gap: 1px;
 }
 
+
 .onco-profile-name {
     font-size: 13px;
-    font-weight: 600;
+
+    font-weight: 700;
+
+    color: var(--onco-text);
 }
+
 
 .onco-profile-role {
     font-size: 10.5px;
+
     color: var(--onco-muted);
 }
 
@@ -581,8 +761,10 @@ a {
     padding: 30px 34px 0;
 }
 
+
 .onco-page-header-inner {
     max-width: 1280px;
+
     margin: 0 auto;
 }
 
@@ -595,6 +777,7 @@ a {
 
 .onco-content {
     max-width: 1280px;
+
     margin: 0 auto;
 
     padding: 30px 34px 56px;
@@ -611,17 +794,22 @@ a {
     margin: 0;
 
     font-family: "Newsreader", serif;
+
     font-size: 34px;
+
     font-weight: 500;
+
     line-height: 1.1;
 
     color: var(--onco-text);
 }
 
+
 .onco-page-subtitle {
     margin: 8px 0 0;
 
     font-size: 14px;
+
     line-height: 1.65;
 
     color: var(--onco-muted);
@@ -636,24 +824,32 @@ a {
 
 .onco-breadcrumb {
     display: flex;
+
     align-items: center;
+
     flex-wrap: wrap;
+
     gap: 8px;
 
     margin-bottom: 13px;
 
     font-size: 12px;
+
     color: var(--onco-muted);
 }
 
+
 .onco-breadcrumb a {
     color: var(--onco-muted);
+
     text-decoration: none;
 }
+
 
 .onco-breadcrumb a:hover {
     color: var(--onco-text);
 }
+
 
 .onco-breadcrumb-separator {
     opacity: 0.5;
@@ -668,19 +864,26 @@ a {
 
 .onco-grid {
     display: grid;
+
     gap: 18px;
 }
 
+
 .onco-grid-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
 }
+
 
 .onco-grid-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
 }
 
+
 .onco-grid-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
 }
 
 
@@ -693,10 +896,14 @@ a {
 .onco-card {
     background: var(--onco-white);
 
-    border: 1px solid var(--onco-border);
-    border-radius: var(--radius-lg);
+    border:
+        1px solid var(--onco-border);
 
-    box-shadow: var(--shadow-card);
+    border-radius:
+        var(--radius-lg);
+
+    box-shadow:
+        var(--shadow-card);
 
     padding: 22px;
 
@@ -706,27 +913,35 @@ a {
         border-color var(--transition);
 }
 
+
 .onco-card:hover {
     border-color: #D8D0CB;
+
+    box-shadow: var(--shadow-soft);
 }
+
 
 .onco-card-soft {
     background: var(--onco-neutral);
 }
 
+
 .onco-card-title {
     margin: 0;
 
     font-size: 15px;
-    font-weight: 600;
+
+    font-weight: 700;
 
     color: var(--onco-text);
 }
+
 
 .onco-card-subtitle {
     margin: 5px 0 0;
 
     font-size: 12.5px;
+
     line-height: 1.55;
 
     color: var(--onco-muted);
@@ -741,47 +956,61 @@ a {
 
 .onco-stat-card {
     position: relative;
+
     overflow: hidden;
 }
+
 
 .onco-stat-card::after {
     content: "";
 
     position: absolute;
+
     right: -30px;
+
     bottom: -35px;
 
     width: 100px;
+
     height: 100px;
 
     border-radius: 50%;
 
     background: currentColor;
+
     opacity: 0.045;
 }
+
 
 .onco-stat-card.patient {
     color: var(--patient-primary);
 }
 
+
 .onco-stat-card.medecin {
     color: var(--medecin-primary);
 }
+
 
 .onco-stat-card.proche {
     color: var(--proche-primary);
 }
 
+
 .onco-stat-card.admin {
     color: var(--admin-primary);
 }
 
+
 .onco-stat-icon {
     width: 44px;
+
     height: 44px;
 
     display: inline-flex;
+
     align-items: center;
+
     justify-content: center;
 
     margin-bottom: 16px;
@@ -795,21 +1024,27 @@ a {
     font-size: 18px;
 }
 
+
 .onco-stat-number {
     margin: 0;
 
     font-family: "Newsreader", serif;
+
     font-size: 36px;
+
     font-weight: 500;
+
     line-height: 1;
 
     color: var(--onco-text);
 }
 
+
 .onco-stat-label {
     margin-top: 7px;
 
     font-size: 12px;
+
     color: var(--onco-muted);
 }
 
@@ -822,35 +1057,49 @@ a {
 
 .onco-role-badge {
     display: inline-flex;
+
     align-items: center;
 
     min-height: 28px;
 
     padding: 5px 10px;
 
-    border-radius: var(--radius-pill);
+    border-radius:
+        var(--radius-pill);
 
     font-size: 11px;
-    font-weight: 600;
+
+    font-weight: 700;
 }
+
 
 .onco-role-badge.patient {
     background: var(--patient-light);
+
     color: #9C6470;
 }
 
+
 .onco-role-badge.medecin {
     background: var(--medecin-light);
-    color: #60568E;
+
+    color: #5B538F;
+
+    border:
+        1px solid #DDD8F0;
 }
+
 
 .onco-role-badge.proche {
     background: var(--proche-light);
+
     color: #4E755B;
 }
 
+
 .onco-role-badge.admin {
     background: var(--admin-light);
+
     color: #654867;
 }
 
@@ -863,41 +1112,56 @@ a {
 
 .onco-badge {
     display: inline-flex;
+
     align-items: center;
+
     gap: 6px;
 
     padding: 6px 10px;
 
-    border-radius: var(--radius-pill);
+    border-radius:
+        var(--radius-pill);
 
     font-size: 11px;
-    font-weight: 600;
+
+    font-weight: 700;
+
     line-height: 1;
 }
 
+
 .onco-badge-success {
     background: #EAF4EC;
+
     color: #4B7655;
 }
 
+
 .onco-badge-pending {
     background: #F8F1E1;
+
     color: #8A6B32;
 }
 
+
 .onco-badge-danger {
     background: #F7E9EB;
+
     color: #9A5661;
 }
 
+
 .onco-badge-neutral {
     background: #F0EFED;
+
     color: #66635E;
 }
 
+
 .onco-badge-info {
     background: var(--medecin-light);
-    color: #60568E;
+
+    color: #5B538F;
 }
 
 
@@ -909,19 +1173,25 @@ a {
 
 .onco-btn {
     display: inline-flex;
+
     align-items: center;
+
     justify-content: center;
+
     gap: 8px;
 
     min-height: 42px;
 
     padding: 10px 17px;
 
-    border: 1px solid transparent;
+    border:
+        1px solid transparent;
+
     border-radius: 11px;
 
     font-size: 13px;
-    font-weight: 600;
+
+    font-weight: 700;
 
     text-decoration: none;
 
@@ -934,70 +1204,110 @@ a {
         border-color var(--transition);
 }
 
+
 .onco-btn:hover {
     transform: translateY(-1px);
 }
 
+
 .onco-btn-primary {
     background: var(--admin-primary);
+
     color: #FFFFFF;
-    box-shadow: 0 5px 14px rgba(107, 76, 111, 0.14);
+
+    box-shadow:
+        0 5px 14px rgba(107, 76, 111, 0.14);
 }
+
 
 .onco-btn-primary:hover {
     background: #5C415F;
 }
 
+
 .onco-btn-patient {
     background: var(--patient-primary);
+
     color: #FFFFFF;
-    box-shadow: 0 5px 14px rgba(217, 154, 166, 0.17);
+
+    box-shadow:
+        0 5px 14px rgba(217, 154, 166, 0.17);
 }
+
 
 .onco-btn-medecin {
     background: var(--medecin-primary);
+
     color: #FFFFFF;
-    box-shadow: 0 5px 14px rgba(117, 103, 168, 0.16);
+
+    box-shadow:
+        0 5px 14px rgba(108, 99, 168, 0.18);
 }
+
+
+.onco-btn-medecin:hover {
+    background: #5B538F;
+}
+
 
 .onco-btn-proche {
     background: var(--proche-primary);
+
     color: #FFFFFF;
-    box-shadow: 0 5px 14px rgba(127, 166, 138, 0.18);
+
+    box-shadow:
+        0 5px 14px rgba(127, 166, 138, 0.18);
 }
+
 
 .onco-btn-admin {
     background: var(--admin-primary);
+
     color: #FFFFFF;
-    box-shadow: 0 5px 14px rgba(107, 76, 111, 0.14);
+
+    box-shadow:
+        0 5px 14px rgba(107, 76, 111, 0.14);
 }
+
 
 .onco-btn-secondary {
     background: var(--onco-white);
+
     color: var(--onco-text);
+
     border-color: var(--onco-border);
 }
+
 
 .onco-btn-secondary:hover {
     border-color: #CFC6C1;
+
     background: #FCFBFA;
 }
 
+
 .onco-btn-outline {
     background: transparent;
+
     color: var(--onco-text);
+
     border-color: var(--onco-border);
 }
+
 
 .onco-btn-outline:hover {
     background: var(--onco-white);
 }
 
+
 .onco-btn-danger {
     background: #F8EAEC;
+
     color: #965460;
+
     border-color: #EECFD4;
 }
+
 
 .onco-btn-danger:hover {
     background: #F5E1E4;
@@ -1014,32 +1324,39 @@ a {
     margin-bottom: 18px;
 }
 
+
 .onco-label {
     display: block;
 
     margin-bottom: 7px;
 
     font-size: 12.5px;
-    font-weight: 600;
+
+    font-weight: 700;
 
     color: var(--onco-text);
 }
+
 
 .onco-help {
     margin-top: 5px;
 
     font-size: 11px;
+
     line-height: 1.5;
 
     color: var(--onco-muted);
 }
+
 
 .onco-input,
 .onco-select,
 .onco-textarea {
     width: 100%;
 
-    border: 1px solid var(--onco-border);
+    border:
+        1px solid var(--onco-border);
+
     border-radius: 11px;
 
     background: var(--onco-white);
@@ -1055,23 +1372,29 @@ a {
         box-shadow var(--transition);
 }
 
+
 .onco-input,
 .onco-select {
     min-height: 44px;
+
     padding: 10px 13px;
 }
 
+
 .onco-textarea {
     min-height: 120px;
+
     padding: 12px 13px;
 
     resize: vertical;
 }
 
+
 .onco-input::placeholder,
 .onco-textarea::placeholder {
-    color: #9A9B98;
+    color: #9297A2;
 }
+
 
 .onco-input:focus,
 .onco-select:focus,
@@ -1082,16 +1405,19 @@ a {
         0 0 0 3px rgba(107, 76, 111, 0.10);
 }
 
+
 .onco-input.error,
 .onco-select.error,
 .onco-textarea.error {
     border-color: #D88C98;
 }
 
+
 .onco-error {
     margin-top: 5px;
 
     font-size: 11px;
+
     color: #A25561;
 }
 
@@ -1124,7 +1450,7 @@ a {
     border-color: var(--medecin-primary);
 
     box-shadow:
-        0 0 0 3px rgba(117, 103, 168, 0.12);
+        0 0 0 3px rgba(108, 99, 168, 0.13);
 }
 
 
@@ -1170,18 +1496,23 @@ a {
     position: relative;
 }
 
+
 .onco-search .onco-input {
     padding-left: 40px;
 }
 
+
 .onco-search-icon {
     position: absolute;
+
     left: 14px;
+
     top: 50%;
 
     transform: translateY(-50%);
 
     color: var(--onco-muted);
+
     font-size: 14px;
 
     pointer-events: none;
@@ -1196,23 +1527,31 @@ a {
 
 .onco-privacy {
     display: flex;
+
     align-items: flex-start;
+
     gap: 12px;
 
     padding: 15px 17px;
 
-    border: 1px solid #D7E6DB;
+    border:
+        1px solid #D7E6DB;
+
     border-radius: 14px;
 
     background: #F1F7F2;
 }
 
+
 .onco-privacy-icon {
     width: 34px;
+
     height: 34px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     flex-shrink: 0;
@@ -1220,22 +1559,27 @@ a {
     border-radius: 10px;
 
     background: var(--proche-primary);
+
     color: #FFFFFF;
 }
+
 
 .onco-privacy-title {
     margin: 0;
 
     font-size: 13px;
+
     font-weight: 700;
 
     color: #41644B;
 }
 
+
 .onco-privacy-text {
     margin: 3px 0 0;
 
     font-size: 12px;
+
     line-height: 1.55;
 
     color: #607467;
@@ -1255,7 +1599,9 @@ a {
 
     padding: 20px;
 
-    border: 1px solid var(--onco-border);
+    border:
+        1px solid var(--onco-border);
+
     border-radius: 16px;
 
     background: var(--onco-white);
@@ -1263,12 +1609,16 @@ a {
     box-shadow: var(--shadow-card);
 }
 
+
 .onco-appointment::before {
     content: "";
 
     position: absolute;
+
     left: 0;
+
     top: 0;
+
     bottom: 0;
 
     width: 4px;
@@ -1276,31 +1626,43 @@ a {
     background: var(--onco-gold);
 }
 
+
 .onco-appointment-date {
     font-family: "Newsreader", serif;
+
     font-size: 23px;
+
     font-weight: 500;
+
     color: var(--onco-text);
 }
+
 
 .onco-appointment-time {
     margin-top: 3px;
 
     font-size: 13px;
+
     color: var(--onco-muted);
 }
+
 
 .onco-appointment-doctor {
     margin-top: 14px;
 
     font-size: 14px;
-    font-weight: 600;
+
+    font-weight: 700;
+
+    color: var(--onco-text);
 }
+
 
 .onco-appointment-type {
     margin-top: 3px;
 
     font-size: 12px;
+
     color: var(--onco-muted);
 }
 
@@ -1313,16 +1675,22 @@ a {
 
 .onco-timeline {
     position: relative;
+
     margin-left: 8px;
+
     padding-left: 28px;
 }
+
 
 .onco-timeline::before {
     content: "";
 
     position: absolute;
+
     left: 6px;
+
     top: 10px;
+
     bottom: 10px;
 
     width: 1px;
@@ -1330,26 +1698,34 @@ a {
     background: var(--onco-border);
 }
 
+
 .onco-timeline-item {
     position: relative;
+
     padding-bottom: 22px;
 }
+
 
 .onco-timeline-item:last-child {
     padding-bottom: 0;
 }
 
+
 .onco-timeline-item::before {
     content: "";
 
     position: absolute;
+
     left: -27px;
+
     top: 4px;
 
     width: 10px;
+
     height: 10px;
 
     border: 3px solid var(--onco-bg);
+
     border-radius: 50%;
 
     background: var(--onco-gold);
@@ -1367,34 +1743,45 @@ a {
 
 .onco-notification {
     display: flex;
+
     align-items: flex-start;
+
     gap: 13px;
 
     padding: 15px;
 
-    border-bottom: 1px solid var(--onco-border);
+    border-bottom:
+        1px solid var(--onco-border);
 
-    transition: background var(--transition);
+    transition:
+        background var(--transition);
 }
+
 
 .onco-notification:last-child {
     border-bottom: 0;
 }
 
+
 .onco-notification:hover {
     background: #FCFBFA;
 }
+
 
 .onco-notification.unread {
     background: #FAF6F7;
 }
 
+
 .onco-notification-icon {
     width: 37px;
+
     height: 37px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     flex-shrink: 0;
@@ -1402,27 +1789,36 @@ a {
     border-radius: 11px;
 
     background: var(--patient-light);
+
     color: #A35F6B;
 }
 
+
 .onco-notification-title {
     font-size: 13px;
-    font-weight: 600;
+
+    font-weight: 700;
+
+    color: var(--onco-text);
 }
+
 
 .onco-notification-text {
     margin-top: 3px;
 
     font-size: 12px;
+
     line-height: 1.55;
 
     color: var(--onco-muted);
 }
 
+
 .onco-notification-time {
     margin-top: 5px;
 
     font-size: 10.5px;
+
     color: #929490;
 }
 
@@ -1436,13 +1832,16 @@ a {
 .onco-table-wrapper {
     overflow-x: auto;
 
-    border: 1px solid var(--onco-border);
+    border:
+        1px solid var(--onco-border);
+
     border-radius: var(--radius-lg);
 
     background: var(--onco-white);
 
     box-shadow: var(--shadow-card);
 }
+
 
 .onco-table {
     width: 100%;
@@ -1452,20 +1851,26 @@ a {
     font-size: 12.5px;
 }
 
+
 .onco-table thead {
     background: #FAF9F8;
 }
 
+
 .onco-table th {
     padding: 13px 16px;
 
-    border-bottom: 1px solid var(--onco-border);
+    border-bottom:
+        1px solid var(--onco-border);
 
     text-align: left;
 
     font-size: 10.5px;
+
     font-weight: 700;
+
     letter-spacing: 0.04em;
+
     text-transform: uppercase;
 
     color: var(--onco-muted);
@@ -1473,23 +1878,29 @@ a {
     white-space: nowrap;
 }
 
+
 .onco-table td {
     padding: 15px 16px;
 
-    border-bottom: 1px solid #EEEAE6;
+    border-bottom:
+        1px solid #EEEAE6;
 
     color: var(--onco-text);
 
     vertical-align: middle;
 }
 
+
 .onco-table tbody tr {
-    transition: background var(--transition);
+    transition:
+        background var(--transition);
 }
+
 
 .onco-table tbody tr:hover {
     background: #FCFBFA;
 }
+
 
 .onco-table tbody tr:last-child td {
     border-bottom: 0;
@@ -1504,8 +1915,11 @@ a {
 
 .onco-actions {
     display: flex;
+
     align-items: center;
+
     gap: 7px;
+
     flex-wrap: wrap;
 }
 
@@ -1522,12 +1936,16 @@ a {
     text-align: center;
 }
 
+
 .onco-empty-icon {
     width: 62px;
+
     height: 62px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     margin: 0 auto 14px;
@@ -1541,13 +1959,19 @@ a {
     font-size: 25px;
 }
 
+
 .onco-empty-title {
     margin: 0;
 
     font-family: "Newsreader", serif;
+
     font-size: 23px;
+
     font-weight: 500;
+
+    color: var(--onco-text);
 }
+
 
 .onco-empty-text {
     max-width: 450px;
@@ -1555,6 +1979,7 @@ a {
     margin: 7px auto 18px;
 
     font-size: 12.5px;
+
     line-height: 1.6;
 
     color: var(--onco-muted);
@@ -1569,28 +1994,36 @@ a {
 
 .onco-modal-backdrop {
     position: fixed;
+
     inset: 0;
 
     z-index: 100;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     padding: 20px;
 
-    background: rgba(41, 51, 49, 0.38);
+    background:
+        rgba(41, 51, 49, 0.38);
 
     backdrop-filter: blur(4px);
 }
 
+
 .onco-modal {
     width: 100%;
+
     max-width: 520px;
 
     padding: 24px;
 
-    border: 1px solid var(--onco-border);
+    border:
+        1px solid var(--onco-border);
+
     border-radius: 18px;
 
     background: var(--onco-white);
@@ -1607,37 +2040,84 @@ a {
 */
 
 .onco-alert {
-    padding: 13px 15px;
+    display: flex;
 
-    border: 1px solid var(--onco-border);
-    border-radius: 13px;
+    align-items: flex-start;
+
+    gap: 12px;
+
+    padding: 14px 16px;
+
+    border-radius: 16px;
 
     font-size: 12.5px;
+
     line-height: 1.55;
 }
 
-.onco-alert.success {
-    border-color: #D5E5D9;
+
+.onco-alert.success,
+.onco-alert-success {
+    border:
+        1px solid #D5E5D9;
+
     background: #F0F7F1;
+
     color: #4D7257;
 }
 
+
 .onco-alert.info {
-    border-color: #DED9EB;
+    border:
+        1px solid #DED9EB;
+
     background: #F5F2FA;
-    color: #655A88;
+
+    color: #5F5788;
 }
 
+
 .onco-alert.warning {
-    border-color: #E8DEC6;
+    border:
+        1px solid #E8DEC6;
+
     background: #FBF7EC;
+
     color: #816A35;
 }
 
-.onco-alert.danger {
-    border-color: #EACFD4;
+
+.onco-alert.danger,
+.onco-alert-error {
+    border:
+        1px solid #EACFD4;
+
     background: #FBF0F2;
+
     color: #945864;
+}
+
+
+.onco-alert-icon {
+    width: 38px;
+
+    height: 38px;
+
+    min-width: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: var(--onco-white);
+
+    font-size: 14px;
+
+    font-weight: 700;
 }
 
 
@@ -1649,38 +2129,202 @@ a {
 
 .patient-theme {
     --role-primary: var(--patient-primary);
+
     --role-light: var(--patient-light);
+
     --role-accent: var(--patient-accent);
 }
 
+
 .medecin-theme {
     --role-primary: var(--medecin-primary);
+
     --role-light: var(--medecin-light);
+
     --role-accent: var(--medecin-accent);
+
+    --role-blue: var(--medecin-blue);
+
+    --role-blue-light: var(--medecin-blue-light);
+
+    --role-pink: var(--medecin-pink);
+
+    --role-pink-light: var(--medecin-pink-light);
+
+    --role-text: var(--medecin-text);
+
+    --role-muted: var(--medecin-muted);
 }
+
 
 .proche-theme {
     --role-primary: var(--proche-primary);
+
     --role-light: var(--proche-light);
+
     --role-accent: var(--proche-accent);
 }
 
+
 .admin-theme {
     --role-primary: var(--admin-primary);
+
     --role-light: var(--admin-light);
+
     --role-accent: var(--admin-accent);
 }
+
 
 .role-accent {
     color: var(--role-primary);
 }
 
+
 .role-bg {
     background: var(--role-light);
 }
 
+
 .role-border {
     border-color: var(--role-accent);
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| MEDECIN visual helpers
+|--------------------------------------------------------------------------
+*/
+
+.medecin-theme h1,
+.medecin-theme h2,
+.medecin-theme h3,
+.medecin-theme h4,
+.medecin-theme h5,
+.medecin-theme h6 {
+    color: var(--medecin-text);
+}
+
+
+.medecin-theme p {
+    color: var(--medecin-muted);
+}
+
+
+.medecin-theme .doctor-purple {
+    background: var(--medecin-light);
+
+    color: var(--medecin-primary);
+}
+
+
+.medecin-theme .doctor-pink {
+    background: var(--medecin-pink-light);
+
+    color: var(--medecin-pink);
+}
+
+
+.medecin-theme .doctor-blue {
+    background: var(--medecin-blue-light);
+
+    color: var(--medecin-blue);
+}
+
+
+.medecin-theme .doctor-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 6px 11px;
+
+    border-radius: 999px;
+
+    background: var(--medecin-light);
+
+    color: var(--medecin-primary);
+
+    border:
+        1px solid #DDD8F0;
+
+    font-size: 11px;
+
+    font-weight: 700;
+}
+
+
+.medecin-theme .doctor-btn {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    background: var(--medecin-primary);
+
+    color: #FFFFFF;
+
+    border-radius: 12px;
+
+    padding: 10px 17px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition: 180ms ease;
+}
+
+
+.medecin-theme .doctor-btn:hover {
+    background: #5B538F;
+
+    transform: translateY(-1px);
+}
+
+
+.medecin-theme .doctor-card {
+    background: #FFFFFF;
+
+    border:
+        1px solid #E5E2EF;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 4px 18px rgba(72, 65, 110, 0.06);
+}
+
+
+.medecin-theme .doctor-appointment {
+    background:
+        var(--medecin-blue-light);
+
+    border:
+        1px solid #D8E5FF;
+}
+
+
+.medecin-theme .doctor-patient {
+    background:
+        var(--medecin-pink-light);
+
+    border:
+        1px solid #F0D7DF;
+}
+
+
+.medecin-theme .doctor-followup {
+    background:
+        var(--medecin-light);
+
+    border:
+        1px solid #DDD8F0;
 }
 
 
@@ -1692,51 +2336,72 @@ a {
 
 .onco-page {
     min-height: 100vh;
+
     padding: 32px 34px 56px;
+
     background: var(--onco-bg);
 }
 
+
 .onco-container {
     width: 100%;
+
     max-width: 1280px;
+
     margin: 0 auto;
 }
+
 
 .onco-page-header {
     padding: 0;
 }
 
+
 .onco-title-wrap {
     display: flex;
+
     align-items: center;
+
     gap: 16px;
+
     margin-top: 20px;
 }
 
+
 .onco-page-icon {
     width: 52px;
+
     height: 52px;
+
     flex-shrink: 0;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     border-radius: 16px;
 
     font-size: 22px;
+
     font-weight: 600;
 }
 
+
 .onco-back-link {
     display: inline-flex;
+
     align-items: center;
+
     gap: 6px;
 
     font-size: 13px;
+
     font-weight: 600;
 
     color: var(--onco-muted);
+
     text-decoration: none;
 
     transition:
@@ -1744,8 +2409,10 @@ a {
         transform var(--transition);
 }
 
+
 .onco-back-link:hover {
     color: var(--onco-text);
+
     transform: translateX(-2px);
 }
 
@@ -1758,21 +2425,30 @@ a {
 
 .onco-summary-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
     gap: 16px;
 }
+
 
 .onco-summary-card {
     min-width: 0;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
+
     gap: 14px;
 
     padding: 20px;
 
-    border: 1px solid var(--onco-border);
+    border:
+        1px solid var(--onco-border);
+
     border-radius: 18px;
 
     background: var(--onco-white);
@@ -1785,46 +2461,63 @@ a {
         border-color var(--transition);
 }
 
+
 .onco-summary-card:hover {
     transform: translateY(-2px);
+
     border-color: #D8D0CB;
+
     box-shadow: var(--shadow-soft);
 }
+
 
 .onco-summary-label {
     display: block;
 
     font-size: 11px;
+
     font-weight: 700;
+
     text-transform: uppercase;
+
     letter-spacing: 0.08em;
 
-    color: #8B918E;
+    color: #7D8491;
 }
+
 
 .onco-summary-value {
     margin-top: 6px;
 
     font-family: "Newsreader", serif;
+
     font-size: 32px;
+
     font-weight: 500;
+
     line-height: 1.05;
 
     color: var(--onco-text);
 }
 
+
 .onco-summary-icon {
     width: 46px;
+
     height: 46px;
+
     min-width: 46px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     border-radius: 14px;
 
     font-size: 18px;
+
     font-weight: 700;
 }
 
@@ -1837,20 +2530,27 @@ a {
 
 .onco-card-header {
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
+
     gap: 16px;
 
     padding-bottom: 18px;
+
     margin-bottom: 18px;
 
-    border-bottom: 1px solid #EEEAE6;
+    border-bottom:
+        1px solid #EEEAE6;
 }
+
 
 .onco-card-description {
     margin: 5px 0 0;
 
     font-size: 12px;
+
     line-height: 1.55;
 
     color: var(--onco-muted);
@@ -1865,36 +2565,35 @@ a {
 
 .onco-user-cell {
     display: flex;
+
     align-items: center;
+
     gap: 12px;
 }
 
-.onco-user-name {
-    font-size: 13px;
-    font-weight: 700;
+
+.onco-table-primary {
+    font-size: 12.5px;
+
+    font-weight: 600;
 
     color: var(--onco-text);
 }
+
+
+.onco-table-secondary {
+    font-size: 12.5px;
+
+    color: var(--onco-muted);
+}
+
 
 .onco-user-meta {
     margin-top: 3px;
 
     font-size: 10.5px;
 
-    color: #8B918E;
-}
-
-.onco-table-primary {
-    font-size: 12.5px;
-    font-weight: 500;
-
-    color: var(--onco-text);
-}
-
-.onco-table-secondary {
-    font-size: 12.5px;
-
-    color: var(--onco-muted);
+    color: #7D8491;
 }
 
 
@@ -1906,15 +2605,20 @@ a {
 
 .onco-status {
     display: inline-flex;
+
     align-items: center;
+
     gap: 7px;
 
     font-size: 12px;
+
     font-weight: 600;
 }
 
+
 .onco-status-dot {
     width: 7px;
+
     height: 7px;
 
     border-radius: 50%;
@@ -1929,24 +2633,33 @@ a {
 
 .onco-info-card {
     display: flex;
+
     align-items: flex-start;
+
     gap: 12px;
 
     padding: 18px;
 
-    border: 1px solid var(--onco-border);
+    border:
+        1px solid var(--onco-border);
+
     border-radius: 18px;
 
     background: var(--onco-white);
 }
 
+
 .onco-info-icon {
     width: 40px;
+
     height: 40px;
+
     min-width: 40px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     border-radius: 12px;
@@ -1954,19 +2667,23 @@ a {
     font-size: 16px;
 }
 
+
 .onco-info-title {
     margin: 0;
 
     font-size: 13px;
+
     font-weight: 700;
 
     color: var(--onco-text);
 }
 
+
 .onco-info-text {
     margin: 4px 0 0;
 
     font-size: 12px;
+
     line-height: 1.65;
 
     color: var(--onco-muted);
@@ -1979,66 +2696,48 @@ a {
 |--------------------------------------------------------------------------
 */
 
-.onco-alert {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-
-    padding: 14px 16px;
-
-    border-radius: 16px;
-
-    font-size: 12.5px;
-    line-height: 1.55;
-}
-
 .onco-alert-success {
-    border: 1px solid #D5E5D9;
+    border:
+        1px solid #D5E5D9;
+
     background: #F0F7F1;
 }
 
+
 .onco-alert-error {
-    border: 1px solid #EACFD4;
+    border:
+        1px solid #EACFD4;
+
     background: #FBF0F2;
 }
 
-.onco-alert-icon {
-    width: 38px;
-    height: 38px;
-    min-width: 38px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 11px;
-
-    background: var(--onco-white);
-
-    font-size: 14px;
-    font-weight: 700;
-}
 
 .onco-alert-success .onco-alert-icon {
     color: #7FA68A;
 }
 
+
 .onco-alert-error .onco-alert-icon {
     color: #9A5661;
 }
 
+
 .onco-alert-title {
     font-size: 13px;
+
     font-weight: 700;
 }
+
 
 .onco-alert-success .onco-alert-title {
     color: #4D7257;
 }
 
+
 .onco-alert-error .onco-alert-title {
     color: #7F4C56;
 }
+
 
 .onco-alert-text {
     margin-top: 3px;
@@ -2061,52 +2760,35 @@ a {
     text-align: center;
 }
 
+
 .onco-empty-state .onco-empty-icon {
     margin-left: auto;
+
     margin-right: auto;
 }
 
 
 /*
 |--------------------------------------------------------------------------
-| Additional responsive rules
+| Responsive — 1100px
 |--------------------------------------------------------------------------
 */
 
 @media (max-width: 1100px) {
 
     .onco-summary-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
-}
-
-@media (max-width: 900px) {
-
-    .onco-page {
-        padding: 24px 18px 42px;
+    .onco-grid-4 {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
-}
-
-@media (max-width: 680px) {
-
-    .onco-page {
-        padding: 20px 16px 36px;
-    }
-
-    .onco-summary-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .onco-title-wrap {
-        align-items: flex-start;
-    }
-
-    .onco-page-icon {
-        width: 46px;
-        height: 46px;
-        border-radius: 14px;
+    .onco-grid-3 {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
 }
@@ -2114,26 +2796,9 @@ a {
 
 /*
 |--------------------------------------------------------------------------
-| Responsive
+| Responsive — 900px
 |--------------------------------------------------------------------------
 */
-
-.onco-overlay {
-    display: none;
-}
-
-@media (max-width: 1100px) {
-
-    .onco-grid-4 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .onco-grid-3 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-}
-
 
 @media (max-width: 900px) {
 
@@ -2141,42 +2806,60 @@ a {
         transform: translateX(-105%);
     }
 
+
     .onco-sidebar.open {
         transform: translateX(0);
     }
 
+
     .onco-main {
         width: 100%;
+
         margin-left: 0;
     }
 
+
     .onco-topbar {
         justify-content: space-between;
+
         padding: 13px 18px;
     }
 
+
     .onco-mobile-left {
         display: flex;
+
         align-items: center;
+
         gap: 10px;
     }
+
 
     .onco-overlay.show {
         display: block;
 
         position: fixed;
+
         inset: 0;
 
         z-index: 40;
 
-        background: rgba(41, 51, 49, 0.35);
+        background:
+            rgba(41, 51, 49, 0.35);
 
         backdrop-filter: blur(2px);
     }
 
+
+    .onco-page {
+        padding: 24px 18px 42px;
+    }
+
+
     .onco-page-header {
         padding: 24px 18px 0;
     }
+
 
     .onco-content {
         padding: 24px 18px 42px;
@@ -2184,6 +2867,12 @@ a {
 
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| Responsive — 680px
+|--------------------------------------------------------------------------
+*/
 
 @media (max-width: 680px) {
 
@@ -2193,38 +2882,71 @@ a {
         grid-template-columns: 1fr;
     }
 
+
+    .onco-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .onco-page {
+        padding: 20px 16px 36px;
+    }
+
+
     .onco-page-title {
         font-size: 29px;
     }
+
 
     .onco-page-header {
         padding-top: 20px;
     }
 
+
+    .onco-title-wrap {
+        align-items: flex-start;
+    }
+
+
+    .onco-page-icon {
+        width: 46px;
+
+        height: 46px;
+
+        border-radius: 14px;
+    }
+
+
     .onco-profile-text {
         display: none;
     }
+
 
     .onco-profile-chip {
         padding-right: 0;
     }
 
+
     .onco-table-wrapper {
         border-radius: 14px;
     }
 
+
     .onco-table {
         min-width: 680px;
     }
+
 
     .onco-card,
     .onco-appointment {
         padding: 18px;
     }
 
+
     .onco-actions {
         width: 100%;
     }
+
 
     .onco-btn {
         min-height: 44px;
@@ -2233,15 +2955,24 @@ a {
 }
 
 
+/*
+|--------------------------------------------------------------------------
+| Reduced motion
+|--------------------------------------------------------------------------
+*/
+
 @media (prefers-reduced-motion: reduce) {
 
     *,
     *::before,
     *::after {
+
         scroll-behavior: auto !important;
 
         transition-duration: 0.01ms !important;
+
         animation-duration: 0.01ms !important;
+
         animation-iteration-count: 1 !important;
     }
 

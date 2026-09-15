@@ -11,34 +11,22 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Route;
 
-
-/*
-|--------------------------------------------------------------------------
-| Page d'accueil
-|--------------------------------------------------------------------------
-*/
-
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('home');
+})->name('home');
 
-
-/*
-|--------------------------------------------------------------------------
-| Dashboard
-|--------------------------------------------------------------------------
-*/
+// =====================================================
+// DASHBOARD
+// =====================================================
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
 
-/*
-|--------------------------------------------------------------------------
-| Profile
-|--------------------------------------------------------------------------
-*/
+// =====================================================
+// PROFILE
+// =====================================================
 
 Route::middleware('auth')->group(function () {
 
@@ -50,15 +38,12 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
-
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Notifications
-|--------------------------------------------------------------------------
-*/
+// =====================================================
+// NOTIFICATIONS
+// =====================================================
 
 Route::middleware('auth')->group(function () {
 
@@ -70,28 +55,22 @@ Route::middleware('auth')->group(function () {
 
     Route::patch('/notifications/read-all', [NotificationController::class, 'readAll'])
         ->name('notifications.readAll');
-
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Médecin - Suivis
-|--------------------------------------------------------------------------
-*/
+// =====================================================
+// SUIVIS — MEDECIN
+// =====================================================
 
 Route::middleware(['auth', 'role:medecin'])->group(function () {
 
     Route::resource('suivis', SuiviController::class);
-
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Médecin - Patients
-|--------------------------------------------------------------------------
-*/
+// =====================================================
+// PATIENTS — MEDECIN
+// =====================================================
 
 Route::middleware(['auth', 'role:medecin'])->group(function () {
 
@@ -100,15 +79,12 @@ Route::middleware(['auth', 'role:medecin'])->group(function () {
 
     Route::get('/medecin/patients/{patient}', [MedecinController::class, 'showPatient'])
         ->name('medecin.patients.show');
-
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Patient - Suivis
-|--------------------------------------------------------------------------
-*/
+// =====================================================
+// SUIVIS — PATIENT
+// =====================================================
 
 Route::middleware(['auth', 'role:patient'])->group(function () {
 
@@ -117,58 +93,65 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
 
     Route::get('/patient/suivis/{suivi}', [SuiviController::class, 'patientShow'])
         ->name('patient.suivis.show');
-
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Médecin - Rendez-vous
-|--------------------------------------------------------------------------
-*/
+// =====================================================
+// RENDEZ-VOUS — MEDECIN
+// =====================================================
 
 Route::middleware(['auth', 'role:medecin'])->group(function () {
 
+    // Liste des rendez-vous du médecin
     Route::get('/rendezvous', [RendezVousController::class, 'index'])
         ->name('rendezvous.index');
 
+    // Création directe d'un rendez-vous par le médecin
     Route::get('/rendezvous/create', [RendezVousController::class, 'create'])
         ->name('rendezvous.create');
 
     Route::post('/rendezvous', [RendezVousController::class, 'store'])
         ->name('rendezvous.store');
 
+    // Détail d'un rendez-vous
     Route::get('/rendezvous/{rendezVous}', [RendezVousController::class, 'show'])
         ->name('rendezvous.show');
 
+    // Suppression d'un rendez-vous
     Route::delete('/rendezvous/{rendezVous}', [RendezVousController::class, 'destroy'])
         ->name('rendezvous.destroy');
-
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Patient - Rendez-vous
-|--------------------------------------------------------------------------
-*/
+// =====================================================
+// RENDEZ-VOUS — PATIENT
+// =====================================================
 
 Route::middleware(['auth', 'role:patient'])->group(function () {
 
+    // Liste des rendez-vous du patient
     Route::get('/patient/rendezvous', [RendezVousController::class, 'patientRendezVous'])
         ->name('patient.rendezvous.index');
 
+    // Formulaire : demander un rendez-vous
+    // Le patient choisit le médecin + le motif.
+    // Il ne choisit PAS la date/heure.
+    Route::get('/patient/rendezvous/demande', [RendezVousController::class, 'patientCreate'])
+        ->name('patient.rendezvous.demande');
+
+    // Enregistrer la demande
+    Route::post('/patient/rendezvous/demande', [RendezVousController::class, 'patientStore'])
+        ->name('patient.rendezvous.demande.store');
+
+    // Détail d'un rendez-vous
     Route::get('/patient/rendezvous/{rendezVous}', [RendezVousController::class, 'patientShow'])
         ->name('patient.rendezvous.show');
-
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Patient - Autorisations des proches
-|--------------------------------------------------------------------------
-*/
+// =====================================================
+// AUTORISATIONS — PATIENT
+// =====================================================
 
 Route::middleware(['auth', 'role:patient'])->group(function () {
 
@@ -189,49 +172,46 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
 
     Route::delete('/patient/autorisations/{autorisationProche}', [AutorisationProcheController::class, 'destroy'])
         ->name('patient.autorisations.destroy');
-
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Proche
-|--------------------------------------------------------------------------
-*/
+// =====================================================
+// ESPACE PROCHE
+// =====================================================
 
 Route::middleware(['auth', 'role:proche'])->group(function () {
 
+    // Autorisations
     Route::get('/proche/autorisations', [AutorisationProcheController::class, 'index'])
         ->name('proche.autorisations.index');
 
+    // Suivis autorisés
     Route::get('/proche/suivis', [SuiviController::class, 'procheSuivis'])
         ->name('proche.suivis.index');
 
     Route::get('/proche/suivis/{suivi}', [SuiviController::class, 'procheShow'])
         ->name('proche.suivis.show');
 
+    // Rendez-vous autorisés
     Route::get('/proche/rendezvous', [RendezVousController::class, 'procheRendezVous'])
         ->name('proche.rendezvous.index');
 
     Route::get('/proche/rendezvous/{rendezVous}', [RendezVousController::class, 'procheShow'])
         ->name('proche.rendezvous.show');
-
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Admin
-|--------------------------------------------------------------------------
-*/
+// =====================================================
+// ADMIN
+// =====================================================
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
-    // Dashboard administrateur
+    // Dashboard admin
     Route::get('/admin/dashboard', [AdminController::class, 'index'])
         ->name('admin.dashboard');
 
-    // Gestion globale des utilisateurs
+    // Gestion des utilisateurs
     Route::get('/admin/users', [AdminUserController::class, 'index'])
         ->name('admin.users.index');
 
@@ -253,14 +233,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::patch('/admin/users/{user}', [AdminUserController::class, 'update'])
         ->name('admin.users.update');
-
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Authentication
-|--------------------------------------------------------------------------
-*/
+// =====================================================
+// AUTH
+// =====================================================
 
 require __DIR__ . '/auth.php';

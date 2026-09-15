@@ -1,13 +1,9 @@
 <x-app-layout>
 
     <div class="onco-page">
-
         <div class="onco-container">
 
-            {{-- ====================================================== --}}
-            {{-- HEADER --}}
-            {{-- ====================================================== --}}
-
+            {{-- Header --}}
             <div class="onco-page-header">
 
                 <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
@@ -23,10 +19,7 @@
 
                         <div class="onco-title-wrap">
 
-                            <div
-                                class="onco-page-icon"
-                                style="background:#F1EFF8;color:#7567A8;"
-                            >
+                            <div class="onco-page-icon role-proche">
                                 ◉
                             </div>
 
@@ -37,7 +30,8 @@
                                 </h1>
 
                                 <p class="onco-page-subtitle">
-                                    Retrouvez ici les notifications liées à votre activité sur OncoCare.
+                                    Retrouvez ici les notifications liées à votre activité
+                                    et aux patients que vous accompagnez.
                                 </p>
 
                             </div>
@@ -60,7 +54,7 @@
 
                             <button
                                 type="submit"
-                                class="onco-btn onco-btn-medecin"
+                                class="onco-btn onco-btn-proche"
                             >
                                 <span>✓</span>
                                 <span>Tout marquer comme lu</span>
@@ -75,10 +69,7 @@
             </div>
 
 
-            {{-- ====================================================== --}}
-            {{-- SUMMARY --}}
-            {{-- ====================================================== --}}
-
+            {{-- Résumé --}}
             <div
                 class="onco-summary-grid"
                 style="
@@ -92,10 +83,7 @@
 
                     <div>
 
-                        <span
-                            class="onco-summary-label"
-                            style="color:#655A88;"
-                        >
+                        <span class="onco-summary-label">
                             Total
                         </span>
 
@@ -103,7 +91,7 @@
                             {{ $notifications->count() }}
                         </div>
 
-                        <p class="mt-1 text-xs text-[#756D84]">
+                        <p class="mt-1 text-xs text-slate-500">
                             notifications reçues
                         </p>
 
@@ -111,7 +99,7 @@
 
                     <div
                         class="onco-summary-icon"
-                        style="background:#F1EFF8;color:#7567A8;"
+                        style="background:#EEF5F0;color:#7FA68A;"
                     >
                         ◉
                     </div>
@@ -119,14 +107,14 @@
                 </div>
 
 
-                {{-- Non lues --}}
+                {{-- Nouvelles --}}
                 <div class="onco-summary-card">
 
                     <div>
 
                         <span
                             class="onco-summary-label"
-                            style="color:#8A6B32;"
+                            style="color:#5F8069;"
                         >
                             Nouvelles
                         </span>
@@ -135,7 +123,7 @@
                             {{ $notifications->where('lu', false)->count() }}
                         </div>
 
-                        <p class="mt-1 text-xs text-[#756D84]">
+                        <p class="mt-1 text-xs text-slate-500">
                             notifications non lues
                         </p>
 
@@ -143,7 +131,7 @@
 
                     <div
                         class="onco-summary-icon"
-                        style="background:#F8F1E1;color:#C7A45B;"
+                        style="background:#EEF5F0;color:#7FA68A;"
                     >
                         !
                     </div>
@@ -153,10 +141,7 @@
             </div>
 
 
-            {{-- ====================================================== --}}
-            {{-- NOTIFICATIONS --}}
-            {{-- ====================================================== --}}
-
+            {{-- Centre de notifications --}}
             <div
                 class="onco-card"
                 style="
@@ -187,7 +172,10 @@
 
                     <span
                         class="onco-badge"
-                        style="background:#F1EFF8;color:#655A88;"
+                        style="
+                            background:#EEF5F0;
+                            color:#5F8069;
+                        "
                     >
                         {{ $notifications->count() }} notification(s)
                     </span>
@@ -205,7 +193,10 @@
 
                         <div
                             class="onco-empty-icon"
-                            style="background:#F1EFF8;color:#7567A8;"
+                            style="
+                                background:#EEF5F0;
+                                color:#7FA68A;
+                            "
                         >
                             ◉
                         </div>
@@ -231,8 +222,8 @@
                                 class="onco-notification {{ !$notification->lu ? 'unread' : '' }}"
                                 style="
                                     padding:20px 24px;
-                                    background:{{ !$notification->lu ? '#FAF7FB' : '#FFFFFF' }};
-                                    border-bottom:1px solid #EEEAE6;
+                                    background:{{ !$notification->lu ? '#F5F9F6' : '#FFFFFF' }};
+                                    border-bottom:1px solid #E5ECE7;
                                 "
                             >
 
@@ -242,16 +233,16 @@
                                     style="
                                         @if($notification->type === 'rendezvous')
                                             background:#F8F1E1;
-                                            color:#C7A45B;
+                                            color:#B28B45;
                                         @elseif($notification->type === 'suivi')
-                                            background:#F1EFF8;
-                                            color:#7567A8;
-                                        @elseif($notification->type === 'autorisation')
                                             background:#EEF5F0;
                                             color:#7FA68A;
+                                        @elseif($notification->type === 'autorisation')
+                                            background:#EEF5F0;
+                                            color:#648A70;
                                         @else
-                                            background:#F4EFF5;
-                                            color:#6B4C6F;
+                                            background:#F1F6F2;
+                                            color:#5F8069;
                                         @endif
                                     "
                                 >
@@ -294,8 +285,8 @@
                                             <span
                                                 class="onco-badge"
                                                 style="
-                                                    background:#F1EFF8;
-                                                    color:#655A88;
+                                                    background:#E5F0E8;
+                                                    color:#5F8069;
                                                     font-size:10px;
                                                 "
                                             >
@@ -325,7 +316,7 @@
                                 </div>
 
 
-                                {{-- Mark as read --}}
+                                {{-- Marquer comme lue --}}
                                 @if(!$notification->lu)
 
                                     <form
@@ -344,7 +335,9 @@
                                                 padding:8px 12px;
                                                 font-size:11px;
                                                 white-space:nowrap;
-                                                color:#655A88;
+                                                color:#5F8069;
+                                                border-color:#C9DCCF;
+                                                background:#F5F9F6;
                                             "
                                         >
                                             Marquer comme lue
@@ -365,22 +358,22 @@
             </div>
 
 
-            {{-- ====================================================== --}}
-            {{-- PRIVACY --}}
-            {{-- ====================================================== --}}
-
+            {{-- Confidentialité --}}
             <div
-                class="onco-info-card"
+                class="onco-info-card role-proche"
                 style="
                     margin-top:24px;
-                    border-color:#DED9EB;
-                    background:#F8F6FB;
+                    border-color:#C9DCCF;
+                    background:#F5F9F6;
                 "
             >
 
                 <div
                     class="onco-info-icon"
-                    style="background:#F1EFF8;color:#7567A8;"
+                    style="
+                        background:#E5F0E8;
+                        color:#7FA68A;
+                    "
                 >
                     🔒
                 </div>
@@ -389,14 +382,14 @@
 
                     <h3
                         class="onco-info-title"
-                        style="color:#655A88;"
+                        style="color:#5F8069;"
                     >
                         Notifications personnelles
                     </h3>
 
                     <p
                         class="onco-info-text"
-                        style="color:#756D84;"
+                        style="color:#6D7F73;"
                     >
                         Les notifications affichées vous sont destinées et
                         concernent uniquement votre activité et les informations
@@ -408,7 +401,6 @@
             </div>
 
         </div>
-
     </div>
 
 </x-app-layout>

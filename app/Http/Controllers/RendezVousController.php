@@ -8,6 +8,7 @@ use App\Models\Patient;
 use App\Models\AutorisationProche;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class RendezVousController extends Controller
 {
@@ -32,8 +33,9 @@ class RendezVousController extends Controller
         return view('rendezvous.index', compact('rendezVous'));
     }
 
+
     /**
-     * Formulaire de création d'un rendez-vous par le médecin.
+     * Formulaire de création directe d'un rendez-vous par le médecin.
      */
     public function create()
     {
@@ -45,7 +47,7 @@ class RendezVousController extends Controller
             abort(403);
         }
 
-        // Uniquement les patients suivis par ce médecin
+        // Uniquement les patients suivis par ce médecin.
         $patients = $user->medecin
             ->patients()
             ->with('utilisateur')
@@ -54,8 +56,9 @@ class RendezVousController extends Controller
         return view('rendezvous.create', compact('patients'));
     }
 
+
     /**
-     * Créer un rendez-vous par le médecin.
+     * Créer directement un rendez-vous par le médecin.
      */
     public function store(Request $request)
     {
@@ -73,7 +76,7 @@ class RendezVousController extends Controller
             'motif' => 'required|string|max:1000',
         ]);
 
-        // Vérifier que le patient est bien suivi par ce médecin
+        // Vérifier que le patient est bien suivi par ce médecin.
         $patientExiste = $user->medecin
             ->patients()
             ->where('patients.id_patient', $request->id_patient)
@@ -83,7 +86,8 @@ class RendezVousController extends Controller
             abort(403);
         }
 
-        // Vérifier si le médecin a déjà un rendez-vous à cette date/heure
+        // Vérifier si le médecin a déjà un rendez-vous
+        // à cette date/heure.
         $rendezVousExiste = RendezVous::where(
             'id_medecin',
             $user->medecin->id_medecin
@@ -100,7 +104,7 @@ class RendezVousController extends Controller
                 ]);
         }
 
-        // Créer le rendez-vous
+        // Créer le rendez-vous directement confirmé.
         $rendezVous = RendezVous::create([
             'date_heure' => $request->date_heure,
             'statut' => 'confirme',
@@ -109,11 +113,11 @@ class RendezVousController extends Controller
             'id_medecin' => $user->medecin->id_medecin,
         ]);
 
-        // Récupérer le patient
+        // Récupérer le patient.
         $patient = Patient::with('utilisateur')
             ->findOrFail($request->id_patient);
 
-        // Notification au patient
+        // Notification au patient.
         Notification::create([
             'titre' => 'Nouveau rendez-vous',
             'type' => 'rendezvous',
@@ -137,6 +141,7 @@ class RendezVousController extends Controller
             );
     }
 
+
     /**
      * Afficher un rendez-vous pour le médecin.
      */
@@ -150,7 +155,7 @@ class RendezVousController extends Controller
             abort(403);
         }
 
-        // Vérifier que le rendez-vous appartient au médecin connecté
+        // Vérifier que le rendez-vous appartient au médecin connecté.
         if ($rendezVous->id_medecin !== $user->medecin->id_medecin) {
             abort(403);
         }
@@ -162,6 +167,7 @@ class RendezVousController extends Controller
 
         return view('rendezvous.show', compact('rendezVous'));
     }
+
 
     /**
      * Supprimer un rendez-vous.
@@ -176,7 +182,7 @@ class RendezVousController extends Controller
             abort(403);
         }
 
-        // Vérifier que le rendez-vous appartient au médecin connecté
+        // Vérifier que le rendez-vous appartient au médecin connecté.
         if ($rendezVous->id_medecin !== $user->medecin->id_medecin) {
             abort(403);
         }
@@ -187,6 +193,231 @@ class RendezVousController extends Controller
             ->route('rendezvous.index')
             ->with('success', 'Rendez-vous supprimé avec succès.');
     }
+
+
+    /**
+     * Formulaire pour demander un rendez-vous côté patient.
+     *
+     * Le patient choisit uniquement :
+     * - le médecin ;
+     * - le motif.
+     *
+     * La date et l'heure seront choisies plus tard
+     * par le médecin.
+     */
+    public function patientCreate()
+    {
+        $user = auth()->user();
+
+        if ($user->role !== 'patient' || !$user->patient) {
+            abort(403);
+        }
+
+        // Afficher uniquement les médecins
+        // qui suivent ce patient.
+        $medecins = $user->patient
+            ->medecins()
+            ->with('utilisateur')
+            ->get();
+
+        return view(
+            'patient.rendezvous.demande',
+            compact('medecins')
+        );
+    }
+
+
+    /**
+     * Enregistrer une demande de rendez-vous côté patient.
+     */
+    public function patientStore(Request $request)
+    {
+        $user = auth()->user();
+
+        if ($user->role !== 'patient' || !$user->patient) {
+            abort(403);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Motifs autorisés
+        |--------------------------------------------------------------------------
+        */
+
+        $motifsAutorises = [
+            'Consultation de suivi',
+            'Contrôle médical',
+            'Suivi du traitement',
+            'Bilan / examens',
+            'Effets secondaires du traitement',
+            'Demande d’information',
+            'Renouvellement / adaptation du suivi',
+            'Autre',
+        ];
+
+        /*
+        |--------------------------------------------------------------------------
+        | Validation
+        |--------------------------------------------------------------------------
+        */
+
+        $request->validate([
+            'id_medecin' => [
+                'required',
+                'exists:medecins,id_medecin',
+            ],
+
+            'motif' => [
+                'required',
+                'string',
+                Rule::in($motifsAutorises),
+            ],
+
+            'motif_autre' => [
+                'nullable',
+                'required_if:motif,Autre',
+                'string',
+                'max:1000',
+            ],
+        ], [
+            'id_medecin.required' =>
+                'Veuillez sélectionner un médecin.',
+
+            'id_medecin.exists' =>
+                'Le médecin sélectionné est invalide.',
+
+            'motif.required' =>
+                'Veuillez sélectionner un motif.',
+
+            'motif.in' =>
+                'Le motif sélectionné est invalide.',
+
+            'motif_autre.required_if' =>
+                'Veuillez préciser votre motif.',
+
+            'motif_autre.max' =>
+                'Le motif ne doit pas dépasser 1000 caractères.',
+        ]);
+
+        $patient = $user->patient;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Vérifier que le médecin suit bien le patient
+        |--------------------------------------------------------------------------
+        */
+
+        $medecinExiste = $patient
+            ->medecins()
+            ->where('medecins.id_medecin', $request->id_medecin)
+            ->exists();
+
+        if (!$medecinExiste) {
+            abort(403);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Empêcher plusieurs demandes en attente
+        |--------------------------------------------------------------------------
+        */
+
+        $demandeExiste = RendezVous::where(
+            'id_patient',
+            $patient->id_patient
+        )
+            ->where(
+                'id_medecin',
+                $request->id_medecin
+            )
+            ->where(
+                'statut',
+                'en_attente'
+            )
+            ->exists();
+
+        if ($demandeExiste) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'id_medecin' =>
+                        'Vous avez déjà une demande de rendez-vous en attente avec ce médecin.'
+                ]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Déterminer le motif à enregistrer
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->motif === 'Autre') {
+            $motif = trim($request->motif_autre);
+        } else {
+            $motif = $request->motif;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Créer la demande
+        |--------------------------------------------------------------------------
+        |
+        | date_heure = NULL :
+        | le médecin choisira la date et l'heure plus tard.
+        |
+        */
+
+        RendezVous::create([
+            'date_heure' => null,
+            'statut' => 'en_attente',
+            'motif' => $motif,
+            'id_patient' => $patient->id_patient,
+            'id_medecin' => $request->id_medecin,
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Récupérer le médecin choisi
+        |--------------------------------------------------------------------------
+        */
+
+        $medecin = $patient
+            ->medecins()
+            ->with('utilisateur')
+            ->findOrFail($request->id_medecin);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Notification au médecin
+        |--------------------------------------------------------------------------
+        */
+
+        Notification::create([
+            'titre' => 'Nouvelle demande de rendez-vous',
+            'type' => 'rendezvous',
+            'message' =>
+                $user->prenom . ' ' . $user->nom .
+                ' a demandé un rendez-vous. ' .
+                'Veuillez choisir une date et une heure.',
+            'lu' => false,
+            'date_notification' => now(),
+            'id_utilisateur' => $medecin->id_utilisateur,
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Retour vers la liste des rendez-vous du patient
+        |--------------------------------------------------------------------------
+        */
+
+        return redirect()
+            ->route('patient.rendezvous.index')
+            ->with(
+                'success',
+                'Votre demande de rendez-vous a été envoyée au médecin.'
+            );
+    }
+
 
     /**
      * Liste des rendez-vous du patient connecté.
@@ -199,9 +430,12 @@ class RendezVousController extends Controller
             abort(403);
         }
 
-        // Le patient ne voit que ses propres rendez-vous
+        // Le patient ne voit que ses propres rendez-vous.
         $rendezVous = RendezVous::with('medecin.utilisateur')
-            ->where('id_patient', $user->patient->id_patient)
+            ->where(
+                'id_patient',
+                $user->patient->id_patient
+            )
             ->latest('date_heure')
             ->get();
 
@@ -210,6 +444,7 @@ class RendezVousController extends Controller
             compact('rendezVous')
         );
     }
+
 
     /**
      * Détails d'un rendez-vous pour le patient.
@@ -222,8 +457,11 @@ class RendezVousController extends Controller
             abort(403);
         }
 
-        // Le patient ne peut consulter que ses propres rendez-vous
-        if ($rendezVous->id_patient !== $user->patient->id_patient) {
+        // Le patient ne peut consulter que ses propres rendez-vous.
+        if (
+            $rendezVous->id_patient !==
+            $user->patient->id_patient
+        ) {
             abort(403);
         }
 
@@ -238,6 +476,7 @@ class RendezVousController extends Controller
         );
     }
 
+
     /**
      * Liste des rendez-vous accessibles au proche.
      */
@@ -249,8 +488,8 @@ class RendezVousController extends Controller
             abort(403);
         }
 
-        // Récupérer uniquement les patients
-        // que le proche est autorisé à consulter.
+        // Récupérer uniquement les autorisations actives
+        // permettant l'accès aux rendez-vous.
         $autorisations = AutorisationProche::where(
             'id_proche',
             $user->id
@@ -274,6 +513,7 @@ class RendezVousController extends Controller
             compact('rendezVous')
         );
     }
+
 
     /**
      * Détails d'un rendez-vous accessible au proche.
