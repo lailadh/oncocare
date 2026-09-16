@@ -12,16 +12,63 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Choix du type de compte
+    |--------------------------------------------------------------------------
+    */
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register');
 
-    Route::post('register', [RegisteredUserController::class, 'store']);
+    /*
+    |--------------------------------------------------------------------------
+    | Inscription Patient
+    |--------------------------------------------------------------------------
+    */
+    Route::get('register/patient', [RegisteredUserController::class, 'createPatient'])
+        ->name('register.patient');
 
+    Route::post('register/patient', [RegisteredUserController::class, 'storePatient'])
+        ->name('register.patient.store');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Inscription Proche
+    |--------------------------------------------------------------------------
+    */
+    Route::get('register/proche', [RegisteredUserController::class, 'createProche'])
+        ->name('register.proche');
+
+    Route::post('register/proche', [RegisteredUserController::class, 'storeProche'])
+        ->name('register.proche.store');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Inscription Médecin
+    |--------------------------------------------------------------------------
+    */
+    Route::get('register/medecin', [RegisteredUserController::class, 'createMedecin'])
+        ->name('register.medecin');
+
+    Route::post('register/medecin', [RegisteredUserController::class, 'storeMedecin'])
+        ->name('register.medecin.store');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Connexion
+    |--------------------------------------------------------------------------
+    */
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
+    /*
+    |--------------------------------------------------------------------------
+    | Mot de passe oublié
+    |--------------------------------------------------------------------------
+    */
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
         ->name('password.request');
 
@@ -36,6 +83,12 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Vérification email
+    |--------------------------------------------------------------------------
+    */
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
@@ -47,13 +100,29 @@ Route::middleware('auth')->group(function () {
         ->middleware('throttle:6,1')
         ->name('verification.send');
 
+    /*
+    |--------------------------------------------------------------------------
+    | Confirmation mot de passe
+    |--------------------------------------------------------------------------
+    */
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
         ->name('password.confirm');
 
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
 
-    Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+    /*
+    |--------------------------------------------------------------------------
+    | Changement mot de passe
+    |--------------------------------------------------------------------------
+    */
+    Route::put('password', [PasswordController::class, 'update'])
+        ->name('password.update');
 
+    /*
+    |--------------------------------------------------------------------------
+    | Déconnexion
+    |--------------------------------------------------------------------------
+    */
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 });

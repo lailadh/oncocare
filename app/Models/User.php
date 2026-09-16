@@ -11,23 +11,24 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-
 #[Fillable([
     'nom',
     'prenom',
     'email',
     'password',
     'telephone',
+    'role',
+    'statut',
 ])]
 #[Hidden([
     'password',
     'remember_token',
 ])]
 class User extends Authenticatable
-
 {
     /** @use HasFactory<UserFactory> */
-use HasFactory, Notifiable;
+    use HasFactory, Notifiable;
+
     public function patient(): HasOne
     {
         return $this->hasOne(

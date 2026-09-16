@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Medecin;
+use App\Models\Notification;
 use App\Models\Patient;
+use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,39 +19,58 @@ use Illuminate\View\View;
 class RegisteredUserController extends Controller
 {
     /**
-     * Display the registration view.
+     * Page de choix du type de compte.
      */
     public function create(): View
     {
         return view('auth.register');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | PATIENT
+    |--------------------------------------------------------------------------
+    */
+
+    public function createPatient(): View
+    {
+        return view('auth.register-patient');
+    }
+
     /**
-     * Handle an incoming registration request.
-     *
      * @throws ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function storePatient(Request $request): RedirectResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'nom' => ['required', 'string', 'max:255'],
             'prenom' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'email' => [
+                'required',
+                'string',
+                'lowercase',
+                'email',
+                'max:255',
+                'unique:users,email',
+            ],
             'telephone' => ['nullable', 'string', 'max:20'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => [
+                'required',
+                'confirmed',
+                Rules\Password::defaults(),
+            ],
         ]);
 
-        // Création du compte utilisateur
         $user = User::create([
-            'nom' => $request->nom,
-            'prenom' => $request->prenom,
-            'email' => $request->email,
-            'telephone' => $request->telephone,
-            'password' => Hash::make($request->password),
+            'nom' => $validated['nom'],
+            'prenom' => $validated['prenom'],
+            'email' => $validated['email'],
+            'telephone' => $validated['telephone'] ?? null,
+            'password' => Hash::make($validated['password']),
             'role' => 'patient',
+            'statut' => 'active',
         ]);
 
-        // Création automatique du profil patient
         Patient::create([
             'id_utilisateur' => $user->id,
         ]);
@@ -58,6 +79,162 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()
+            ->route('dashboard')
+            ->with(
+                'success',
+                'Votre compte Patient a été créé avec succès.'
+            );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | PROCHE
+    |--------------------------------------------------------------------------
+    */
+
+    public function createProche(): View
+    {
+        return view('auth.register-proche');
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function storeProche(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'nom' => ['required', 'string', 'max:255'],
+            'prenom' => ['required', 'string', 'max:255'],
+            'email' => [
+                'required',
+                'string',
+                'lowercase',
+                'email',
+                'max:255',
+                'unique:users,email',
+            ],
+            'telephone' => ['nullable', 'string', 'max:20'],
+            'password' => [
+                'required',
+                'confirmed',
+                Rules\Password::defaults(),
+            ],
+        ]);
+
+        $user = User::create([
+            'nom' => $validated['nom'],
+            'prenom' => $validated['prenom'],
+            'email' => $validated['email'],
+            'telephone' => $validated['telephone'] ?? null,
+            'password' => Hash::make($validated['password']),
+            'role' => 'proche',
+            'statut' => 'active',
+        ]);
+
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        return redirect()
+            ->route('dashboard')
+            ->with(
+                'success',
+                'Votre compte Proche a été créé avec succès.'
+            );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | MEDECIN
+    |--------------------------------------------------------------------------
+    */
+
+    public function createMedecin(): View
+    {
+        return view('auth.register-medecin');
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function storeMedecin(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'nom' => ['required', 'string', 'max:255'],
+            'prenom' => ['required', 'string', 'max:255'],
+            'email' => [
+                'required',
+                'string',
+                'lowercase',
+                'email',
+                'max:255',
+                'unique:users,email',
+            ],
+            'telephone' => ['nullable', 'string', 'max:20'],
+            'specialite' => ['required', 'string', 'max:255'],
+            'password' => [
+                'required',
+                'confirmed',
+                Rules\Password::defaults(),
+            ],
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Création du compte médecin
+        |--------------------------------------------------------------------------
+        */
+
+        $user = User::create([
+            'nom' => $validated['nom'],
+            'prenom' => $validated['prenom'],
+            'email' => $validated['email'],
+            'telephone' => $validated['telephone'] ?? null,
+            'password' => Hash::make($validated['password']),
+            'role' => 'medecin',
+            'statut' => 'en_attente',
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Création du profil médecin
+        |--------------------------------------------------------------------------
+        */
+
+        Medecin::create([
+            'id_utilisateur' => $user->id,
+            'specialite' => $validated['specialite'],
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Notification aux administrateurs
+        |--------------------------------------------------------------------------
+        */
+
+        $admins = User::where('role', 'admin')->get();
+
+        foreach ($admins as $admin) {
+            Notification::create([
+                'titre' => 'Nouvelle demande médecin',
+                'type' => 'medecin_demande',
+                'message' => "Le médecin {$user->prenom} {$user->nom} a envoyé une demande d’accès à l’espace Médecin.",
+                'lu' => false,
+                'date_notification' => now(),
+                'id_utilisateur' => $admin->id,
+            ]);
+        }
+
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        return redirect()
+            ->route('dashboard')
+            ->with(
+                'success',
+                'Votre demande d’accès Médecin a été enregistrée. Elle doit être validée par un administrateur.'
+            );
     }
 }

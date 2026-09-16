@@ -22,19 +22,20 @@ class DashboardController extends Controller
                 abort(403);
             }
 
+            if ($user->statut !== 'active') {
+                return view('auth.medecin-pending', compact('user'));
+            }
+
             $medecin = $user->medecin;
 
-            // Nombre de patients suivis
             $nombrePatients = $medecin->patients()->count();
 
-            // Prochain rendez-vous
             $prochainRendezVous = $medecin->rendezVous()
                 ->where('date_heure', '>=', now())
                 ->orderBy('date_heure')
                 ->with('patient.utilisateur')
                 ->first();
 
-            // Dernier suivi ajouté
             $dernierSuivi = Suivi::with('patient.utilisateur')
                 ->where('id_medecin', $medecin->id_medecin)
                 ->latest('date_suivi')
@@ -76,8 +77,8 @@ class DashboardController extends Controller
                 'id_patient',
                 $patient->id_patient
             )
-            ->where('statut', 'active')
-            ->count();
+                ->where('statut', 'active')
+                ->count();
 
             return view(
                 'dashboards.patient',
@@ -108,9 +109,9 @@ class DashboardController extends Controller
             $autorisations = AutorisationProche::with([
                 'patient.utilisateur'
             ])
-            ->where('id_proche', $user->id)
-            ->where('statut', 'active')
-            ->get();
+                ->where('id_proche', $user->id)
+                ->where('statut', 'active')
+                ->get();
 
             return view(
                 'dashboards.proche',

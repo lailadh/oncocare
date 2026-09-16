@@ -1,503 +1,324 @@
 <x-guest-layout>
 
-    <div class="min-h-screen bg-[#F7F4F2] flex items-center justify-center px-4 py-8">
+    <div class="min-h-screen bg-[#F7F6F1] flex items-center justify-center p-4 md:p-6">
 
-        <div class="w-full max-w-6xl">
+        <div class="w-full max-w-[1450px] overflow-hidden rounded-[32px] bg-white border border-[#E8E3D8] shadow-[0_20px_60px_rgba(38,51,48,0.08)]">
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 bg-white rounded-[28px] overflow-hidden shadow-[0_20px_70px_rgba(41,51,49,0.08)] border border-[#E3DDD8]">
+            <div class="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] min-h-[760px]">
 
-                {{-- ===================================================== --}}
-                {{-- LEFT SIDE — BRAND / MESSAGE --}}
-                {{-- ===================================================== --}}
+                {{-- ========================================================= --}}
+                {{-- LEFT : IMAGE / ONCOCARE MESSAGE --}}
+                {{-- ========================================================= --}}
+                <div class="relative min-h-[520px] lg:min-h-full overflow-hidden bg-[#EEF2E9]">
 
-                <div class="relative hidden lg:flex flex-col justify-between overflow-hidden p-12 bg-gradient-to-br from-[#F0F6F2] via-[#F6F3F1] to-[#F7F4F2]">
+                    {{-- Background image --}}
+                    <img
+                        src="{{ asset('images/oncocare-register-hero.png') }}"
+                        alt="Accompagnement et soutien OncoCare"
+                        class="absolute inset-0 h-full w-full object-cover"
+                    >
 
-                    {{-- Decorative shapes --}}
-                    <div class="absolute -top-20 -right-24 h-72 w-72 rounded-full bg-[#7FA68A]/12"></div>
+                    {{-- Soft overlay --}}
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#F7F6F1]/95 via-[#F7F6F1]/35 to-transparent"></div>
 
-                    <div class="absolute -bottom-24 -left-20 h-80 w-80 rounded-full bg-[#D99AA6]/10"></div>
+                    <div class="relative z-10 h-full flex flex-col justify-between p-8 md:p-10 lg:p-12">
 
-                    <div class="absolute top-1/3 left-16 h-24 w-24 rounded-full bg-[#C7A45B]/10"></div>
+                        {{-- Logo --}}
+                        <div>
 
+                            <div class="flex items-center gap-2">
 
-                    {{-- Logo --}}
-                    <div class="relative z-10">
-
-                        <a
-                            href="/"
-                            class="inline-flex items-baseline text-3xl font-medium tracking-tight"
-                            style="font-family: 'Newsreader', serif;"
-                        >
-                            <span class="text-[#293331]">Onco</span>
-                            <span class="text-[#C7A45B] mx-1">•</span>
-                            <span class="text-[#293331]">Care</span>
-                        </a>
-
-                        <p class="mt-2 text-sm text-[#66706D]">
-                            Suivi & accompagnement
-                        </p>
-
-                    </div>
-
-
-                    {{-- Main message --}}
-                    <div class="relative z-10 max-w-md">
-
-                        <div class="inline-flex items-center gap-2 rounded-full bg-white/80 border border-white px-4 py-2 text-xs font-medium text-[#547460] shadow-sm">
-                            <span class="flex h-2 w-2 rounded-full bg-[#7FA68A]"></span>
-                            Bienvenue dans OncoCare
-                        </div>
-
-                        <h1
-                            class="mt-6 text-5xl leading-tight font-medium text-[#293331]"
-                            style="font-family: 'Newsreader', serif;"
-                        >
-                            Un espace pensé
-                            <br>
-                            <span class="text-[#7FA68A]">pour vous accompagner.</span>
-                        </h1>
-
-                        <p class="mt-6 max-w-sm text-sm leading-7 text-[#66706D]">
-                            Créez votre compte pour accéder à un espace
-                            personnel dédié au suivi, aux rendez-vous
-                            et à l’accompagnement.
-                        </p>
-
-
-                        {{-- Benefits --}}
-                        <div class="mt-8 space-y-4">
-
-                            <div class="flex items-center gap-3">
-
-                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-[#E3DDD8] text-[#7FA68A]">
-                                    ✓
+                                <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#16423C] text-white shadow-sm">
+                                    <span class="text-xl font-bold">+</span>
                                 </div>
 
                                 <div>
-                                    <p class="text-sm font-semibold text-[#293331]">
-                                        Un espace personnel
-                                    </p>
+                                    <div class="text-2xl md:text-3xl font-bold tracking-tight text-[#263330]">
+                                        Onco<span class="text-[#C49A5A]">•</span>Care
+                                    </div>
 
-                                    <p class="text-xs text-[#66706D]">
-                                        Retrouvez vos informations au même endroit
-                                    </p>
-                                </div>
-
-                            </div>
-
-
-                            <div class="flex items-center gap-3">
-
-                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-[#E3DDD8] text-[#D99AA6]">
-                                    ♡
-                                </div>
-
-                                <div>
-                                    <p class="text-sm font-semibold text-[#293331]">
-                                        Une expérience humaine
-                                    </p>
-
-                                    <p class="text-xs text-[#66706D]">
-                                        Simple, claire et rassurante
-                                    </p>
-                                </div>
-
-                            </div>
-
-
-                            <div class="flex items-center gap-3">
-
-                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-[#E3DDD8] text-[#7567A8]">
-                                    🔒
-                                </div>
-
-                                <div>
-                                    <p class="text-sm font-semibold text-[#293331]">
-                                        Accès sécurisé
-                                    </p>
-
-                                    <p class="text-xs text-[#66706D]">
-                                        Vos accès sont protégés selon votre rôle
-                                    </p>
+                                    <div class="text-xs md:text-sm text-[#667085] -mt-1">
+                                        Suivi & accompagnement
+                                    </div>
                                 </div>
 
                             </div>
 
                         </div>
 
-                    </div>
+                        {{-- Message --}}
+                        <div class="max-w-xl mt-16">
 
+                            <p class="text-sm font-semibold uppercase tracking-[0.18em] text-[#5C8177]">
+                                Une approche humaine
+                            </p>
 
-                    {{-- Disclaimer --}}
-                    <div class="relative z-10">
+                            <h2 class="mt-4 text-4xl md:text-5xl xl:text-6xl font-semibold leading-[1.05] text-[#263330]">
+                                Ensemble face
+                                <span class="block text-[#5D8C7E]">
+                                    au cancer.
+                                </span>
+                            </h2>
 
-                        <p class="max-w-md text-xs leading-5 text-[#66706D]">
-                            OncoCare est une plateforme de suivi et
-                            d’accompagnement. Elle ne remplace pas
-                            l’avis ou la décision de votre médecin.
-                        </p>
+                            <p class="mt-6 max-w-lg text-base md:text-lg leading-8 text-[#465650]">
+                                OncoCare vous accompagne à chaque étape de votre parcours,
+                                avec un espace simple, humain et sécurisé.
+                            </p>
+
+                        </div>
+
+                        {{-- Bottom values --}}
+                        <div class="pt-12">
+
+                            <div class="grid grid-cols-3 gap-4 max-w-xl">
+
+                                <div class="pr-3 border-r border-[#CFCFC7]/70">
+                                    <div class="text-xl mb-2 text-[#16423C]">
+                                        ♧
+                                    </div>
+
+                                    <p class="text-xs md:text-sm font-semibold text-[#40514B]">
+                                        Suivi personnalisé
+                                    </p>
+                                </div>
+
+                                <div class="pr-3 border-r border-[#CFCFC7]/70">
+                                    <div class="text-xl mb-2 text-[#B26E83]">
+                                        ♡
+                                    </div>
+
+                                    <p class="text-xs md:text-sm font-semibold text-[#40514B]">
+                                        Soutien humain
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <div class="text-xl mb-2 text-[#C49A5A]">
+                                        ♧
+                                    </div>
+
+                                    <p class="text-xs md:text-sm font-semibold text-[#40514B]">
+                                        Données sécurisées
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
                 </div>
 
 
-                {{-- ===================================================== --}}
-                {{-- RIGHT SIDE — REGISTER --}}
-                {{-- ===================================================== --}}
+                {{-- ========================================================= --}}
+                {{-- RIGHT : ROLE SELECTION --}}
+                {{-- ========================================================= --}}
+                <div class="bg-white p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 flex flex-col justify-center">
 
-                <div class="flex items-center justify-center p-7 sm:p-10 lg:p-12">
+                    {{-- Header --}}
+                    <div class="text-center max-w-2xl mx-auto">
 
-                    <div class="w-full max-w-lg">
+                        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-[#5C8177]">
+                            Créer votre espace
+                        </p>
 
+                        <h1 class="mt-3 text-3xl md:text-4xl xl:text-5xl font-semibold text-[#263330] leading-tight">
+                            Choisissez votre rôle
+                        </h1>
 
-                        {{-- Mobile logo --}}
-                        <div class="mb-8 text-center lg:hidden">
+                        <p class="mt-4 text-[#667085] leading-7 text-sm md:text-base">
+                            Sélectionnez le profil qui correspond à votre situation
+                            pour accéder à votre espace personnel.
+                        </p>
 
-                            <a
-                                href="/"
-                                class="inline-flex items-baseline text-3xl font-medium"
-                                style="font-family: 'Newsreader', serif;"
-                            >
-                                <span class="text-[#293331]">Onco</span>
-                                <span class="text-[#C7A45B] mx-1">•</span>
-                                <span class="text-[#293331]">Care</span>
-                            </a>
-
-                            <p class="mt-2 text-xs text-[#66706D]">
-                                Suivi & accompagnement
-                            </p>
-
-                        </div>
+                    </div>
 
 
-                        {{-- Heading --}}
-                        <div class="mb-8">
-
-                            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[#6F917B]">
-                                Créer votre espace
-                            </p>
-
-                            <h2
-                                class="mt-3 text-4xl font-medium leading-tight text-[#293331]"
-                                style="font-family: 'Newsreader', serif;"
-                            >
-                                Créez votre compte
-                            </h2>
-
-                            <p class="mt-3 text-sm leading-6 text-[#66706D]">
-                                Rejoignez OncoCare et retrouvez vos informations
-                                importantes dans un seul espace.
-                            </p>
-
-                        </div>
+                    {{-- ===================================================== --}}
+                    {{-- CARDS --}}
+                    {{-- ===================================================== --}}
+                    <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
 
 
-                        {{-- Errors --}}
-                        @if ($errors->any())
-
-                            <div class="mb-6 rounded-2xl border border-[#EACFD4] bg-[#FBF0F2] p-4">
-
-                                <div class="flex gap-3">
-
-                                    <div class="mt-0.5 text-[#9A5661]">
-                                        !
-                                    </div>
-
-                                    <div>
-
-                                        <p class="text-sm font-semibold text-[#7F4C56]">
-                                            Vérifiez les informations saisies.
-                                        </p>
-
-                                        <ul class="mt-2 space-y-1 text-xs text-[#945864]">
-
-                                            @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                            @endforeach
-
-                                        </ul>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        @endif
-
-
-                        {{-- Register form --}}
-                        <form
-                            method="POST"
-                            action="{{ route('register') }}"
-                            class="space-y-5"
+                        {{-- Patient --}}
+                        <a
+                            href="{{ route('register.patient') }}"
+                            class="group relative overflow-hidden rounded-[26px] border border-[#DDE6DE] bg-[#F5F8F3] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-[#9EB8A3]"
                         >
 
-                            @csrf
+                            <div class="absolute top-0 right-0 h-28 w-28 rounded-full bg-[#E3EEE4] -translate-y-10 translate-x-10"></div>
 
+                            <div class="relative z-10">
 
-                            {{-- Nom + Prenom --}}
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                                {{-- Nom --}}
-                                <div>
-
-                                    <label
-                                        for="nom"
-                                        class="mb-2 block text-sm font-semibold text-[#293331]"
-                                    >
-                                        Nom
-                                    </label>
-
-                                    <input
-                                        id="nom"
-                                        name="nom"
-                                        type="text"
-                                        value="{{ old('nom') }}"
-                                        required
-                                        autofocus
-                                        autocomplete="family-name"
-                                        placeholder="Votre nom"
-                                        class="w-full rounded-xl border border-[#E3DDD8] bg-[#FCFBFA] px-4 py-3.5 text-sm text-[#293331] placeholder-[#A3A6A3] outline-none transition focus:border-[#7FA68A] focus:bg-white focus:ring-4 focus:ring-[#7FA68A]/10"
-                                    >
-
-                                    <x-input-error
-                                        :messages="$errors->get('nom')"
-                                        class="mt-2"
-                                    />
-
+                                <div class="h-24 flex items-center justify-center mb-4">
+                                    <div class="h-20 w-20 rounded-full bg-[#E0EDE2] flex items-center justify-center text-4xl">
+                                        👤
+                                    </div>
                                 </div>
 
+                                <h2 class="text-xl font-semibold text-[#263330]">
+                                    Patient
+                                </h2>
 
-                                {{-- Prenom --}}
-                                <div>
-
-                                    <label
-                                        for="prenom"
-                                        class="mb-2 block text-sm font-semibold text-[#293331]"
-                                    >
-                                        Prénom
-                                    </label>
-
-                                    <input
-                                        id="prenom"
-                                        name="prenom"
-                                        type="text"
-                                        value="{{ old('prenom') }}"
-                                        required
-                                        autocomplete="given-name"
-                                        placeholder="Votre prénom"
-                                        class="w-full rounded-xl border border-[#E3DDD8] bg-[#FCFBFA] px-4 py-3.5 text-sm text-[#293331] placeholder-[#A3A6A3] outline-none transition focus:border-[#7FA68A] focus:bg-white focus:ring-4 focus:ring-[#7FA68A]/10"
-                                    >
-
-                                    <x-input-error
-                                        :messages="$errors->get('prenom')"
-                                        class="mt-2"
-                                    />
-
-                                </div>
-
-                            </div>
-
-
-                            {{-- Telephone --}}
-                            <div>
-
-                                <label
-                                    for="telephone"
-                                    class="mb-2 block text-sm font-semibold text-[#293331]"
-                                >
-                                    Téléphone
-                                </label>
-
-                                <input
-                                    id="telephone"
-                                    name="telephone"
-                                    type="text"
-                                    value="{{ old('telephone') }}"
-                                    autocomplete="tel"
-                                    placeholder="+212 6 XX XX XX XX"
-                                    class="w-full rounded-xl border border-[#E3DDD8] bg-[#FCFBFA] px-4 py-3.5 text-sm text-[#293331] placeholder-[#A3A6A3] outline-none transition focus:border-[#7FA68A] focus:bg-white focus:ring-4 focus:ring-[#7FA68A]/10"
-                                >
-
-                                <x-input-error
-                                    :messages="$errors->get('telephone')"
-                                    class="mt-2"
-                                />
-
-                            </div>
-
-
-                            {{-- Email --}}
-                            <div>
-
-                                <label
-                                    for="email"
-                                    class="mb-2 block text-sm font-semibold text-[#293331]"
-                                >
-                                    Email
-                                </label>
-
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    value="{{ old('email') }}"
-                                    required
-                                    autocomplete="username"
-                                    placeholder="votre@email.com"
-                                    class="w-full rounded-xl border border-[#E3DDD8] bg-[#FCFBFA] px-4 py-3.5 text-sm text-[#293331] placeholder-[#A3A6A3] outline-none transition focus:border-[#7FA68A] focus:bg-white focus:ring-4 focus:ring-[#7FA68A]/10"
-                                >
-
-                                <x-input-error
-                                    :messages="$errors->get('email')"
-                                    class="mt-2"
-                                />
-
-                            </div>
-
-
-                            {{-- Password --}}
-                            <div>
-
-                                <label
-                                    for="password"
-                                    class="mb-2 block text-sm font-semibold text-[#293331]"
-                                >
-                                    Mot de passe
-                                </label>
-
-                                <div class="relative">
-
-                                    <input
-                                        id="password"
-                                        name="password"
-                                        type="password"
-                                        required
-                                        autocomplete="new-password"
-                                        placeholder="Créez votre mot de passe"
-                                        class="w-full rounded-xl border border-[#E3DDD8] bg-[#FCFBFA] px-4 py-3.5 pr-20 text-sm text-[#293331] placeholder-[#A3A6A3] outline-none transition focus:border-[#7FA68A] focus:bg-white focus:ring-4 focus:ring-[#7FA68A]/10"
-                                    >
-
-                                    <button
-                                        type="button"
-                                        onclick="toggleRegisterPassword('password', this)"
-                                        class="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-xs text-[#66706D] hover:bg-[#F1EEEB]"
-                                    >
-                                        Afficher
-                                    </button>
-
-                                </div>
-
-                                <p class="mt-2 text-[11px] text-[#8B918E]">
-                                    Utilisez un mot de passe suffisamment sécurisé.
+                                <p class="mt-2 text-sm leading-6 text-[#667085] min-h-[72px]">
+                                    Accédez à vos rendez-vous, vos suivis
+                                    et à votre parcours de soins.
                                 </p>
 
-                                <x-input-error
-                                    :messages="$errors->get('password')"
-                                    class="mt-2"
-                                />
+                                <div class="mt-5 flex items-center justify-between">
 
-                            </div>
+                                    <span class="text-sm font-semibold text-[#16423C]">
+                                        Créer mon espace
+                                    </span>
 
-
-                            {{-- Confirm password --}}
-                            <div>
-
-                                <label
-                                    for="password_confirmation"
-                                    class="mb-2 block text-sm font-semibold text-[#293331]"
-                                >
-                                    Confirmer le mot de passe
-                                </label>
-
-                                <div class="relative">
-
-                                    <input
-                                        id="password_confirmation"
-                                        name="password_confirmation"
-                                        type="password"
-                                        required
-                                        autocomplete="new-password"
-                                        placeholder="Confirmez votre mot de passe"
-                                        class="w-full rounded-xl border border-[#E3DDD8] bg-[#FCFBFA] px-4 py-3.5 pr-20 text-sm text-[#293331] placeholder-[#A3A6A3] outline-none transition focus:border-[#7FA68A] focus:bg-white focus:ring-4 focus:ring-[#7FA68A]/10"
-                                    >
-
-                                    <button
-                                        type="button"
-                                        onclick="toggleRegisterPassword('password_confirmation', this)"
-                                        class="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-xs text-[#66706D] hover:bg-[#F1EEEB]"
-                                    >
-                                        Afficher
-                                    </button>
-
-                                </div>
-
-                                <x-input-error
-                                    :messages="$errors->get('password_confirmation')"
-                                    class="mt-2"
-                                />
-
-                            </div>
-
-
-                            {{-- Privacy box --}}
-                            <div class="rounded-2xl border border-[#D7E6DB] bg-[#F1F7F2] p-4">
-
-                                <div class="flex items-start gap-3">
-
-                                    <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white text-[#7FA68A] border border-[#DCE9DF]">
-                                        🔒
-                                    </div>
-
-                                    <div>
-
-                                        <p class="text-xs font-semibold text-[#41644B]">
-                                            Votre confidentialité compte
-                                        </p>
-
-                                        <p class="mt-1 text-[11px] leading-5 text-[#607467]">
-                                            Votre accès aux informations de la plateforme
-                                            dépendra de votre rôle et de vos autorisations.
-                                        </p>
-
-                                    </div>
+                                    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#6F9B8D] text-white transition-transform duration-300 group-hover:translate-x-1">
+                                        →
+                                    </span>
 
                                 </div>
 
                             </div>
 
-
-                            {{-- Actions --}}
-                            <div class="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
-
-                                <a
-                                    href="{{ route('login') }}"
-                                    class="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[#E3DDD8] bg-white px-5 py-3 text-sm font-semibold text-[#293331] transition hover:border-[#CBC2BC] hover:bg-[#FCFBFA]"
-                                >
-                                    Déjà inscrit ?
-                                </a>
+                        </a>
 
 
-                                <button
-                                    type="submit"
-                                    class="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-xl bg-[#7FA68A] px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(127,166,138,0.20)] transition hover:-translate-y-0.5 hover:bg-[#6F987B] focus:outline-none focus:ring-4 focus:ring-[#7FA68A]/20 sm:flex-none"
-                                >
-                                    Créer mon compte
-                                    <span class="ml-2">→</span>
-                                </button>
+                        {{-- Proche --}}
+                        <a
+                            href="{{ route('register.proche') }}"
+                            class="group relative overflow-hidden rounded-[26px] border border-[#EEDDE3] bg-[#FBF3F5] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-[#D9A5B4]"
+                        >
+
+                            <div class="absolute top-0 right-0 h-28 w-28 rounded-full bg-[#F5E1E7] -translate-y-10 translate-x-10"></div>
+
+                            <div class="relative z-10">
+
+                                <div class="h-24 flex items-center justify-center mb-4">
+                                    <div class="h-20 w-20 rounded-full bg-[#F4DDE4] flex items-center justify-center text-4xl">
+                                        🤝
+                                    </div>
+                                </div>
+
+                                <h2 class="text-xl font-semibold text-[#263330]">
+                                    Proche
+                                </h2>
+
+                                <p class="mt-2 text-sm leading-6 text-[#667085] min-h-[72px]">
+                                    Suivez et soutenez votre proche
+                                    dans son parcours de soins.
+                                </p>
+
+                                <div class="mt-5 flex items-center justify-between">
+
+                                    <span class="text-sm font-semibold text-[#A85F76]">
+                                        Créer mon espace
+                                    </span>
+
+                                    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#C87992] text-white transition-transform duration-300 group-hover:translate-x-1">
+                                        →
+                                    </span>
+
+                                </div>
 
                             </div>
 
-                        </form>
+                        </a>
 
 
-                        {{-- Footer --}}
-                        <div class="mt-8 text-center text-[11px] text-[#8B918E]">
-                            En créant votre compte, vous utilisez un espace
-                            destiné au suivi et à l’accompagnement.
+                        {{-- Médecin --}}
+                        <a
+                            href="{{ route('register.medecin') }}"
+                            class="group relative overflow-hidden rounded-[26px] border border-[#DDD9EF] bg-[#F5F3FB] p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-[#ADA6D3]"
+                        >
+
+                            <div class="absolute top-0 right-0 h-28 w-28 rounded-full bg-[#E9E5F7] -translate-y-10 translate-x-10"></div>
+
+                            <div class="relative z-10">
+
+                                <div class="h-24 flex items-center justify-center mb-4">
+                                    <div class="h-20 w-20 rounded-full bg-[#E8E4F7] flex items-center justify-center text-4xl">
+                                        🩺
+                                    </div>
+                                </div>
+
+                                <h2 class="text-xl font-semibold text-[#263330]">
+                                    Médecin
+                                </h2>
+
+                                <p class="mt-2 text-sm leading-6 text-[#667085] min-h-[72px]">
+                                    Accédez à vos patients, vos rendez-vous
+                                    et vos outils de suivi.
+                                </p>
+
+                                <div class="mt-5 flex items-center justify-between">
+
+                                    <span class="text-sm font-semibold text-[#6C63A8]">
+                                        Accéder au formulaire
+                                    </span>
+
+                                    <span class="flex h-9 w-9 items-center justify-center rounded-full bg-[#7C75B6] text-white transition-transform duration-300 group-hover:translate-x-1">
+                                        →
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </a>
+
+
+                        {{-- Administrateur --}}
+                        <div
+                            class="relative overflow-hidden rounded-[26px] border border-[#E7DFC9] bg-[#FBF8F0] p-6"
+                        >
+
+                            <div class="absolute top-0 right-0 h-28 w-28 rounded-full bg-[#F2EBD8] -translate-y-10 translate-x-10"></div>
+
+                            <div class="relative z-10">
+
+                                <div class="h-24 flex items-center justify-center mb-4">
+                                    <div class="h-20 w-20 rounded-full bg-[#F1E9D5] flex items-center justify-center text-4xl">
+                                        🔐
+                                    </div>
+                                </div>
+
+                                <h2 class="text-xl font-semibold text-[#263330]">
+                                    Administrateur
+                                </h2>
+
+                                <p class="mt-2 text-sm leading-6 text-[#667085] min-h-[72px]">
+                                    Accès réservé aux équipes de gestion
+                                    et d’administration de la plateforme.
+                                </p>
+
+                                <div class="mt-5">
+
+                                    <span class="inline-flex items-center gap-2 rounded-full bg-[#F2E8CF] px-4 py-2 text-xs font-semibold text-[#9A7432]">
+                                        🔒 Accès réservé
+                                    </span>
+
+                                </div>
+
+                            </div>
+
                         </div>
+
+                    </div>
+
+
+                    {{-- Login --}}
+                    <div class="mt-8 text-center">
+
+                        <p class="text-sm text-[#667085]">
+                            Vous avez déjà un compte ?
+
+                            <a
+                                href="{{ route('login') }}"
+                                class="font-semibold text-[#16423C] hover:underline"
+                            >
+                                Se connecter
+                            </a>
+                        </p>
 
                     </div>
 
@@ -508,20 +329,5 @@
         </div>
 
     </div>
-
-
-    <script>
-        function toggleRegisterPassword(id, button) {
-            const input = document.getElementById(id);
-
-            if (input.type === 'password') {
-                input.type = 'text';
-                button.textContent = 'Masquer';
-            } else {
-                input.type = 'password';
-                button.textContent = 'Afficher';
-            }
-        }
-    </script>
 
 </x-guest-layout>

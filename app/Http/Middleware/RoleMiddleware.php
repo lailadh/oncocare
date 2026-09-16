@@ -14,8 +14,22 @@ class RoleMiddleware
             abort(403);
         }
 
-        if (!in_array(auth()->user()->role, $roles)) {
+        $user = auth()->user();
+
+        if (!in_array($user->role, $roles)) {
             abort(403);
+        }
+
+        /*
+         * Un médecin doit être validé par l'administration
+         * avant d'accéder aux fonctionnalités médicales.
+         */
+        if (
+            $user->role === 'medecin' &&
+            $user->statut !== 'active'
+        ) {
+            return response()
+                ->view('auth.medecin-pending', compact('user'), 403);
         }
 
         return $next($request);
