@@ -147,6 +147,26 @@
                         </a>
 
 
+                        {{-- Rechercher un médecin --}}
+                        <a
+                            href="{{ route('patient.medecins.index') }}"
+                            class="onco-nav-link {{ request()->routeIs('patient.medecins.*') ? 'active patient-nav' : '' }}"
+                        >
+                            <span class="onco-nav-icon">🔍</span>
+                            <span>Rechercher un médecin</span>
+                        </a>
+
+
+                        {{-- Mes demandes de suivi --}}
+                        <a
+                            href="{{ route('patient.demandes-suivi.index') }}"
+                            class="onco-nav-link {{ request()->routeIs('patient.demandes-suivi.*') ? 'active patient-nav' : '' }}"
+                        >
+                            <span class="onco-nav-icon">📩</span>
+                            <span>Mes demandes</span>
+                        </a>
+
+
                         {{-- Rendez-vous --}}
                         <a
                             href="{{ route('patient.rendezvous.index') }}"
@@ -225,6 +245,16 @@
                         >
                             <span class="onco-nav-icon">◌</span>
                             <span>Mes patients</span>
+                        </a>
+
+
+                        {{-- Demandes de suivi --}}
+                        <a
+                            href="{{ route('medecin.demandes-suivi.index') }}"
+                            class="onco-nav-link {{ request()->routeIs('medecin.demandes-suivi.*') ? 'active medecin-nav' : '' }}"
+                        >
+                            <span class="onco-nav-icon">📩</span>
+                            <span>Demandes de suivi</span>
                         </a>
 
 

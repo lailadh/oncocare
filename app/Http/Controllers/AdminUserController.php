@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Notification;
 use App\Models\Medecin;
+use App\Models\Notification;
 use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ use Illuminate\Validation\Rule;
 class AdminUserController extends Controller
 {
     /**
-     * Gestion globale des utilisateurs
+     * Gestion globale des utilisateurs.
      */
     public function index()
     {
@@ -23,7 +23,7 @@ class AdminUserController extends Controller
     }
 
     /**
-     * Liste des médecins
+     * Liste des médecins.
      */
     public function medecins()
     {
@@ -35,95 +35,30 @@ class AdminUserController extends Controller
     }
 
     /**
-     * Liste des patients
+     * Liste des patients.
+     *
+     * On charge également :
+     * - le profil Patient
+     * - les médecins associés
+     * - le compte utilisateur du médecin
      */
     public function patients()
     {
         $patients = User::where('role', 'patient')
-            ->with('patient.medecins.utilisateur')
+            ->with([
+                'patient.medecins.utilisateur',
+            ])
             ->latest()
             ->get();
 
-        $medecins = Medecin::whereHas('utilisateur', function ($query): void {
-            $query->where('role', 'medecin')
-                ->where('statut', 'active');
-        })
-            ->with('utilisateur')
-            ->orderBy('id_medecin')
-            ->get();
-
-        return view('admin.patients.index', compact('patients', 'medecins'));
+        return view(
+            'admin.patients.index',
+            compact('patients')
+        );
     }
 
     /**
-     * Associer un médecin actif au dossier d'un patient.
-     */
-    public function assignerMedecin(Request $request, Patient $patient)
-    {
-        $validated = $request->validate([
-            'id_medecin' => [
-                'required',
-                'exists:medecins,id_medecin',
-            ],
-        ]);
-
-        $medecin = Medecin::with('utilisateur')->findOrFail($validated['id_medecin']);
-
-        if ($medecin->utilisateur?->role !== 'medecin' || $medecin->utilisateur?->statut !== 'active') {
-            return back()->withErrors([
-                'id_medecin' => 'Seuls les médecins actifs peuvent être associés.',
-            ]);
-        }
-
-        if ($patient->medecins()->whereKey($medecin->id_medecin)->exists()) {
-            return back()->withErrors([
-                'id_medecin' => 'Ce médecin est déjà associé à ce patient.',
-            ]);
-        }
-
-        DB::transaction(function () use ($patient, $medecin): void {
-            $patient->medecins()->attach($medecin->id_medecin);
-
-            Notification::create([
-                'titre' => 'Nouveau patient suivi',
-                'type' => 'suivi_patient',
-                'message' => 'Un patient vous a été associé par l’administration.',
-                'lu' => false,
-                'date_notification' => now(),
-                'id_utilisateur' => $medecin->utilisateur->id,
-            ]);
-
-            Notification::create([
-                'titre' => 'Médecin associé à votre dossier',
-                'type' => 'suivi_patient',
-                'message' => "Le Dr {$medecin->utilisateur->prenom} {$medecin->utilisateur->nom} a été associé à votre dossier.",
-                'lu' => false,
-                'date_notification' => now(),
-                'id_utilisateur' => $patient->id_utilisateur,
-            ]);
-        });
-
-        return back()->with('success', 'Le médecin a été associé au patient.');
-    }
-
-    /**
-     * Retirer un médecin du dossier d'un patient.
-     */
-    public function retirerMedecin(Patient $patient, Medecin $medecin)
-    {
-        if (!$patient->medecins()->whereKey($medecin->id_medecin)->exists()) {
-            return back()->withErrors([
-                'medecin' => 'Ce médecin n’est pas associé à ce patient.',
-            ]);
-        }
-
-        $patient->medecins()->detach($medecin->id_medecin);
-
-        return back()->with('success', 'Le médecin a été retiré du dossier patient.');
-    }
-
-    /**
-     * Liste des proches
+     * Liste des proches.
      */
     public function proches()
     {
@@ -131,22 +66,30 @@ class AdminUserController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.proches.index', compact('proches'));
+        return view(
+            'admin.proches.index',
+            compact('proches')
+        );
     }
 
     /**
-     * Formulaire de modification
+     * Formulaire de modification d'un utilisateur.
      */
     public function edit(User $user)
     {
-        return view('admin.users.edit', compact('user'));
+        return view(
+            'admin.users.edit',
+            compact('user')
+        );
     }
 
     /**
-     * Modifier le rôle et le statut d'un utilisateur
+     * Modifier le rôle et le statut d'un utilisateur.
      */
-    public function update(Request $request, User $user)
-    {
+    public function update(
+        Request $request,
+        User $user
+    ) {
         /*
         |--------------------------------------------------------------------------
         | Protection du compte administrateur connecté
@@ -154,6 +97,7 @@ class AdminUserController extends Controller
         */
 
         if ($user->id === auth()->id()) {
+
             return back()->with(
                 'error',
                 'Vous ne pouvez pas modifier votre propre compte depuis cette page.'
@@ -189,19 +133,31 @@ class AdminUserController extends Controller
                 'nullable',
                 'string',
                 'max:255',
-                Rule::requiredIf(fn(): bool => $request->input('role') === 'medecin'),
             ],
         ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Anciennes valeurs
+        |--------------------------------------------------------------------------
+        */
 
         $oldRole = $user->role;
         $oldStatut = $user->statut;
 
+        /*
+        |--------------------------------------------------------------------------
+        | Nouvelles valeurs
+        |--------------------------------------------------------------------------
+        */
+
         $newRole = $validated['role'];
+
         $newStatut = $validated['statut'] ?? 'active';
 
         /*
         |--------------------------------------------------------------------------
-        | Patient et Proche = automatiquement actifs
+        | Patient et Proche = toujours actifs
         |--------------------------------------------------------------------------
         */
 
@@ -211,31 +167,78 @@ class AdminUserController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Mise à jour
+        | Mise à jour dans une transaction
         |--------------------------------------------------------------------------
         */
 
-        DB::transaction(function () use ($user, $newRole, $newStatut, $validated): void {
+        DB::transaction(function () use (
+            $user,
+            $newRole,
+            $newStatut,
+            $validated
+        ): void {
+
+            /*
+            | Mise à jour du compte utilisateur.
+            */
             $user->update([
                 'role' => $newRole,
                 'statut' => $newStatut,
             ]);
 
-            if ($newRole === 'patient' && !$user->patient()->exists()) {
-                Patient::create([
-                    'id_utilisateur' => $user->id,
-                ]);
+            /*
+            |--------------------------------------------------------------------------
+            | Profil Patient
+            |--------------------------------------------------------------------------
+            */
+
+            if ($newRole === 'patient') {
+
+                if (! $user->patient()->exists()) {
+
+                    Patient::create([
+                        'id_utilisateur' => $user->id,
+                    ]);
+                }
             }
 
+            /*
+            |--------------------------------------------------------------------------
+            | Profil Médecin
+            |--------------------------------------------------------------------------
+            */
+
             if ($newRole === 'medecin') {
+
                 if ($user->medecin()->exists()) {
-                    $user->medecin()->update([
-                        'specialite' => $validated['specialite'],
-                    ]);
+
+                    /*
+                    | Si le profil existe déjà, on peut modifier
+                    | sa spécialité.
+                    */
+                    if (
+                        array_key_exists(
+                            'specialite',
+                            $validated
+                        )
+                        &&
+                        $validated['specialite'] !== null
+                    ) {
+
+                        $user->medecin()->update([
+                            'specialite' => $validated['specialite'],
+                        ]);
+                    }
+
                 } else {
+
+                    /*
+                    | Création du profil médecin.
+                    */
                     Medecin::create([
                         'id_utilisateur' => $user->id,
-                        'specialite' => $validated['specialite'],
+                        'specialite' => $validated['specialite']
+                            ?? 'Non renseignée',
                     ]);
                 }
             }
@@ -243,62 +246,61 @@ class AdminUserController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Notification au médecin
+        | Notifications concernant le statut médecin
         |--------------------------------------------------------------------------
         */
 
         if (
-            $newRole === 'medecin' &&
+            $newRole === 'medecin'
+            &&
             (
-                $oldRole !== $newRole ||
+                $oldRole !== $newRole
+                ||
                 $oldStatut !== $newStatut
             )
         ) {
+
             $titre = null;
             $message = null;
 
             /*
-            |----------------------------------------------
-            | Compte validé
-            |----------------------------------------------
+            | Médecin validé.
             */
-
             if ($newStatut === 'active') {
 
                 $titre = 'Compte médecin validé';
 
-                $message = 'Votre demande d’accès à l’espace Médecin a été validée par un administrateur. Vous pouvez maintenant accéder à votre espace.';
+                $message =
+                    'Votre demande d’accès à l’espace Médecin a été validée par un administrateur. Vous pouvez maintenant accéder à votre espace.';
             }
 
             /*
-            |----------------------------------------------
-            | Demande refusée
-            |----------------------------------------------
-            */ elseif ($newStatut === 'refuse') {
+            | Médecin refusé.
+            */
+            elseif ($newStatut === 'refuse') {
 
                 $titre = 'Demande médecin refusée';
 
-                $message = 'Votre demande d’accès à l’espace Médecin a été refusée par un administrateur.';
+                $message =
+                    'Votre demande d’accès à l’espace Médecin a été refusée par un administrateur.';
             }
 
             /*
-            |----------------------------------------------
-            | Remise en attente
-            |----------------------------------------------
-            */ elseif ($newStatut === 'en_attente') {
+            | Médecin en attente.
+            */
+            elseif ($newStatut === 'en_attente') {
 
                 $titre = 'Demande médecin en attente';
 
-                $message = 'Le statut de votre demande d’accès à l’espace Médecin est actuellement en attente de validation.';
+                $message =
+                    'Le statut de votre demande d’accès à l’espace Médecin est actuellement en attente de validation.';
             }
 
             /*
-            |----------------------------------------------
-            | Création notification
-            |----------------------------------------------
+            | Création de la notification.
             */
-
             if ($titre && $message) {
+
                 Notification::create([
                     'titre' => $titre,
                     'type' => 'medecin_statut',
@@ -309,6 +311,12 @@ class AdminUserController extends Controller
                 ]);
             }
         }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Retour
+        |--------------------------------------------------------------------------
+        */
 
         return redirect()
             ->route('admin.users.index')

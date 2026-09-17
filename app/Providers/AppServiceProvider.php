@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
-use App\Models\Suivi;
-use App\Models\RendezVous;
 use App\Models\AutorisationProche;
+use App\Models\DemandeSuivi;
+use App\Models\RendezVous;
+use App\Models\Suivi;
 use App\Policies\AutorisationProchePolicy;
+use App\Policies\DemandeSuiviPolicy;
 use App\Policies\RendezVousPolicy;
 use App\Policies\SuiviPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -29,5 +31,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Suivi::class, SuiviPolicy::class);
         Gate::policy(RendezVous::class, RendezVousPolicy::class);
         Gate::policy(AutorisationProche::class, AutorisationProchePolicy::class);
+        Gate::policy(DemandeSuivi::class, DemandeSuiviPolicy::class);
     }
 }

@@ -47,9 +47,11 @@ class RendezVousPolicyTest extends TestCase
         $user = User::make([
             'role' => 'medecin',
         ]);
-        $user->setRelation('medecin', Medecin::make([
-            'id_medecin' => $medecinId,
-        ]));
+
+        $user->setRelation(
+            'medecin',
+            Medecin::make()->forceFill(['id_medecin' => $medecinId])
+        );
 
         return $user;
     }

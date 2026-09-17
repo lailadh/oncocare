@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class Medecin extends Model
 {
     protected $primaryKey = 'id_medecin';
@@ -34,13 +35,21 @@ class Medecin extends Model
         );
     }
 
-public function rendezVous(): HasMany
-{
-    return $this->hasMany(
-        RendezVous::class,
-        'id_medecin',
-        'id_medecin'
-    );
-}
+    public function rendezVous(): HasMany
+    {
+        return $this->hasMany(
+            RendezVous::class,
+            'id_medecin',
+            'id_medecin'
+        );
+    }
 
+    public function demandesSuivi(): HasMany
+    {
+        return $this->hasMany(
+            DemandeSuivi::class,
+            'id_medecin',
+            'id_medecin'
+        );
+    }
 }

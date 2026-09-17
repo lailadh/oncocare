@@ -26,34 +26,42 @@ class Patient extends Model
         );
     }
 
-
     public function medecins(): BelongsToMany
-{
-    return $this->belongsToMany(
-        Medecin::class,
-        'suivre',
-        'id_patient',
-        'id_medecin',
-        'id_patient',
-        'id_medecin'
-    );
-}
-public function suivis(): HasMany
-{
-    return $this->hasMany(
-        Suivi::class,
-        'id_patient',
-        'id_patient'
-    );
-}
+    {
+        return $this->belongsToMany(
+            Medecin::class,
+            'suivre',
+            'id_patient',
+            'id_medecin',
+            'id_patient',
+            'id_medecin'
+        );
+    }
 
-public function rendezVous(): HasMany
-{
-    return $this->hasMany(
-        RendezVous::class,
-        'id_patient',
-        'id_patient'
-    );
-}
+    public function suivis(): HasMany
+    {
+        return $this->hasMany(
+            Suivi::class,
+            'id_patient',
+            'id_patient'
+        );
+    }
 
+    public function demandesSuivi(): HasMany
+    {
+        return $this->hasMany(
+            DemandeSuivi::class,
+            'id_patient',
+            'id_patient'
+        );
+    }
+
+    public function rendezVous(): HasMany
+    {
+        return $this->hasMany(
+            RendezVous::class,
+            'id_patient',
+            'id_patient'
+        );
+    }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RendezVous;
+use App\Models\AutorisationProche;
 use App\Models\Notification;
 use App\Models\Patient;
-use App\Models\AutorisationProche;
+use App\Models\RendezVous;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -19,9 +19,11 @@ class RendezVousController extends Controller
     {
         Gate::authorize('viewAny', RendezVous::class);
 
+        $this->cloturerRendezVousDepasses();
+
         $user = auth()->user();
 
-        if ($user->role !== 'medecin' || !$user->medecin) {
+        if ($user->role !== 'medecin' || ! $user->medecin) {
             abort(403);
         }
 
@@ -51,7 +53,7 @@ class RendezVousController extends Controller
 
         $user = auth()->user();
 
-        if ($user->role !== 'medecin' || !$user->medecin) {
+        if ($user->role !== 'medecin' || ! $user->medecin) {
             abort(403);
         }
 
@@ -79,7 +81,7 @@ class RendezVousController extends Controller
 
         $user = auth()->user();
 
-        if ($user->role !== 'medecin' || !$user->medecin) {
+        if ($user->role !== 'medecin' || ! $user->medecin) {
             abort(403);
         }
 
@@ -101,26 +103,19 @@ class RendezVousController extends Controller
                 'max:1000',
             ],
         ], [
-            'id_patient.required' =>
-                'Veuillez sélectionner un patient.',
+            'id_patient.required' => 'Veuillez sélectionner un patient.',
 
-            'id_patient.exists' =>
-                'Le patient sélectionné est invalide.',
+            'id_patient.exists' => 'Le patient sélectionné est invalide.',
 
-            'date_heure.required' =>
-                'Veuillez choisir une date et une heure.',
+            'date_heure.required' => 'Veuillez choisir une date et une heure.',
 
-            'date_heure.date' =>
-                'La date et l’heure sont invalides.',
+            'date_heure.date' => 'La date et l’heure sont invalides.',
 
-            'date_heure.after' =>
-                'Le rendez-vous doit être programmé dans le futur.',
+            'date_heure.after' => 'Le rendez-vous doit être programmé dans le futur.',
 
-            'motif.required' =>
-                'Veuillez préciser le motif du rendez-vous.',
+            'motif.required' => 'Veuillez préciser le motif du rendez-vous.',
 
-            'motif.max' =>
-                'Le motif ne doit pas dépasser 1000 caractères.',
+            'motif.max' => 'Le motif ne doit pas dépasser 1000 caractères.',
         ]);
 
         // Vérifier que le patient est bien suivi par ce médecin.
@@ -132,7 +127,7 @@ class RendezVousController extends Controller
             )
             ->exists();
 
-        if (!$patientExiste) {
+        if (! $patientExiste) {
             abort(403);
         }
 
@@ -156,8 +151,7 @@ class RendezVousController extends Controller
             return back()
                 ->withInput()
                 ->withErrors([
-                    'date_heure' =>
-                        'Ce créneau est déjà occupé par un autre rendez-vous.',
+                    'date_heure' => 'Ce créneau est déjà occupé par un autre rendez-vous.',
                 ]);
         }
 
@@ -179,12 +173,11 @@ class RendezVousController extends Controller
             'titre' => 'Nouveau rendez-vous',
             'type' => 'rendezvous',
 
-            'message' =>
-                'Dr ' .
-                $user->prenom . ' ' .
-                $user->nom .
-                ' vous a programmé un rendez-vous le ' .
-                $rendezVous->date_heure->format('d/m/Y à H:i') .
+            'message' => 'Dr '.
+                $user->prenom.' '.
+                $user->nom.
+                ' vous a programmé un rendez-vous le '.
+                $rendezVous->date_heure->format('d/m/Y à H:i').
                 '.',
 
             'lu' => false,
@@ -209,7 +202,7 @@ class RendezVousController extends Controller
 
         $user = auth()->user();
 
-        if ($user->role !== 'medecin' || !$user->medecin) {
+        if ($user->role !== 'medecin' || ! $user->medecin) {
             abort(403);
         }
 
@@ -243,7 +236,7 @@ class RendezVousController extends Controller
 
         $user = auth()->user();
 
-        if ($user->role !== 'medecin' || !$user->medecin) {
+        if ($user->role !== 'medecin' || ! $user->medecin) {
             abort(403);
         }
 
@@ -261,8 +254,7 @@ class RendezVousController extends Controller
             return redirect()
                 ->route('rendezvous.show', $rendezVous)
                 ->withErrors([
-                    'rendezVous' =>
-                        'Cette demande de rendez-vous a déjà été traitée.',
+                    'rendezVous' => 'Cette demande de rendez-vous a déjà été traitée.',
                 ]);
         }
 
@@ -292,7 +284,7 @@ class RendezVousController extends Controller
 
         $user = auth()->user();
 
-        if ($user->role !== 'medecin' || !$user->medecin) {
+        if ($user->role !== 'medecin' || ! $user->medecin) {
             abort(403);
         }
 
@@ -310,8 +302,7 @@ class RendezVousController extends Controller
             return redirect()
                 ->route('rendezvous.show', $rendezVous)
                 ->withErrors([
-                    'rendezVous' =>
-                        'Cette demande de rendez-vous a déjà été traitée.',
+                    'rendezVous' => 'Cette demande de rendez-vous a déjà été traitée.',
                 ]);
         }
 
@@ -336,17 +327,13 @@ class RendezVousController extends Controller
                 'after:now',
             ],
         ], [
-            'statut.required' =>
-                'Veuillez sélectionner une décision.',
+            'statut.required' => 'Veuillez sélectionner une décision.',
 
-            'statut.in' =>
-                'La décision sélectionnée est invalide.',
+            'statut.in' => 'La décision sélectionnée est invalide.',
 
-            'date_heure.date' =>
-                'La date et l’heure sélectionnées sont invalides.',
+            'date_heure.date' => 'La date et l’heure sélectionnées sont invalides.',
 
-            'date_heure.after' =>
-                'Le rendez-vous doit être programmé dans le futur.',
+            'date_heure.after' => 'Le rendez-vous doit être programmé dans le futur.',
         ]);
 
         /*
@@ -358,12 +345,11 @@ class RendezVousController extends Controller
         if ($request->statut === 'confirme') {
 
             // La date et l'heure sont obligatoires pour confirmer.
-            if (!$request->filled('date_heure')) {
+            if (! $request->filled('date_heure')) {
                 return back()
                     ->withInput()
                     ->withErrors([
-                        'date_heure' =>
-                            'Veuillez choisir une date et une heure pour confirmer le rendez-vous.',
+                        'date_heure' => 'Veuillez choisir une date et une heure pour confirmer le rendez-vous.',
                     ]);
             }
 
@@ -391,8 +377,7 @@ class RendezVousController extends Controller
                 return back()
                     ->withInput()
                     ->withErrors([
-                        'date_heure' =>
-                            'Ce créneau est déjà occupé par un autre rendez-vous.',
+                        'date_heure' => 'Ce créneau est déjà occupé par un autre rendez-vous.',
                     ]);
             }
 
@@ -413,12 +398,11 @@ class RendezVousController extends Controller
                 'titre' => 'Rendez-vous confirmé',
                 'type' => 'rendezvous',
 
-                'message' =>
-                    'Votre demande de rendez-vous avec Dr ' .
-                    $user->prenom . ' ' .
-                    $user->nom .
-                    ' a été confirmée pour le ' .
-                    $rendezVous->date_heure->format('d/m/Y à H:i') .
+                'message' => 'Votre demande de rendez-vous avec Dr '.
+                    $user->prenom.' '.
+                    $user->nom.
+                    ' a été confirmée pour le '.
+                    $rendezVous->date_heure->format('d/m/Y à H:i').
                     '.',
 
                 'lu' => false,
@@ -458,10 +442,9 @@ class RendezVousController extends Controller
                 'titre' => 'Demande de rendez-vous refusée',
                 'type' => 'rendezvous',
 
-                'message' =>
-                    'Votre demande de rendez-vous avec Dr ' .
-                    $user->prenom . ' ' .
-                    $user->nom .
+                'message' => 'Votre demande de rendez-vous avec Dr '.
+                    $user->prenom.' '.
+                    $user->nom.
                     ' a été refusée.',
 
                 'lu' => false,
@@ -489,7 +472,7 @@ class RendezVousController extends Controller
 
         $user = auth()->user();
 
-        if ($user->role !== 'medecin' || !$user->medecin) {
+        if ($user->role !== 'medecin' || ! $user->medecin) {
             abort(403);
         }
 
@@ -513,183 +496,17 @@ class RendezVousController extends Controller
     }
 
     /**
-     * Formulaire pour demander un rendez-vous côté patient.
-     */
-    public function patientCreate()
-    {
-        $user = auth()->user();
-
-        if ($user->role !== 'patient' || !$user->patient) {
-            abort(403);
-        }
-
-        // Afficher uniquement les médecins qui suivent ce patient.
-        $medecins = $user->patient
-            ->medecins()
-            ->with('utilisateur')
-            ->get();
-
-        return view(
-            'patient.rendezvous.demande',
-            compact('medecins')
-        );
-    }
-
-    /**
-     * Enregistrer une demande de rendez-vous côté patient.
-     */
-    public function patientStore(Request $request)
-    {
-        $user = auth()->user();
-
-        if ($user->role !== 'patient' || !$user->patient) {
-            abort(403);
-        }
-
-        $motifsAutorises = [
-            'Consultation de suivi',
-            'Contrôle médical',
-            'Suivi du traitement',
-            'Bilan / examens',
-            'Effets secondaires du traitement',
-            'Demande d’information',
-            'Renouvellement / adaptation du suivi',
-            'Autre',
-        ];
-
-        $request->validate([
-            'id_medecin' => [
-                'required',
-                'exists:medecins,id_medecin',
-            ],
-
-            'motif' => [
-                'required',
-                'string',
-                Rule::in($motifsAutorises),
-            ],
-
-            'motif_autre' => [
-                'nullable',
-                'required_if:motif,Autre',
-                'string',
-                'max:1000',
-            ],
-        ], [
-            'id_medecin.required' =>
-                'Veuillez sélectionner un médecin.',
-
-            'id_medecin.exists' =>
-                'Le médecin sélectionné est invalide.',
-
-            'motif.required' =>
-                'Veuillez sélectionner un motif.',
-
-            'motif.in' =>
-                'Le motif sélectionné est invalide.',
-
-            'motif_autre.required_if' =>
-                'Veuillez préciser votre motif.',
-
-            'motif_autre.max' =>
-                'Le motif ne doit pas dépasser 1000 caractères.',
-        ]);
-
-        $patient = $user->patient;
-
-        // Vérifier que le médecin suit bien le patient.
-        $medecinExiste = $patient
-            ->medecins()
-            ->where(
-                'medecins.id_medecin',
-                $request->id_medecin
-            )
-            ->exists();
-
-        if (!$medecinExiste) {
-            abort(403);
-        }
-
-        // Empêcher plusieurs demandes en attente.
-        $demandeExiste = RendezVous::where(
-            'id_patient',
-            $patient->id_patient
-        )
-            ->where(
-                'id_medecin',
-                $request->id_medecin
-            )
-            ->where(
-                'statut',
-                'en_attente'
-            )
-            ->exists();
-
-        if ($demandeExiste) {
-            return back()
-                ->withInput()
-                ->withErrors([
-                    'id_medecin' =>
-                        'Vous avez déjà une demande de rendez-vous en attente avec ce médecin.',
-                ]);
-        }
-
-        // Déterminer le motif.
-        if ($request->motif === 'Autre') {
-            $motif = trim($request->motif_autre);
-        } else {
-            $motif = $request->motif;
-        }
-
-        // Créer la demande.
-        RendezVous::create([
-            'date_heure' => null,
-            'statut' => 'en_attente',
-            'motif' => $motif,
-            'id_patient' => $patient->id_patient,
-            'id_medecin' => $request->id_medecin,
-        ]);
-
-        // Récupérer le médecin.
-        $medecin = $patient
-            ->medecins()
-            ->with('utilisateur')
-            ->findOrFail($request->id_medecin);
-
-        // Notification au médecin.
-        Notification::create([
-            'titre' => 'Nouvelle demande de rendez-vous',
-            'type' => 'rendezvous',
-
-            'message' =>
-                $user->prenom . ' ' .
-                $user->nom .
-                ' a demandé un rendez-vous. ' .
-                'Veuillez choisir une date et une heure.',
-
-            'lu' => false,
-            'date_notification' => now(),
-            'id_utilisateur' => $medecin->id_utilisateur,
-        ]);
-
-        return redirect()
-            ->route('patient.rendezvous.index')
-            ->with(
-                'success',
-                'Votre demande de rendez-vous a été envoyée au médecin.'
-            );
-    }
-
-    /**
      * Liste des rendez-vous du patient connecté.
      */
     public function patientRendezVous()
     {
         $user = auth()->user();
 
-        if ($user->role !== 'patient' || !$user->patient) {
+        if ($user->role !== 'patient' || ! $user->patient) {
             abort(403);
         }
+
+        $this->cloturerRendezVousDepasses();
 
         // Le patient ne voit que ses propres rendez-vous.
         $rendezVous = RendezVous::with([
@@ -715,7 +532,7 @@ class RendezVousController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->role !== 'patient' || !$user->patient) {
+        if ($user->role !== 'patient' || ! $user->patient) {
             abort(403);
         }
 
@@ -748,6 +565,8 @@ class RendezVousController extends Controller
         if ($user->role !== 'proche') {
             abort(403);
         }
+
+        $this->cloturerRendezVousDepasses();
 
         // Récupérer uniquement les autorisations actives
         // permettant l'accès aux rendez-vous.
@@ -812,5 +631,18 @@ class RendezVousController extends Controller
             'proche.rendezvous.show',
             compact('rendezVous')
         );
+    }
+
+    /**
+     * Clôturer automatiquement les rendez-vous confirmés
+     * dont la date est passée (statut "terminee").
+     */
+    protected function cloturerRendezVousDepasses(): void
+    {
+        RendezVous::where('statut', 'confirme')
+            ->where('date_heure', '<', now())
+            ->update([
+                'statut' => 'terminee',
+            ]);
     }
 }

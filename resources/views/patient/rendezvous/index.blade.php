@@ -66,30 +66,6 @@
 
                         </div>
 
-
-                        {{-- CTA --}}
-                        <div class="shrink-0">
-
-                            <a
-                                href="{{ route('patient.rendezvous.demande') }}"
-                                class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#16423C] px-5 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(22,66,60,0.14)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#123832] hover:shadow-[0_12px_28px_rgba(22,66,60,0.18)]"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="h-4 w-4"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                >
-                                    <path d="M12 5v14M5 12h14"/>
-                                </svg>
-
-                                <span>Demander un rendez-vous</span>
-                            </a>
-
-                        </div>
-
                     </div>
 
 
@@ -527,30 +503,8 @@
 
                             <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-[#667085]">
                                 Vous n'avez encore aucun rendez-vous enregistré.
-                                Vous pouvez envoyer une demande à votre médecin.
+                                Votre médecin planifiera vos rendez-vous dans votre espace.
                             </p>
-
-                            <div class="mt-6">
-
-                                <a
-                                    href="{{ route('patient.rendezvous.demande') }}"
-                                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#16423C] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#123832]"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="h-4 w-4"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                    >
-                                        <path d="M12 5v14M5 12h14"/>
-                                    </svg>
-
-                                    Demander un rendez-vous
-                                </a>
-
-                            </div>
 
                         </div>
 
@@ -593,8 +547,9 @@
                             </h3>
 
                             <p class="mt-1 text-sm leading-6 text-[#6F7773]">
-                                Une demande reste en attente jusqu'à sa validation par votre médecin.
-                                Vous recevrez une notification dès qu'une décision ou une modification est enregistrée.
+                                Vos rendez-vous sont planifiés par votre médecin.
+                                Vous recevrez une notification dès qu'un rendez-vous
+                                est programmé ou modifié.
                             </p>
 
                         </div>

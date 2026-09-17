@@ -23,43 +23,87 @@
                     Espace Médecin
                 </p>
 
-                {{-- Title --}}
-                <h1 class="mt-3 text-3xl font-semibold text-[#263330]">
-                    Votre demande est en attente
-                </h1>
+                @if($user->statut === 'refuse')
 
-                {{-- Description --}}
-                <p class="mt-4 text-sm leading-7 text-[#667085]">
-                    Bonjour {{ $user->prenom }},
-                    votre demande d’accès à l’espace Médecin
-                    a bien été enregistrée.
-                </p>
+                    {{-- Title --}}
+                    <h1 class="mt-3 text-3xl font-semibold text-[#263330]">
+                        Demande refusée
+                    </h1>
 
-                {{-- Info --}}
-                <div
-                    class="mt-6 rounded-2xl border border-[#DDD9EF]
-                           bg-[#F5F3FB] p-5 text-left"
-                >
-                    <div class="flex items-start gap-3">
+                    {{-- Description --}}
+                    <p class="mt-4 text-sm leading-7 text-[#667085]">
+                        Bonjour {{ $user->prenom }},
+                        votre demande d’accès à l’espace Médecin
+                        a été refusée par un administrateur.
+                    </p>
 
-                        <div class="text-xl">
-                            ⏳
+                    {{-- Info --}}
+                    <div
+                        class="mt-6 rounded-2xl border border-[#F0DDE1]
+                               bg-[#FFF9FA] p-5 text-left"
+                    >
+                        <div class="flex items-start gap-3">
+
+                            <div class="text-xl">
+                                🚫
+                            </div>
+
+                            <div>
+                                <p class="text-sm font-semibold text-[#9A5661]">
+                                    Accès refusé
+                                </p>
+
+                                <p class="mt-1 text-xs leading-5 text-[#8B6D74]">
+                                    Votre compte médecin n'a pas été validé par
+                                    l'administration. Vous ne pouvez pas accéder
+                                    aux fonctionnalités réservées aux médecins.
+                                </p>
+                            </div>
+
                         </div>
-
-                        <div>
-                            <p class="text-sm font-semibold text-[#514B70]">
-                                Validation administrative
-                            </p>
-
-                            <p class="mt-1 text-xs leading-5 text-[#6B6A7D]">
-                                Un administrateur doit valider votre compte
-                                avant que vous puissiez accéder aux
-                                fonctionnalités réservées aux médecins.
-                            </p>
-                        </div>
-
                     </div>
-                </div>
+
+                @else
+
+                    {{-- Title --}}
+                    <h1 class="mt-3 text-3xl font-semibold text-[#263330]">
+                        Votre demande est en attente
+                    </h1>
+
+                    {{-- Description --}}
+                    <p class="mt-4 text-sm leading-7 text-[#667085]">
+                        Bonjour {{ $user->prenom }},
+                        votre demande d’accès à l’espace Médecin
+                        a bien été enregistrée.
+                    </p>
+
+                    {{-- Info --}}
+                    <div
+                        class="mt-6 rounded-2xl border border-[#DDD9EF]
+                               bg-[#F5F3FB] p-5 text-left"
+                    >
+                        <div class="flex items-start gap-3">
+
+                            <div class="text-xl">
+                                ⏳
+                            </div>
+
+                            <div>
+                                <p class="text-sm font-semibold text-[#514B70]">
+                                    Validation administrative
+                                </p>
+
+                                <p class="mt-1 text-xs leading-5 text-[#6B6A7D]">
+                                    Un administrateur doit valider votre compte
+                                    avant que vous puissiez accéder aux
+                                    fonctionnalités réservées aux médecins.
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                @endif
 
                 {{-- Buttons --}}
                 <div class="mt-7 flex flex-col sm:flex-row gap-3">
