@@ -64,7 +64,7 @@ Route::middleware('auth')->group(function () {
 // SUIVIS — MEDECIN
 // =====================================================
 
-Route::middleware(['auth', 'role:medecin'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:medecin'])->group(function () {
 
     Route::resource('suivis', SuiviController::class);
 });
@@ -74,7 +74,7 @@ Route::middleware(['auth', 'role:medecin'])->group(function () {
 // PATIENTS — MEDECIN
 // =====================================================
 
-Route::middleware(['auth', 'role:medecin'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:medecin'])->group(function () {
 
     Route::get('/medecin/patients', [MedecinController::class, 'patients'])
         ->name('medecin.patients.index');
@@ -88,7 +88,7 @@ Route::middleware(['auth', 'role:medecin'])->group(function () {
 // SUIVIS — PATIENT
 // =====================================================
 
-Route::middleware(['auth', 'role:patient'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:patient'])->group(function () {
 
     Route::get('/patient/suivis', [SuiviController::class, 'patientSuivis'])
         ->name('patient.suivis.index');
@@ -102,7 +102,7 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
 // RENDEZ-VOUS — MEDECIN
 // =====================================================
 
-Route::middleware(['auth', 'role:medecin'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:medecin'])->group(function () {
 
     // Liste des rendez-vous du médecin
     Route::get('/rendezvous', [RendezVousController::class, 'index'])
@@ -137,7 +137,7 @@ Route::middleware(['auth', 'role:medecin'])->group(function () {
 // RENDEZ-VOUS — PATIENT
 // =====================================================
 
-Route::middleware(['auth', 'role:patient'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:patient'])->group(function () {
 
     // Liste des rendez-vous du patient
     Route::get('/patient/rendezvous', [RendezVousController::class, 'patientRendezVous'])
@@ -163,7 +163,7 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
 // AUTORISATIONS — PATIENT
 // =====================================================
 
-Route::middleware(['auth', 'role:patient'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:patient'])->group(function () {
 
     Route::get('/patient/autorisations', [AutorisationProcheController::class, 'index'])
         ->name('patient.autorisations.index');
@@ -189,7 +189,7 @@ Route::middleware(['auth', 'role:patient'])->group(function () {
 // ESPACE PROCHE
 // =====================================================
 
-Route::middleware(['auth', 'role:proche'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:proche'])->group(function () {
 
     // Autorisations
     Route::get('/proche/autorisations', [AutorisationProcheController::class, 'index'])
@@ -232,6 +232,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Gestion des patients
     Route::get('/admin/patients', [AdminUserController::class, 'patients'])
         ->name('admin.patients.index');
+
+    Route::post('/admin/patients/{patient}/medecins', [AdminUserController::class, 'assignerMedecin'])
+        ->name('admin.patients.medecins.store');
+
+    Route::delete('/admin/patients/{patient}/medecins/{medecin}', [AdminUserController::class, 'retirerMedecin'])
+        ->name('admin.patients.medecins.destroy');
 
     // Gestion des proches
     Route::get('/admin/proches', [AdminUserController::class, 'proches'])

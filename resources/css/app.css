@@ -2427,24 +2427,32 @@ a {
     display: grid;
 
     grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+        repeat(3, minmax(0, 1fr));
 
     gap: 16px;
+
+    max-width: 780px;
+
+    margin: 24px auto 0;
 }
 
 
 .onco-summary-card {
+    position: relative;
+
     min-width: 0;
 
     display: flex;
 
+    flex-direction: column;
+
     align-items: center;
 
-    justify-content: space-between;
+    justify-content: center;
 
-    gap: 14px;
+    gap: 8px;
 
-    padding: 20px;
+    padding: 22px 18px 18px;
 
     border:
         1px solid var(--onco-border);
@@ -2454,6 +2462,8 @@ a {
     background: var(--onco-white);
 
     box-shadow: var(--shadow-card);
+
+    text-align: center;
 
     transition:
         transform var(--transition),
@@ -2483,11 +2493,13 @@ a {
     letter-spacing: 0.08em;
 
     color: #7D8491;
+
+    text-align: center;
 }
 
 
 .onco-summary-value {
-    margin-top: 6px;
+    margin-top: 2px;
 
     font-family: "Newsreader", serif;
 
@@ -2498,15 +2510,23 @@ a {
     line-height: 1.05;
 
     color: var(--onco-text);
+
+    text-align: center;
 }
 
 
 .onco-summary-icon {
-    width: 46px;
+    position: absolute;
 
-    height: 46px;
+    top: 16px;
 
-    min-width: 46px;
+    right: 16px;
+
+    width: 42px;
+
+    height: 42px;
+
+    min-width: 42px;
 
     display: flex;
 
@@ -2519,6 +2539,8 @@ a {
     font-size: 18px;
 
     font-weight: 700;
+
+    background: rgba(125, 132, 145, 0.08);
 }
 
 

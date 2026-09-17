@@ -11,6 +11,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
@@ -61,19 +62,23 @@ class RegisteredUserController extends Controller
             ],
         ]);
 
-        $user = User::create([
-            'nom' => $validated['nom'],
-            'prenom' => $validated['prenom'],
-            'email' => $validated['email'],
-            'telephone' => $validated['telephone'] ?? null,
-            'password' => Hash::make($validated['password']),
-            'role' => 'patient',
-            'statut' => 'active',
-        ]);
+        $user = DB::transaction(function () use ($validated): User {
+            $user = User::create([
+                'nom' => $validated['nom'],
+                'prenom' => $validated['prenom'],
+                'email' => $validated['email'],
+                'telephone' => $validated['telephone'] ?? null,
+                'password' => Hash::make($validated['password']),
+                'role' => 'patient',
+                'statut' => 'active',
+            ]);
 
-        Patient::create([
-            'id_utilisateur' => $user->id,
-        ]);
+            Patient::create([
+                'id_utilisateur' => $user->id,
+            ]);
+
+            return $user;
+        });
 
         event(new Registered($user));
 
@@ -186,45 +191,35 @@ class RegisteredUserController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $user = User::create([
-            'nom' => $validated['nom'],
-            'prenom' => $validated['prenom'],
-            'email' => $validated['email'],
-            'telephone' => $validated['telephone'] ?? null,
-            'password' => Hash::make($validated['password']),
-            'role' => 'medecin',
-            'statut' => 'en_attente',
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | Création du profil médecin
-        |--------------------------------------------------------------------------
-        */
-
-        Medecin::create([
-            'id_utilisateur' => $user->id,
-            'specialite' => $validated['specialite'],
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | Notification aux administrateurs
-        |--------------------------------------------------------------------------
-        */
-
-        $admins = User::where('role', 'admin')->get();
-
-        foreach ($admins as $admin) {
-            Notification::create([
-                'titre' => 'Nouvelle demande médecin',
-                'type' => 'medecin_demande',
-                'message' => "Le médecin {$user->prenom} {$user->nom} a envoyé une demande d’accès à l’espace Médecin.",
-                'lu' => false,
-                'date_notification' => now(),
-                'id_utilisateur' => $admin->id,
+        $user = DB::transaction(function () use ($validated): User {
+            $user = User::create([
+                'nom' => $validated['nom'],
+                'prenom' => $validated['prenom'],
+                'email' => $validated['email'],
+                'telephone' => $validated['telephone'] ?? null,
+                'password' => Hash::make($validated['password']),
+                'role' => 'medecin',
+                'statut' => 'en_attente',
             ]);
-        }
+
+            Medecin::create([
+                'id_utilisateur' => $user->id,
+                'specialite' => $validated['specialite'],
+            ]);
+
+            User::where('role', 'admin')->each(function (User $admin) use ($user): void {
+                Notification::create([
+                    'titre' => 'Nouvelle demande médecin',
+                    'type' => 'medecin_demande',
+                    'message' => "Le médecin {$user->prenom} {$user->nom} a envoyé une demande d’accès à l’espace Médecin.",
+                    'lu' => false,
+                    'date_notification' => now(),
+                    'id_utilisateur' => $admin->id,
+                ]);
+            });
+
+            return $user;
+        });
 
         event(new Registered($user));
 

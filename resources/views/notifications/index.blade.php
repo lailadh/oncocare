@@ -1,9 +1,35 @@
 <x-app-layout>
 
+    @php
+        $user = auth()->user();
+
+        $roleLabel = match ($user->role) {
+            'patient' => 'Patient',
+            'medecin' => 'Médecin',
+            'proche' => 'Proche',
+            'admin' => 'Administrateur',
+            default => 'Utilisateur',
+        };
+
+        $unreadCount = $notifications->where('lu', false)->count();
+
+        $pageIconClass = match ($user->role) {
+            'medecin' => 'role-medecin',
+            'proche' => 'role-proche',
+            'admin' => 'role-admin',
+            default => 'role-patient',
+        };
+    @endphp
+
+
     <div class="onco-page">
+
         <div class="onco-container">
 
-            {{-- Header --}}
+            {{-- ========================================================= --}}
+            {{-- HEADER --}}
+            {{-- ========================================================= --}}
+
             <div class="onco-page-header">
 
                 <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
@@ -19,19 +45,18 @@
 
                         <div class="onco-title-wrap">
 
-                            <div class="onco-page-icon role-proche">
+                            <div class="onco-page-icon {{ $pageIconClass }}">
                                 ◉
                             </div>
 
                             <div>
 
                                 <h1 class="onco-page-title">
-                                    Mes notifications
+                                    Notifications
                                 </h1>
 
                                 <p class="onco-page-subtitle">
-                                    Retrouvez ici les notifications liées à votre activité
-                                    et aux patients que vous accompagnez.
+                                    Consultez les informations importantes liées à votre espace OncoCare.
                                 </p>
 
                             </div>
@@ -42,7 +67,7 @@
 
 
                     {{-- Tout marquer comme lu --}}
-                    @if($notifications->where('lu', false)->count() > 0)
+                    @if($unreadCount > 0)
 
                         <form
                             method="POST"
@@ -54,7 +79,12 @@
 
                             <button
                                 type="submit"
-                                class="onco-btn onco-btn-proche"
+                                class="onco-btn"
+                                style="
+                                    background:#16423C;
+                                    color:#FFFFFF;
+                                    border-color:#16423C;
+                                "
                             >
                                 <span>✓</span>
                                 <span>Tout marquer comme lu</span>
@@ -69,7 +99,10 @@
             </div>
 
 
-            {{-- Résumé --}}
+            {{-- ========================================================= --}}
+            {{-- SUMMARY --}}
+            {{-- ========================================================= --}}
+
             <div
                 class="onco-summary-grid"
                 style="
@@ -99,7 +132,10 @@
 
                     <div
                         class="onco-summary-icon"
-                        style="background:#EEF5F0;color:#7FA68A;"
+                        style="
+                            background:#EEF5F0;
+                            color:#5F8069;
+                        "
                     >
                         ◉
                     </div>
@@ -107,7 +143,7 @@
                 </div>
 
 
-                {{-- Nouvelles --}}
+                {{-- Non lues --}}
                 <div class="onco-summary-card">
 
                     <div>
@@ -116,22 +152,25 @@
                             class="onco-summary-label"
                             style="color:#5F8069;"
                         >
-                            Nouvelles
+                            Non lues
                         </span>
 
                         <div class="onco-summary-value">
-                            {{ $notifications->where('lu', false)->count() }}
+                            {{ $unreadCount }}
                         </div>
 
                         <p class="mt-1 text-xs text-slate-500">
-                            notifications non lues
+                            notifications à consulter
                         </p>
 
                     </div>
 
                     <div
                         class="onco-summary-icon"
-                        style="background:#EEF5F0;color:#7FA68A;"
+                        style="
+                            background:#E5F0E8;
+                            color:#5F8069;
+                        "
                     >
                         !
                     </div>
@@ -141,7 +180,10 @@
             </div>
 
 
-            {{-- Centre de notifications --}}
+            {{-- ========================================================= --}}
+            {{-- NOTIFICATION CENTER --}}
+            {{-- ========================================================= --}}
+
             <div
                 class="onco-card"
                 style="
@@ -165,7 +207,7 @@
                         </h2>
 
                         <p class="onco-card-description">
-                            Les informations importantes concernant votre activité.
+                            Les informations importantes concernant votre espace {{ $roleLabel }}.
                         </p>
 
                     </div>
@@ -177,15 +219,19 @@
                             color:#5F8069;
                         "
                     >
-                        {{ $notifications->count() }} notification(s)
+                        {{ $notifications->count() }}
+                        notification{{ $notifications->count() > 1 ? 's' : '' }}
                     </span>
 
                 </div>
 
 
+                {{-- ===================================================== --}}
+                {{-- EMPTY --}}
+                {{-- ===================================================== --}}
+
                 @if($notifications->isEmpty())
 
-                    {{-- Empty state --}}
                     <div
                         class="onco-empty-state"
                         style="padding:60px 24px;"
@@ -207,16 +253,60 @@
 
                         <p class="onco-empty-text">
                             Vous n'avez aucune notification pour le moment.
-                            Les nouvelles informations apparaîtront ici.
+                            Les nouvelles informations importantes apparaîtront ici.
                         </p>
 
                     </div>
 
                 @else
 
+                    {{-- ================================================= --}}
+                    {{-- LISTE --}}
+                    {{-- ================================================= --}}
+
                     <div>
 
                         @foreach($notifications as $notification)
+
+                            @php
+                                $iconBackground = '#F1F6F2';
+                                $iconColor = '#5F8069';
+                                $notificationIcon = '◉';
+
+                                switch ($notification->type) {
+
+                                    case 'rendezvous':
+                                        $iconBackground = '#F8F1E1';
+                                        $iconColor = '#B28B45';
+                                        $notificationIcon = '◷';
+                                        break;
+
+                                    case 'suivi':
+                                        $iconBackground = '#EEF5F0';
+                                        $iconColor = '#7FA68A';
+                                        $notificationIcon = '♡';
+                                        break;
+
+                                    case 'autorisation':
+                                        $iconBackground = '#F8EDF1';
+                                        $iconColor = '#B9788C';
+                                        $notificationIcon = '◎';
+                                        break;
+
+                                    case 'medecin_demande':
+                                        $iconBackground = '#EEEAF8';
+                                        $iconColor = '#6C63A8';
+                                        $notificationIcon = '✚';
+                                        break;
+
+                                    case 'medecin_statut':
+                                        $iconBackground = '#EEEAF8';
+                                        $iconColor = '#6C63A8';
+                                        $notificationIcon = '✓';
+                                        break;
+                                }
+                            @endphp
+
 
                             <div
                                 class="onco-notification {{ !$notification->lu ? 'unread' : '' }}"
@@ -231,40 +321,11 @@
                                 <div
                                     class="onco-notification-icon"
                                     style="
-                                        @if($notification->type === 'rendezvous')
-                                            background:#F8F1E1;
-                                            color:#B28B45;
-                                        @elseif($notification->type === 'suivi')
-                                            background:#EEF5F0;
-                                            color:#7FA68A;
-                                        @elseif($notification->type === 'autorisation')
-                                            background:#EEF5F0;
-                                            color:#648A70;
-                                        @else
-                                            background:#F1F6F2;
-                                            color:#5F8069;
-                                        @endif
+                                        background:{{ $iconBackground }};
+                                        color:{{ $iconColor }};
                                     "
                                 >
-
-                                    @if($notification->type === 'rendezvous')
-
-                                        ◷
-
-                                    @elseif($notification->type === 'suivi')
-
-                                        ♡
-
-                                    @elseif($notification->type === 'autorisation')
-
-                                        ◎
-
-                                    @else
-
-                                        ◉
-
-                                    @endif
-
+                                    {{ $notificationIcon }}
                                 </div>
 
 
@@ -293,6 +354,19 @@
                                                 Nouveau
                                             </span>
 
+                                        @else
+
+                                            <span
+                                                class="onco-badge"
+                                                style="
+                                                    background:#F1F3F2;
+                                                    color:#7A817E;
+                                                    font-size:10px;
+                                                "
+                                            >
+                                                Lue
+                                            </span>
+
                                         @endif
 
                                     </div>
@@ -306,12 +380,29 @@
                                     </p>
 
 
-                                    <p
-                                        class="onco-notification-time"
-                                        style="color:#929490;"
+                                    <div
+                                        class="flex flex-wrap items-center gap-3 mt-2"
                                     >
-                                        {{ $notification->date_notification?->format('d/m/Y à H:i') }}
-                                    </p>
+
+                                        <p
+                                            class="onco-notification-time"
+                                            style="color:#929490;"
+                                        >
+                                            {{ $notification->date_notification?->format('d/m/Y à H:i') }}
+                                        </p>
+
+                                        @if(!$notification->lu)
+
+                                            <span
+                                                class="text-xs font-medium"
+                                                style="color:#7FA68A;"
+                                            >
+                                                • Non lue
+                                            </span>
+
+                                        @endif
+
+                                    </div>
 
                                 </div>
 
@@ -358,9 +449,12 @@
             </div>
 
 
-            {{-- Confidentialité --}}
+            {{-- ========================================================= --}}
+            {{-- PRIVACY --}}
+            {{-- ========================================================= --}}
+
             <div
-                class="onco-info-card role-proche"
+                class="onco-info-card"
                 style="
                     margin-top:24px;
                     border-color:#C9DCCF;
@@ -391,9 +485,9 @@
                         class="onco-info-text"
                         style="color:#6D7F73;"
                     >
-                        Les notifications affichées vous sont destinées et
-                        concernent uniquement votre activité et les informations
-                        auxquelles vous êtes autorisé à accéder.
+                        Ces notifications sont personnelles et vous sont
+                        destinées selon votre rôle et les événements liés
+                        à votre espace OncoCare.
                     </p>
 
                 </div>
@@ -401,6 +495,7 @@
             </div>
 
         </div>
+
     </div>
 
 </x-app-layout>

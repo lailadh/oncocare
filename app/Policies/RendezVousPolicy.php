@@ -57,6 +57,16 @@ class RendezVousPolicy
     }
 
     /**
+     * Traiter uniquement les demandes appartenant au médecin connecté.
+     */
+    public function update(User $user, RendezVous $rendezVous): bool
+    {
+        return $user->role === 'medecin'
+            && $user->medecin !== null
+            && $rendezVous->id_medecin === $user->medecin->id_medecin;
+    }
+
+    /**
      * Seul le médecin propriétaire du rendez-vous peut le supprimer.
      */
     public function delete(User $user, RendezVous $rendezVous): bool

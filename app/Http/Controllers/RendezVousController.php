@@ -239,7 +239,7 @@ class RendezVousController extends Controller
      */
     public function edit(RendezVous $rendezVous)
     {
-        Gate::authorize('view', $rendezVous);
+        Gate::authorize('update', $rendezVous);
 
         $user = auth()->user();
 
@@ -288,7 +288,7 @@ class RendezVousController extends Controller
         Request $request,
         RendezVous $rendezVous
     ) {
-        Gate::authorize('view', $rendezVous);
+        Gate::authorize('update', $rendezVous);
 
         $user = auth()->user();
 

@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notification;
+use App\Models\Medecin;
+use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class AdminUserController extends Controller
@@ -37,10 +40,86 @@ class AdminUserController extends Controller
     public function patients()
     {
         $patients = User::where('role', 'patient')
+            ->with('patient.medecins.utilisateur')
             ->latest()
             ->get();
 
-        return view('admin.patients.index', compact('patients'));
+        $medecins = Medecin::whereHas('utilisateur', function ($query): void {
+            $query->where('role', 'medecin')
+                ->where('statut', 'active');
+        })
+            ->with('utilisateur')
+            ->orderBy('id_medecin')
+            ->get();
+
+        return view('admin.patients.index', compact('patients', 'medecins'));
+    }
+
+    /**
+     * Associer un médecin actif au dossier d'un patient.
+     */
+    public function assignerMedecin(Request $request, Patient $patient)
+    {
+        $validated = $request->validate([
+            'id_medecin' => [
+                'required',
+                'exists:medecins,id_medecin',
+            ],
+        ]);
+
+        $medecin = Medecin::with('utilisateur')->findOrFail($validated['id_medecin']);
+
+        if ($medecin->utilisateur?->role !== 'medecin' || $medecin->utilisateur?->statut !== 'active') {
+            return back()->withErrors([
+                'id_medecin' => 'Seuls les médecins actifs peuvent être associés.',
+            ]);
+        }
+
+        if ($patient->medecins()->whereKey($medecin->id_medecin)->exists()) {
+            return back()->withErrors([
+                'id_medecin' => 'Ce médecin est déjà associé à ce patient.',
+            ]);
+        }
+
+        DB::transaction(function () use ($patient, $medecin): void {
+            $patient->medecins()->attach($medecin->id_medecin);
+
+            Notification::create([
+                'titre' => 'Nouveau patient suivi',
+                'type' => 'suivi_patient',
+                'message' => 'Un patient vous a été associé par l’administration.',
+                'lu' => false,
+                'date_notification' => now(),
+                'id_utilisateur' => $medecin->utilisateur->id,
+            ]);
+
+            Notification::create([
+                'titre' => 'Médecin associé à votre dossier',
+                'type' => 'suivi_patient',
+                'message' => "Le Dr {$medecin->utilisateur->prenom} {$medecin->utilisateur->nom} a été associé à votre dossier.",
+                'lu' => false,
+                'date_notification' => now(),
+                'id_utilisateur' => $patient->id_utilisateur,
+            ]);
+        });
+
+        return back()->with('success', 'Le médecin a été associé au patient.');
+    }
+
+    /**
+     * Retirer un médecin du dossier d'un patient.
+     */
+    public function retirerMedecin(Patient $patient, Medecin $medecin)
+    {
+        if (!$patient->medecins()->whereKey($medecin->id_medecin)->exists()) {
+            return back()->withErrors([
+                'medecin' => 'Ce médecin n’est pas associé à ce patient.',
+            ]);
+        }
+
+        $patient->medecins()->detach($medecin->id_medecin);
+
+        return back()->with('success', 'Le médecin a été retiré du dossier patient.');
     }
 
     /**
@@ -105,6 +184,13 @@ class AdminUserController extends Controller
                     'refuse',
                 ]),
             ],
+
+            'specialite' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::requiredIf(fn(): bool => $request->input('role') === 'medecin'),
+            ],
         ]);
 
         $oldRole = $user->role;
@@ -129,10 +215,31 @@ class AdminUserController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $user->update([
-            'role' => $newRole,
-            'statut' => $newStatut,
-        ]);
+        DB::transaction(function () use ($user, $newRole, $newStatut, $validated): void {
+            $user->update([
+                'role' => $newRole,
+                'statut' => $newStatut,
+            ]);
+
+            if ($newRole === 'patient' && !$user->patient()->exists()) {
+                Patient::create([
+                    'id_utilisateur' => $user->id,
+                ]);
+            }
+
+            if ($newRole === 'medecin') {
+                if ($user->medecin()->exists()) {
+                    $user->medecin()->update([
+                        'specialite' => $validated['specialite'],
+                    ]);
+                } else {
+                    Medecin::create([
+                        'id_utilisateur' => $user->id,
+                        'specialite' => $validated['specialite'],
+                    ]);
+                }
+            }
+        });
 
         /*
         |--------------------------------------------------------------------------
@@ -167,9 +274,7 @@ class AdminUserController extends Controller
             |----------------------------------------------
             | Demande refusée
             |----------------------------------------------
-            */
-
-            elseif ($newStatut === 'refuse') {
+            */ elseif ($newStatut === 'refuse') {
 
                 $titre = 'Demande médecin refusée';
 
@@ -180,9 +285,7 @@ class AdminUserController extends Controller
             |----------------------------------------------
             | Remise en attente
             |----------------------------------------------
-            */
-
-            elseif ($newStatut === 'en_attente') {
+            */ elseif ($newStatut === 'en_attente') {
 
                 $titre = 'Demande médecin en attente';
 

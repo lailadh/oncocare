@@ -10,12 +10,14 @@
 
             <div>
 
-                <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-[#F1EFF8] px-3 py-1.5 text-xs font-semibold text-[#655A88]">
-
+                <div
+                    class="mb-3 inline-flex items-center gap-2 rounded-full
+                           bg-[#F1EFF8] px-3 py-1.5 text-xs font-semibold
+                           text-[#655A88]"
+                >
                     <span class="h-2 w-2 rounded-full bg-[#7567A8]"></span>
 
                     Administration · Médecins
-
                 </div>
 
                 <h1
@@ -26,8 +28,8 @@
                 </h1>
 
                 <p class="mt-2 max-w-2xl text-sm leading-6 text-[#66706D]">
-                    Consultez les comptes des médecins enregistrés sur
-                    la plateforme OncoCare.
+                    Consultez les comptes médecins et gérez les demandes
+                    d'accès à l'espace médical OncoCare.
                 </p>
 
             </div>
@@ -35,7 +37,11 @@
 
             <a
                 href="{{ route('admin.dashboard') }}"
-                class="inline-flex w-fit items-center gap-2 rounded-xl border border-[#E3DDD8] bg-white px-4 py-2.5 text-sm font-semibold text-[#293331] shadow-[0_4px_18px_rgba(41,51,49,0.04)] transition hover:border-[#C9C0DB] hover:bg-[#FCFBFA]"
+                class="inline-flex w-fit items-center gap-2 rounded-xl
+                       border border-[#E3DDD8] bg-white px-4 py-2.5
+                       text-sm font-semibold text-[#293331]
+                       shadow-[0_4px_18px_rgba(41,51,49,0.04)]
+                       transition hover:border-[#C9C0DB] hover:bg-[#FCFBFA]"
             >
                 <span>←</span>
                 <span>Retour Dashboard</span>
@@ -54,11 +60,15 @@
 
                 <div class="flex items-start gap-3">
 
-                    <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white text-[#7FA68A]">
+                    <div
+                        class="flex h-9 w-9 flex-shrink-0 items-center
+                               justify-center rounded-xl bg-white text-[#7FA68A]"
+                    >
                         ✓
                     </div>
 
                     <div>
+
                         <p class="text-sm font-semibold text-[#4D7257]">
                             Opération réussie
                         </p>
@@ -66,6 +76,7 @@
                         <p class="mt-1 text-xs leading-5 text-[#607467]">
                             {{ session('success') }}
                         </p>
+
                     </div>
 
                 </div>
@@ -81,11 +92,15 @@
 
                 <div class="flex items-start gap-3">
 
-                    <div class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white text-[#9A5661]">
+                    <div
+                        class="flex h-9 w-9 flex-shrink-0 items-center
+                               justify-center rounded-xl bg-white text-[#9A5661]"
+                    >
                         !
                     </div>
 
                     <div>
+
                         <p class="text-sm font-semibold text-[#7F4C56]">
                             Une action n'a pas pu être effectuée
                         </p>
@@ -93,6 +108,7 @@
                         <p class="mt-1 text-xs leading-5 text-[#945864]">
                             {{ session('error') }}
                         </p>
+
                     </div>
 
                 </div>
@@ -106,16 +122,25 @@
         {{-- SUMMARY --}}
         {{-- ========================================================= --}}
 
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        @php
+            $pendingCount = $medecins->where('statut', 'en_attente')->count();
+            $activeCount = $medecins->where('statut', 'active')->count();
+            $refusedCount = $medecins->where('statut', 'refuse')->count();
+        @endphp
 
-            {{-- Total médecins --}}
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+
+            {{-- Total --}}
             <div class="rounded-[18px] border border-[#DDD8EC] bg-[#F4F1F9] p-5">
 
                 <div class="flex items-start justify-between">
 
                     <div>
 
-                        <p class="text-xs font-semibold uppercase tracking-[0.08em] text-[#756D84]">
+                        <p
+                            class="text-xs font-semibold uppercase tracking-[0.08em]
+                                   text-[#756D84]"
+                        >
                             Total
                         </p>
 
@@ -132,7 +157,10 @@
 
                     </div>
 
-                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-[#7567A8] shadow-sm">
+                    <div
+                        class="flex h-11 w-11 items-center justify-center
+                               rounded-2xl bg-white text-[#7567A8] shadow-sm"
+                    >
                         ✚
                     </div>
 
@@ -141,32 +169,38 @@
             </div>
 
 
-            {{-- Statut --}}
-            <div class="rounded-[18px] border border-[#D8E6DC] bg-[#F1F7F2] p-5">
+            {{-- En attente --}}
+            <div class="rounded-[18px] border border-[#E7DDBF] bg-[#FBF7EA] p-5">
 
                 <div class="flex items-start justify-between">
 
                     <div>
 
-                        <p class="text-xs font-semibold uppercase tracking-[0.08em] text-[#607467]">
-                            Plateforme
+                        <p
+                            class="text-xs font-semibold uppercase tracking-[0.08em]
+                                   text-[#8B7746]"
+                        >
+                            Demandes en attente
                         </p>
 
                         <p
-                            class="mt-2 text-3xl font-medium text-[#293331]"
+                            class="mt-2 text-4xl font-medium text-[#293331]"
                             style="font-family: 'Newsreader', serif;"
                         >
-                            Active
+                            {{ $pendingCount }}
                         </p>
 
-                        <p class="mt-1 text-xs text-[#607467]">
-                            Gestion des comptes médecins
+                        <p class="mt-1 text-xs text-[#8B7746]">
+                            à valider ou refuser
                         </p>
 
                     </div>
 
-                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-[#7FA68A] shadow-sm">
-                        ✓
+                    <div
+                        class="flex h-11 w-11 items-center justify-center
+                               rounded-2xl bg-white text-[#B28B45] shadow-sm"
+                    >
+                        ⏳
                     </div>
 
                 </div>
@@ -174,32 +208,38 @@
             </div>
 
 
-            {{-- Confidentialité --}}
-            <div class="rounded-[18px] border border-[#E3DDD8] bg-white p-5 shadow-[0_4px_18px_rgba(41,51,49,0.04)]">
+            {{-- Actifs --}}
+            <div class="rounded-[18px] border border-[#D8E6DC] bg-[#F1F7F2] p-5">
 
                 <div class="flex items-start justify-between">
 
                     <div>
 
-                        <p class="text-xs font-semibold uppercase tracking-[0.08em] text-[#8B918E]">
-                            Accès
+                        <p
+                            class="text-xs font-semibold uppercase tracking-[0.08em]
+                                   text-[#607467]"
+                        >
+                            Comptes actifs
                         </p>
 
                         <p
-                            class="mt-2 text-3xl font-medium text-[#293331]"
+                            class="mt-2 text-4xl font-medium text-[#293331]"
                             style="font-family: 'Newsreader', serif;"
                         >
-                            Sécurisé
+                            {{ $activeCount }}
                         </p>
 
-                        <p class="mt-1 text-xs text-[#66706D]">
-                            Accès selon les rôles
+                        <p class="mt-1 text-xs text-[#607467]">
+                            médecins actifs
                         </p>
 
                     </div>
 
-                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#F4EFF5] text-[#6B4C6F]">
-                        🔒
+                    <div
+                        class="flex h-11 w-11 items-center justify-center
+                               rounded-2xl bg-white text-[#7FA68A] shadow-sm"
+                    >
+                        ✓
                     </div>
 
                 </div>
@@ -213,7 +253,10 @@
         {{-- TABLE --}}
         {{-- ========================================================= --}}
 
-        <div class="overflow-hidden rounded-[22px] border border-[#E3DDD8] bg-white shadow-[0_5px_22px_rgba(41,51,49,0.045)]">
+        <div
+            class="overflow-hidden rounded-[22px] border border-[#E3DDD8]
+                   bg-white shadow-[0_5px_22px_rgba(41,51,49,0.045)]"
+        >
 
             {{-- Table header --}}
             <div class="border-b border-[#EEEAE6] px-6 py-5">
@@ -230,18 +273,19 @@
                         </h2>
 
                         <p class="mt-1 text-xs text-[#66706D]">
-                            Comptes médecins présents sur la plateforme.
+                            Consultez le statut de chaque compte et traitez les demandes en attente.
                         </p>
 
                     </div>
 
-
-                    <div class="inline-flex w-fit items-center gap-2 rounded-xl bg-[#F1EFF8] px-3 py-2 text-xs font-semibold text-[#655A88]">
-
+                    <div
+                        class="inline-flex w-fit items-center gap-2 rounded-xl
+                               bg-[#F1EFF8] px-3 py-2 text-xs font-semibold
+                               text-[#655A88]"
+                    >
                         <span class="h-2 w-2 rounded-full bg-[#7567A8]"></span>
 
                         {{ $medecins->count() }} médecin(s)
-
                     </div>
 
                 </div>
@@ -249,7 +293,7 @@
             </div>
 
 
-            {{-- Responsive wrapper --}}
+            {{-- Responsive --}}
             <div class="overflow-x-auto">
 
                 <table class="min-w-full border-collapse">
@@ -258,24 +302,44 @@
 
                         <tr>
 
-                            <th class="whitespace-nowrap px-6 py-4 text-left text-[10px] font-bold uppercase tracking-[0.08em] text-[#7D8581]">
+                            <th
+                                class="whitespace-nowrap px-6 py-4 text-left
+                                       text-[10px] font-bold uppercase tracking-[0.08em]
+                                       text-[#7D8581]"
+                            >
                                 Médecin
                             </th>
 
-                            <th class="whitespace-nowrap px-6 py-4 text-left text-[10px] font-bold uppercase tracking-[0.08em] text-[#7D8581]">
+                            <th
+                                class="whitespace-nowrap px-6 py-4 text-left
+                                       text-[10px] font-bold uppercase tracking-[0.08em]
+                                       text-[#7D8581]"
+                            >
                                 Email
                             </th>
 
-                            <th class="whitespace-nowrap px-6 py-4 text-left text-[10px] font-bold uppercase tracking-[0.08em] text-[#7D8581]">
+                            <th
+                                class="whitespace-nowrap px-6 py-4 text-left
+                                       text-[10px] font-bold uppercase tracking-[0.08em]
+                                       text-[#7D8581]"
+                            >
                                 Téléphone
                             </th>
 
-                            <th class="whitespace-nowrap px-6 py-4 text-left text-[10px] font-bold uppercase tracking-[0.08em] text-[#7D8581]">
-                                Rôle
+                            <th
+                                class="whitespace-nowrap px-6 py-4 text-left
+                                       text-[10px] font-bold uppercase tracking-[0.08em]
+                                       text-[#7D8581]"
+                            >
+                                Statut
                             </th>
 
-                            <th class="whitespace-nowrap px-6 py-4 text-right text-[10px] font-bold uppercase tracking-[0.08em] text-[#7D8581]">
-                                Statut
+                            <th
+                                class="whitespace-nowrap px-6 py-4 text-right
+                                       text-[10px] font-bold uppercase tracking-[0.08em]
+                                       text-[#7D8581]"
+                            >
+                                Action
                             </th>
 
                         </tr>
@@ -294,10 +358,13 @@
 
                                     <div class="flex items-center gap-3">
 
-                                        <div class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[#F1EFF8] text-sm font-semibold text-[#655A88]">
-
+                                        <div
+                                            class="flex h-11 w-11 flex-shrink-0
+                                                   items-center justify-center rounded-full
+                                                   bg-[#F1EFF8] text-sm font-semibold
+                                                   text-[#655A88]"
+                                        >
                                             {{ strtoupper(substr($medecin->prenom ?? 'M', 0, 1)) }}
-
                                         </div>
 
                                         <div class="min-w-0">
@@ -327,7 +394,7 @@
                                 </td>
 
 
-                                {{-- Telephone --}}
+                                {{-- Téléphone --}}
                                 <td class="px-6 py-5">
 
                                     <span class="text-sm text-[#66706D]">
@@ -337,30 +404,154 @@
                                 </td>
 
 
-                                {{-- Role --}}
+                                {{-- Statut --}}
                                 <td class="px-6 py-5">
 
-                                    <span class="inline-flex items-center gap-2 rounded-full bg-[#F1EFF8] px-3 py-1.5 text-xs font-semibold text-[#655A88]">
+                                    @if($medecin->statut === 'active')
 
-                                        <span class="h-1.5 w-1.5 rounded-full bg-[#7567A8]"></span>
+                                        <span
+                                            class="inline-flex items-center gap-2 rounded-full
+                                                   bg-[#EAF4EC] px-3 py-1.5 text-xs
+                                                   font-semibold text-[#4B7655]"
+                                        >
+                                            <span class="h-1.5 w-1.5 rounded-full bg-[#7FA68A]"></span>
+                                            Actif
+                                        </span>
 
-                                        Médecin
+                                    @elseif($medecin->statut === 'en_attente')
 
-                                    </span>
+                                        <span
+                                            class="inline-flex items-center gap-2 rounded-full
+                                                   bg-[#FBF3DA] px-3 py-1.5 text-xs
+                                                   font-semibold text-[#8B7746]"
+                                        >
+                                            <span class="h-1.5 w-1.5 rounded-full bg-[#C49A5A]"></span>
+                                            En attente
+                                        </span>
+
+                                    @elseif($medecin->statut === 'refuse')
+
+                                        <span
+                                            class="inline-flex items-center gap-2 rounded-full
+                                                   bg-[#FBF0F2] px-3 py-1.5 text-xs
+                                                   font-semibold text-[#8F5963]"
+                                        >
+                                            <span class="h-1.5 w-1.5 rounded-full bg-[#C98A97]"></span>
+                                            Refusé
+                                        </span>
+
+                                    @else
+
+                                        <span
+                                            class="inline-flex items-center gap-2 rounded-full
+                                                   bg-[#F1F3F2] px-3 py-1.5 text-xs
+                                                   font-semibold text-[#68716D]"
+                                        >
+                                            <span class="h-1.5 w-1.5 rounded-full bg-[#9AA39E]"></span>
+                                            {{ ucfirst($medecin->statut ?? 'Inconnu') }}
+                                        </span>
+
+                                    @endif
 
                                 </td>
 
 
-                                {{-- Statut --}}
-                                <td class="px-6 py-5 text-right">
+                                {{-- Action --}}
+                                <td class="px-6 py-5">
 
-                                    <span class="inline-flex items-center gap-2 rounded-full bg-[#EAF4EC] px-3 py-1.5 text-xs font-semibold text-[#4B7655]">
+                                    <div class="flex flex-wrap justify-end gap-2">
 
-                                        <span class="h-1.5 w-1.5 rounded-full bg-[#7FA68A]"></span>
+                                        {{-- EN ATTENTE --}}
+                                        @if($medecin->statut === 'en_attente')
 
-                                        Actif
+                                            {{-- Valider --}}
+                                            <form
+                                                method="POST"
+                                                action="{{ route('admin.users.update', $medecin) }}"
+                                            >
 
-                                    </span>
+                                                @csrf
+                                                @method('PATCH')
+
+                                                <input
+                                                    type="hidden"
+                                                    name="role"
+                                                    value="medecin"
+                                                >
+
+                                                <input
+                                                    type="hidden"
+                                                    name="statut"
+                                                    value="active"
+                                                >
+
+                                                <button
+                                                    type="submit"
+                                                    class="inline-flex items-center gap-2
+                                                           rounded-xl bg-[#16423C]
+                                                           px-3.5 py-2 text-xs font-semibold
+                                                           text-white transition
+                                                           hover:bg-[#123832]"
+                                                >
+                                                    ✓ Valider
+                                                </button>
+
+                                            </form>
+
+
+                                            {{-- Refuser --}}
+                                            <form
+                                                method="POST"
+                                                action="{{ route('admin.users.update', $medecin) }}"
+                                            >
+
+                                                @csrf
+                                                @method('PATCH')
+
+                                                <input
+                                                    type="hidden"
+                                                    name="role"
+                                                    value="medecin"
+                                                >
+
+                                                <input
+                                                    type="hidden"
+                                                    name="statut"
+                                                    value="refuse"
+                                                >
+
+                                                <button
+                                                    type="submit"
+                                                    class="inline-flex items-center gap-2
+                                                           rounded-xl border border-[#EACFD4]
+                                                           bg-[#FBF0F2]
+                                                           px-3.5 py-2 text-xs font-semibold
+                                                           text-[#8F5963] transition
+                                                           hover:bg-[#F7E7EA]"
+                                                >
+                                                    × Refuser
+                                                </button>
+
+                                            </form>
+
+
+                                        @else
+
+                                            {{-- Modifier --}}
+                                            <a
+                                                href="{{ route('admin.users.edit', $medecin) }}"
+                                                class="inline-flex items-center gap-2
+                                                       rounded-xl border border-[#E3DDD8]
+                                                       bg-white px-3.5 py-2 text-xs
+                                                       font-semibold text-[#5E6863]
+                                                       transition hover:bg-[#F8F7F5]"
+                                            >
+                                                Modifier
+                                            </a>
+
+                                        @endif
+
+                                    </div>
 
                                 </td>
 
@@ -374,7 +565,11 @@
 
                                     <div class="mx-auto max-w-md text-center">
 
-                                        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#F1EFF8] text-2xl text-[#7567A8]">
+                                        <div
+                                            class="mx-auto flex h-16 w-16 items-center
+                                                   justify-center rounded-full
+                                                   bg-[#F1EFF8] text-2xl text-[#7567A8]"
+                                        >
                                             ✚
                                         </div>
 
@@ -408,28 +603,32 @@
 
 
         {{-- ========================================================= --}}
-        {{-- INFORMATION SECURITY --}}
+        {{-- SECURITY INFO --}}
         {{-- ========================================================= --}}
 
         <div class="rounded-[20px] border border-[#DDD8EC] bg-[#F4F1F9] p-5">
 
             <div class="flex items-start gap-3">
 
-                <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white text-[#7567A8]">
+                <div
+                    class="flex h-10 w-10 flex-shrink-0 items-center
+                           justify-center rounded-xl bg-white text-[#7567A8]"
+                >
                     🔒
                 </div>
 
                 <div>
 
                     <p class="text-sm font-semibold text-[#655A88]">
-                        Supervision des comptes médecins
+                        Validation des comptes médecins
                     </p>
 
                     <p class="mt-1 max-w-3xl text-xs leading-5 text-[#716A82]">
-                        Cette page permet à l'administrateur de consulter les
-                        comptes médecins enregistrés sur OncoCare.
-                        Les fonctionnalités disponibles restent limitées
-                        selon les permissions de chaque rôle.
+                        Les demandes de compte médecin restent en attente
+                        jusqu'à leur traitement par un administrateur.
+                        Un médecin validé peut accéder à son espace médical,
+                        tandis qu'un compte refusé ne peut pas utiliser les
+                        fonctionnalités réservées aux médecins.
                     </p>
 
                 </div>

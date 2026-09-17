@@ -8,18 +8,12 @@
             <div class="onco-page-header">
 
                 <div>
-                    <a
-                        href="{{ route('admin.dashboard') }}"
-                        class="onco-back-link"
-                    >
+                    <a href="{{ route('admin.dashboard') }}" class="onco-back-link">
                         ← Retour au dashboard
                     </a>
 
                     <div class="onco-title-wrap">
-                        <div
-                            class="onco-page-icon"
-                            style="background:#FBF1F3;color:#D99AA6;"
-                        >
+                        <div class="onco-page-icon" style="background:#FBF1F3;color:#D99AA6;">
                             ♡
                         </div>
 
@@ -40,10 +34,7 @@
 
             {{-- Messages --}}
             @if(session('success'))
-                <div
-                    class="onco-alert onco-alert-success"
-                    style="margin-top:24px;"
-                >
+                <div class="onco-alert onco-alert-success" style="margin-top:24px;">
                     <div class="onco-alert-icon">
                         ✓
                     </div>
@@ -62,10 +53,7 @@
 
 
             @if(session('error'))
-                <div
-                    class="onco-alert onco-alert-error"
-                    style="margin-top:24px;"
-                >
+                <div class="onco-alert onco-alert-error" style="margin-top:24px;">
                     <div class="onco-alert-icon">
                         !
                     </div>
@@ -84,10 +72,7 @@
 
 
             {{-- Résumé --}}
-            <div
-                class="onco-summary-grid"
-                style="margin-top:28px;"
-            >
+            <div class="onco-summary-grid" style="margin-top:28px;">
 
                 <div class="onco-summary-card">
 
@@ -101,10 +86,7 @@
                         </div>
                     </div>
 
-                    <div
-                        class="onco-summary-icon"
-                        style="background:#FBF1F3;color:#D99AA6;"
-                    >
+                    <div class="onco-summary-icon" style="background:#FBF1F3;color:#D99AA6;">
                         ♡
                     </div>
 
@@ -118,18 +100,12 @@
                             Rôle
                         </span>
 
-                        <div
-                            class="onco-summary-value"
-                            style="font-size:20px;"
-                        >
+                        <div class="onco-summary-value" style="font-size:20px;">
                             Patient
                         </div>
                     </div>
 
-                    <div
-                        class="onco-summary-icon"
-                        style="background:#FBF1F3;color:#D99AA6;"
-                    >
+                    <div class="onco-summary-icon" style="background:#FBF1F3;color:#D99AA6;">
                         P
                     </div>
 
@@ -143,18 +119,12 @@
                             Accès
                         </span>
 
-                        <div
-                            class="onco-summary-value"
-                            style="font-size:20px;"
-                        >
+                        <div class="onco-summary-value" style="font-size:20px;">
                             Sécurisé
                         </div>
                     </div>
 
-                    <div
-                        class="onco-summary-icon"
-                        style="background:#EEF6F1;color:#7FA68A;"
-                    >
+                    <div class="onco-summary-icon" style="background:#EEF6F1;color:#7FA68A;">
                         ✓
                     </div>
 
@@ -164,10 +134,7 @@
 
 
             {{-- Tableau --}}
-            <div
-                class="onco-card"
-                style="margin-top:28px;"
-            >
+            <div class="onco-card" style="margin-top:28px;">
 
                 <div class="onco-card-header">
 
@@ -181,10 +148,7 @@
                         </p>
                     </div>
 
-                    <span
-                        class="onco-badge"
-                        style="background:#FBF1F3;color:#B97886;"
-                    >
+                    <span class="onco-badge" style="background:#FBF1F3;color:#B97886;">
                         {{ $patients->count() }} patient(s)
                     </span>
 
@@ -218,6 +182,10 @@
                                     Statut
                                 </th>
 
+                                <th>
+                                    Médecins suivis
+                                </th>
+
                             </tr>
                         </thead>
 
@@ -233,10 +201,7 @@
 
                                         <div class="onco-user-cell">
 
-                                            <div
-                                                class="onco-avatar"
-                                                style="background:#FBF1F3;color:#B97886;"
-                                            >
+                                            <div class="onco-avatar" style="background:#FBF1F3;color:#B97886;">
                                                 {{ strtoupper(substr($patient->prenom ?? 'P', 0, 1)) }}
                                             </div>
 
@@ -279,10 +244,7 @@
                                     {{-- Rôle --}}
                                     <td>
 
-                                        <span
-                                            class="onco-badge"
-                                            style="background:#FBF1F3;color:#B97886;"
-                                        >
+                                        <span class="onco-badge" style="background:#FBF1F3;color:#B97886;">
                                             Patient
                                         </span>
 
@@ -292,18 +254,52 @@
                                     {{-- Statut --}}
                                     <td>
 
-                                        <span
-                                            class="onco-status"
-                                            style="color:#5D806A;"
-                                        >
-                                            <span
-                                                class="onco-status-dot"
-                                                style="background:#7FA68A;"
-                                            ></span>
+                                        <span class="onco-status" style="color:#5D806A;">
+                                            <span class="onco-status-dot" style="background:#7FA68A;"></span>
 
                                             Actif
                                         </span>
 
+                                    </td>
+
+                                    {{-- Médecins suivis --}}
+                                    <td>
+                                        <div class="space-y-2">
+                                            @forelse($patient->patient?->medecins ?? [] as $medecin)
+                                                <div class="flex items-center gap-2 text-xs text-[#40514B]">
+                                                    <span>{{ $medecin->utilisateur->prenom }}
+                                                        {{ $medecin->utilisateur->nom }}</span>
+
+                                                    <form method="POST"
+                                                        action="{{ route('admin.patients.medecins.destroy', [$patient->patient, $medecin]) }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-[#A35D68] hover:underline"
+                                                            title="Retirer ce médecin">Retirer</button>
+                                                    </form>
+                                                </div>
+                                            @empty
+                                                <span class="text-xs text-[#8A8F8C]">Aucun médecin</span>
+                                            @endforelse
+
+                                            <form method="POST"
+                                                action="{{ route('admin.patients.medecins.store', $patient->patient) }}"
+                                                class="flex items-center gap-2">
+                                                @csrf
+                                                <select name="id_medecin"
+                                                    class="rounded-lg border border-[#D9D7CF] px-2 py-1 text-xs">
+                                                    <option value="">Associer un médecin</option>
+                                                    @foreach($medecins as $medecin)
+                                                        <option value="{{ $medecin->id_medecin }}">
+                                                            Dr {{ $medecin->utilisateur->prenom }}
+                                                            {{ $medecin->utilisateur->nom }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <button type="submit"
+                                                    class="text-xs font-semibold text-[#16423C] hover:underline">Ajouter</button>
+                                            </form>
+                                        </div>
                                     </td>
 
                                 </tr>
@@ -312,17 +308,11 @@
 
                                 <tr>
 
-                                    <td
-                                        colspan="5"
-                                        style="padding:56px 24px;"
-                                    >
+                                    <td colspan="6" style="padding:56px 24px;">
 
                                         <div class="onco-empty-state">
 
-                                            <div
-                                                class="onco-empty-icon"
-                                                style="background:#FBF1F3;color:#D99AA6;"
-                                            >
+                                            <div class="onco-empty-icon" style="background:#FBF1F3;color:#D99AA6;">
                                                 ♡
                                             </div>
 
@@ -352,19 +342,13 @@
 
 
             {{-- Confidentialité --}}
-            <div
-                class="onco-info-card"
-                style="
+            <div class="onco-info-card" style="
                     margin-top:24px;
                     border-color:#EED7DC;
                     background:#FFF9FA;
-                "
-            >
+                ">
 
-                <div
-                    class="onco-info-icon"
-                    style="background:#FBF1F3;color:#D99AA6;"
-                >
+                <div class="onco-info-icon" style="background:#FBF1F3;color:#D99AA6;">
                     🔒
                 </div>
 

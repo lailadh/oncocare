@@ -122,6 +122,28 @@
                         @enderror
                     </div>
 
+                    {{-- Spécialité médecin --}}
+                    <div>
+                        <label
+                            for="specialite"
+                            class="block text-sm font-semibold text-[#263330] mb-2"
+                        >
+                            Spécialité médicale
+                        </label>
+
+                        <input
+                            id="specialite"
+                            name="specialite"
+                            type="text"
+                            value="{{ old('specialite', $user->medecin?->specialite) }}"
+                            class="w-full rounded-2xl border border-[#D9D7CF] bg-white px-4 py-3 text-sm text-[#263330] focus:border-[#16423C] focus:ring-[#16423C]"
+                        >
+
+                        @error('specialite')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     {{-- Statut --}}
                     <div>
                         <label

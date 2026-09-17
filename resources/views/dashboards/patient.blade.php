@@ -1,23 +1,23 @@
 <x-app-layout>
 
     <x-slot name="header">
-        <div>
-            <h2 class="font-semibold text-xl text-slate-800 leading-tight">
+        <div class="py-1">
+            <h2 class="font-semibold text-[2rem] text-slate-800 leading-tight">
                 Dashboard Patient
             </h2>
 
-            <p class="text-sm text-slate-500 mt-1">
+            <p class="text-base text-slate-500 mt-1">
                 Votre espace personnel OncoCare
             </p>
         </div>
     </x-slot>
 
-    <div class="py-10 bg-slate-50 min-h-screen">
+    <div class="py-6 bg-slate-50 min-h-screen">
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             {{-- Bienvenue --}}
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-8">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mb-6 text-center">
 
                 <h1 class="text-2xl font-bold text-slate-800">
                     Bonjour {{ auth()->user()->prenom }} 👋
@@ -32,14 +32,15 @@
 
 
             {{-- Résumé --}}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6 items-stretch">
 
                 {{-- Dernier suivi --}}
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                <div
+                    class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 h-full flex flex-col justify-between text-left min-h-[190px]">
 
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between w-full gap-3">
 
-                        <div>
+                        <div class="flex-1">
                             <p class="text-sm text-slate-500">
                                 Dernier suivi
                             </p>
@@ -59,7 +60,7 @@
                             @endif
                         </div>
 
-                        <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                        <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
                             <span class="text-2xl">🩺</span>
                         </div>
 
@@ -69,11 +70,12 @@
 
 
                 {{-- Prochain rendez-vous --}}
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                <div
+                    class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 h-full flex flex-col justify-between text-left min-h-[190px]">
 
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between w-full gap-3">
 
-                        <div>
+                        <div class="flex-1">
                             <p class="text-sm text-slate-500">
                                 Prochain rendez-vous
                             </p>
@@ -97,7 +99,7 @@
                             @endif
                         </div>
 
-                        <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center">
+                        <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
                             <span class="text-2xl">📅</span>
                         </div>
 
@@ -107,11 +109,12 @@
 
 
                 {{-- Proches --}}
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                <div
+                    class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 h-full flex flex-col justify-between text-left min-h-[190px]">
 
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between w-full gap-3">
 
-                        <div>
+                        <div class="flex-1">
                             <p class="text-sm text-slate-500">
                                 Proches autorisés
                             </p>
@@ -125,7 +128,7 @@
                             </p>
                         </div>
 
-                        <div class="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center">
+                        <div class="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center flex-shrink-0">
                             <span class="text-2xl">👥</span>
                         </div>
 
@@ -137,27 +140,29 @@
 
 
             {{-- Fonctionnalités --}}
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
 
                 {{-- Suivis --}}
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 hover:shadow-md transition">
+                <div
+                    class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 hover:shadow-md transition h-full flex flex-col justify-between items-center text-center min-h-[240px]">
 
-                    <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mb-4 shrink-0">
                         <span class="text-2xl">🩺</span>
                     </div>
 
-                    <h3 class="text-lg font-semibold text-slate-800">
-                        Mes suivis médicaux
-                    </h3>
+                    <div class="flex flex-col items-center flex-1 w-full">
+                        <h3 class="text-lg font-semibold text-slate-800">
+                            Mes suivis médicaux
+                        </h3>
 
-                    <p class="text-sm text-slate-500 mt-2 mb-5">
-                        Consultez l'historique de vos suivis médicaux.
-                    </p>
+                        <p class="text-sm text-slate-500 mt-2 mb-5 flex-1">
+                            Consultez l'historique de vos suivis médicaux.
+                        </p>
+                    </div>
 
-                    <a href="{{ route('patient.suivis.index') }}"
-                       class="inline-flex items-center px-4 py-2 rounded-lg
+                    <a href="{{ route('patient.suivis.index') }}" class="inline-flex items-center justify-center px-4 py-2 rounded-lg
                               bg-blue-600 text-white text-sm font-medium
-                              hover:bg-blue-700 transition">
+                              hover:bg-blue-700 transition mt-auto w-full max-w-[220px]">
                         Consulter mes suivis →
                     </a>
 
@@ -165,24 +170,26 @@
 
 
                 {{-- Rendez-vous --}}
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 hover:shadow-md transition">
+                <div
+                    class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 hover:shadow-md transition h-full flex flex-col justify-between items-center text-center min-h-[240px]">
 
-                    <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-green-100 flex items-center justify-center mb-4 shrink-0">
                         <span class="text-2xl">📅</span>
                     </div>
 
-                    <h3 class="text-lg font-semibold text-slate-800">
-                        Mes rendez-vous
-                    </h3>
+                    <div class="flex flex-col items-center flex-1 w-full">
+                        <h3 class="text-lg font-semibold text-slate-800">
+                            Mes rendez-vous
+                        </h3>
 
-                    <p class="text-sm text-slate-500 mt-2 mb-5">
-                        Consultez vos rendez-vous et vos demandes.
-                    </p>
+                        <p class="text-sm text-slate-500 mt-2 mb-5 flex-1">
+                            Consultez vos rendez-vous et vos demandes.
+                        </p>
+                    </div>
 
-                    <a href="{{ route('patient.rendezvous.index') }}"
-                       class="inline-flex items-center px-4 py-2 rounded-lg
+                    <a href="{{ route('patient.rendezvous.index') }}" class="inline-flex items-center justify-center px-4 py-2 rounded-lg
                               bg-green-600 text-white text-sm font-medium
-                              hover:bg-green-700 transition">
+                              hover:bg-green-700 transition mt-auto w-full max-w-[220px]">
                         Voir mes rendez-vous →
                     </a>
 
@@ -190,24 +197,26 @@
 
 
                 {{-- Proches --}}
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 hover:shadow-md transition">
+                <div
+                    class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 hover:shadow-md transition h-full flex flex-col justify-between items-center text-center min-h-[240px]">
 
-                    <div class="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center mb-4 shrink-0">
                         <span class="text-2xl">👥</span>
                     </div>
 
-                    <h3 class="text-lg font-semibold text-slate-800">
-                        Mes proches
-                    </h3>
+                    <div class="flex flex-col items-center flex-1 w-full">
+                        <h3 class="text-lg font-semibold text-slate-800">
+                            Mes proches
+                        </h3>
 
-                    <p class="text-sm text-slate-500 mt-2 mb-5">
-                        Gérez les autorisations d'accès accordées à vos proches.
-                    </p>
+                        <p class="text-sm text-slate-500 mt-2 mb-5 flex-1">
+                            Gérez les autorisations d'accès accordées à vos proches.
+                        </p>
+                    </div>
 
-                    <a href="{{ route('patient.autorisations.index') }}"
-                       class="inline-flex items-center px-4 py-2 rounded-lg
+                    <a href="{{ route('patient.autorisations.index') }}" class="inline-flex items-center justify-center px-4 py-2 rounded-lg
                               bg-pink-600 text-white text-sm font-medium
-                              hover:bg-pink-700 transition">
+                              hover:bg-pink-700 transition mt-auto w-full max-w-[220px]">
                         Gérer mes proches →
                     </a>
 
